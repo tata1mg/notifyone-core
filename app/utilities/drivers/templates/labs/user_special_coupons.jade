@@ -1,0 +1,24 @@
+extends ././layouts/onemg_labs.jade
+
+block content
+    - var email_header_status = 'success'
+    .card
+        .card-content
+            b Hello {{offer.user_name|title}},
+            br
+            .subtle Thank you for placing an order on Tata 1mg. As promised, you can use the coupon code
+            b {{offer.coupon_code}}
+            .subtle to book a free {{offer.test_name}} worth ₹{{offer.price}} from {{offer.lab_name}}.
+            .centre
+                  a(href='{{offer.test_page_link}}' , target="_blank")
+                      u
+                         b BOOK NOW
+            .subtle Your blood sample will be collected from your home in the time-slot of your choice and the test report will be delivered via email within {{offer.test_tat}} business days of the sample collection.
+            .subtle Your unique coupon code can be used only once and will expire on {{offer.end_date}}.
+            br
+            .separator-light
+            .subtle If you have any queries or concerns, please reply to this email and we'll be in touch.
+            .subtle Stay healthy!
+            .subtle - Team Tata 1mg
+        include includes/email_header_new
+    include labs/regards.jade

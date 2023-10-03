@@ -1,0 +1,34 @@
+extends ./layouts/onemg.jade
+block content
+    - var email_header_heading = 'Order to be Returned'
+    - var email_header_subheading = 'Processing Return Request'
+    - var email_header_status = 'warning'
+    - var email_header_cta_type = 'track'
+    - var email_header_need_help = 'help'
+    .card
+        .card-content.subtle
+            b Hello {{order.user.properties.name}}
+            .subtle We are processing return request for your order {{order.order_id}}.
+        include includes/email_header_new
+
+    .card
+        .card-content
+            if order.order_lines
+                include includes/order_lines.jade
+                .separator-light
+                include includes/cart_summary.jade
+
+
+    .card
+        .card-content
+            .subtle Your return/refund request for the above item(s) has been successfully placed. If the item(s) is to be returned, please ensure that it is intact and is in unused state.
+            .subtle Once the item is picked up and it passes our quality check, expected refund time will be:
+            .subtle Refund to wallet: 1- 2 business days
+            .subtle NEFT to Bank or Credit/Debit Card : 5-7 business days
+
+    include includes/cashback_not_credited.jade
+
+    include includes/order_address.jade
+
+
+    include includes/regards

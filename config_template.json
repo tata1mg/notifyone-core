@@ -1,0 +1,130 @@
+{
+  "NAME": "notification_core",
+  "HTTP_VERSION": "1.0.0",
+  "HOST": "0.0.0.0",
+  "PORT": 6561,
+  "WORKERS": 1,
+  "DB_CONNECTIONS": {
+    "apps": {
+      "notification_core": {
+        "default_connection": "default",
+        "models": ["app.models.notification_core_db"]
+      }
+    },
+    "connections": {
+      "default": {
+        "credentials": {
+          "database": "lara_service_db",
+          "host": "postgres.1mginfra.com",
+          "password": "lara_service_pass",
+          "port": 5432,
+          "user": "lara_service_user"
+        },
+        "engine": "tortoise.backends.asyncpg"
+      }
+    }
+  },
+  "DEBUG": true,
+  "APM": {
+    "SERVER_URL": "http://10.1.2.118:8200",
+    "ENVIRONMENT": "staging",
+    "ENABLED": false,
+    "SECRET_TOKEN": "",
+    "SERVER_TIMEOUT": "30s",
+    "SPAN_FRAMES_MIN_DURATION": "10ms",
+    "TRANSACTION_SAMPLE_RATE": 0.1
+  },
+  "SUBSCRIBE_NOTIFICATION_STATUS_UPDATES": {
+    "SQS": {
+      "SQS_REGION": "ap-south-1",
+      "SQS_ENDPOINT_URL": "",
+      "SQS_MAX_CONNECTIONS": 10
+    },
+    "SUBSCRIBE_TO": {
+      "QUEUE_NAME": "stag-ns_notification_status_update",
+      "SUBSCRIBERS_COUNT": 3
+    },
+    "SUBSCRIBE_DELAY_SECONDS": 5
+  },
+  "DISPATCH_NOTIFICATION_REQUEST": {
+    "SQS": {
+      "SQS_REGION": "ap-south-1",
+      "SQS_ENDPOINT_URL": "",
+      "SQS_MAX_CONNECTIONS": 10
+    },
+    "EMAIL": {
+      "ASYNC_CHANNEL": {
+        "QUEUE_NAME": "stag-ns_email_event_notification"
+      },
+      "SYNC_CHANNEL": {
+        "HOST": ""
+      }
+    },
+    "SMS": {
+      "ASYNC_CHANNEL": {
+        "QUEUE_NAME": "stag-ns_sms_event_notification"
+      },
+      "SYNC_CHANNEL": {
+        "HOST": ""
+      }
+    },
+    "PUSH": {
+      "ASYNC_CHANNEL": {
+        "QUEUE_NAME": "stag-ns_push_event_notification"
+      },
+      "SYNC_CHANNEL": {
+        "HOST": ""
+      }
+    },
+    "WHATSAPP": {
+      "ASYNC_CHANNEL": {
+        "QUEUE_NAME": "stag-ns_whatsapp_event_notification"
+      },
+      "SYNC_CHANNEL": {
+        "HOST": ""
+      }
+    }
+  },
+  "CONTENT_LOG": {
+    "S3": {
+      "AWS_REGION": "ap-south-1",
+      "BUCKET_NAME": "1mg-staging-nscontentlogs",
+      "MAX_POOL_CONNECTIONS": 10
+    }
+  },
+  "NOTIFICATION_REQUEST": {
+    "SQS": {
+      "SQS_REGION": "ap-south-1",
+      "SQS_ENDPOINT_URL": "",
+      "SQS_MAX_CONNECTIONS": 10
+    },
+    "SUBSCRIBE_TO": {
+      "HIGH_PRIORITY": {
+        "QUEUE_NAME": "stag-ns_high_priority_event_notification",
+        "SUBSCRIBERS_COUNT": 8
+      },
+      "MEDIUM_PRIORITY": {
+        "QUEUE_NAME": "stag-ns_medium_priority_event_notification",
+        "SUBSCRIBERS_COUNT": 7
+      },
+      "LOW_PRIORITY": {
+        "QUEUE_NAME": "stag-ns_low_priority_event_notification",
+        "SUBSCRIBERS_COUNT": 5
+      }
+    },
+    "SUBSCRIBE_DELAY_SECONDS": 5
+  },
+  "REDIS_CACHE_HOSTS": {
+    "default": {
+      "REDIS_HOST": "localhost",
+      "REDIS_PORT": 6379,
+      "LABEL": "default"
+    }
+  },
+  "SENTRY": {
+    "DSN": ""
+  },
+  "TEST_ENVIRONMENT": false,
+  "TEST_ALLOWED_EMAILS": [],
+  "TEST_ALLOWED_MOBILES": []
+}

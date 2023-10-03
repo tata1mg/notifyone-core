@@ -1,0 +1,315 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+
+<body style="margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; background-color: #FFFFFF;">
+<table width="700" border="0" align="center" cellpadding="0" cellspacing="0">
+    <tr>
+        <td align="left" style="font-family: Arial, Helvetica, sans-serif; padding-bottom: 20px;">
+            <a href="{{Hkp_url}}" title="1mg" target="_blank">
+                <img src="{{Hkp_url}}/images/logo-1mg.png" width="100" height="auto" border="0" alt="" />
+            </a><br/>
+        </td>
+    </tr>
+
+    <tr>
+        <td align="left" valign="top"
+            style="font-family: Arial, Helvetica, sans-serif; font-size:14px; line-height:1.3em; padding:10px 0 20px 0;">
+            Hi,
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"
+            style="font-style:normal; border: 1px solid #cccccc; border-radius:5px; -webkit-border-radius:5px; padding: 15px; font-family: Arial, Helvetica, sans-serif; font-size:14px;">
+            This is an order alert email for Order - {{order.order_id}}, Placed on - {{order_date}}, Placed By -
+            {{order.delivery_address.name}}. Please find following
+            details.
+        </td>
+    </tr>
+    {% if high_order_value %}
+    <tr>
+        <td valign="top"
+            style="font-style:normal; border: 1px solid #cccccc; border-radius:5px; -webkit-border-radius:5px; padding: 15px; font-family: Arial, Helvetica, sans-serif; font-size:14px;">
+            The order value for the order is Rs. {{cart_mrp}}.
+        </td>
+    </tr>
+
+    {% endif %}
+
+    {% if qty_exceeded_map|length > 0 %}
+    <tr>
+        <td valign="top"
+            style="font-style:normal; border: 1px solid #cccccc; border-radius:5px; -webkit-border-radius:5px; padding: 15px; font-family: Arial, Helvetica, sans-serif; font-size:14px;">
+            For some OTC products the quantity ordered is more than normal.
+            {% for key,value in qty_exceeded_map.items() %}
+            <p>{{key}} - {{value}}</p>
+            {% endfor %}
+        </td>
+    </tr>
+    {% endif %}
+
+    {% if count_otc > 10 %}
+    <tr>
+        <td valign="top"
+            style="font-style:normal; border: 1px solid #cccccc; border-radius:5px; -webkit-border-radius:5px; padding: 15px; font-family: Arial, Helvetica, sans-serif; font-size:14px;">
+            There are more than 10 OTC products ordered with this order.
+        </td>
+    </tr>
+    {% endif %}
+
+    <tr>
+        <td valign="top" style="padding:20px 0;">
+            &nbsp;
+        </td>
+    </tr>
+
+    <tr>
+        <td style="color: #6d7071 !important; font-size: 16px; line-height: 22px; padding: 0 15px;">
+            <p>Delivery Address: </p>
+
+            <p style="color: #153643 !important; margin-top: 50px;">
+                {{order.delivery_address.name}} <br/>
+                {{order.delivery_address.street1}}<br/>
+                {% if order.delivery_address.street2 %} {{order.delivery_address.street2}}<br/> {% endif %}
+                {{order.delivery_address.city}} - {{order.delivery_address.pincode}}<br/>
+                {% if order.delivery_address.state %} {{order.delivery_address.state}} <br/>{% endif %}
+            </p>
+
+            <p style="color: #153643 !important; margin-bottom: 50px;">Phone:
+                {{order.delivery_address.contact_number}}</p>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="color: #153643 !important; font-size: 16px; line-height: 22px;border-bottom: 1px solid #cccccc; padding: 0 15px;">
+            <p style="color: #999999; font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 0;">
+                Order Details:</p>
+        </td>
+        {% if order.order_lines %}
+    <tr>
+        <td style="color: #153643 !important; font-size: 16px; line-height: 22px;border-bottom: 1px solid #cccccc; padding: 0 15px;">
+            <p style="color: #999999; font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 0;">
+                Medicines Ordered:</p>
+        </td>
+    </tr>
+    {% for line in order.order_lines %}
+    <tr>
+        <td style="color: #153643 !important; font-size: 16px; line-height: 22px; padding: 0 15px;">
+            <table width="80%" align="left" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td height="auto">
+                        <p>
+                            {% set medUrl = "" -%}
+                            {% if line.sku.type == "otc_drug" %}
+                            {% set medUrl = (Hkp_url + "/drugs/drug-" + line.order_line_id) -%}
+                            {% elif line.sku.type == "allopathy" %}
+                            {% set medUrl = (Hkp_url + "/drugs/drug-" + line.order_line_id) -%}
+                            {% else %}
+                            {% set medUrl = (Hkp_url + "/otc/otc-otc" + line.order_line_id) -%}
+                            {% endif %}
+                            <a style="color:#153643 !important" target="_blank" href="{{ medUrl }}">
+                            <span>{{line.sku.name}}</span></a><br/><span
+                                style="font-size: 14px; color: #999 !important;">
+                          {{line.pack_unit_form}}
+                        </span>
+                    </td>
+                </tr>
+            </table>
+            <!--[if mso]>
+            </td></td>
+            <![endif]-->
+            <!--[if (gte mso 9)|(IE)]>
+            <table width="190" align="right" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>
+            <![endif]-->
+            <table align="left" border="0" cellpadding="0" cellspacing="0" style="width: 20%;">
+                <tr>
+                    <td height="auto">
+                        <table align="left" width="auto" border="0" cellspacing="0" cellpadding="0"
+                               style="background-color: #ffffff;">
+                            <tr>
+                                <td height="auto" width="auto" style="padding: 5px;font-size: 16px;">
+                                    <p><span style="color:#153643 !important"> Rs. {{'%0.2f' % (line.quantity * line.unit_offered_price)}} </span><br/>
+                                        {% if (line.offer.discount_value) and (line.offer.discount_value|float) > 0.0 %}
+                                        <del><span style="color:#153643!important"> Rs. {{'%0.2f' % (line.quantity * line.unit_current_mrp)}} </span>
+                                        </del>
+                                        <br/>
+                                        <span style="font-size: 14px; color: #589D07 !important;">({{ '%0.0f' % (((line.unit_current_mrp - line.unit_offered_price)/line.unit_current_mrp) * 100)}}% off)</span>
+                                        {% endif %}
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td style="color: #153643 !important; font-size: 16px; line-height: 22px; border-top: 2px solid #cccccc; padding: 0 15px; padding-top: 20px;">
+            <table width="80%" align="left" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td height="auto">
+                        <p style="text-transform: uppercase;">Subtotal</p>
+                    </td>
+                </tr>
+            </table>
+            <!--[if mso]>
+            </td></td>
+            <![endif]-->
+            <!--[if (gte mso 9)|(IE)]>
+            <table width="190" align="right" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>
+            <![endif]-->
+            <table align="left" border="0" cellpadding="0" cellspacing="0" style="width: 20%;">
+                <tr>
+                    <td height="auto">
+                        <table align="left" width="auto" border="0" cellspacing="0" cellpadding="0"
+                               style="background-color: #ffffff;">
+                            <tr>
+                                <td height="auto" width="auto" style="padding: 5px;font-size: 16px;">
+                                    <input id="orderAmtBeforeCash" type="hidden" value="{{order.offered_price}}"/>
+
+                                    <p>Rs. <span id="orderAmtBeforeCashText">{{'%0.2f' % (order.offered_price)}}</span>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </td>
+    </tr>
+    <table style="table-layout: fixed; overflow: hidden;width:100%;padding: 0 15px;font-size:16px">
+        <tr>
+            <td style="width:50%">
+                SHIPPING CHARGES
+            </td>
+            <td style="width:50%;text-align:right;padding:5px">
+                Rs. {{'%0.2f' % (shipping_charges)}}</td>
+        </tr>
+    </table>
+    {% if order.offer_discount > 0.0 %}
+    <tr>
+        <td style="color: #589D07 !important; font-size: 16px; line-height: 22px; padding: 0 15px;">
+            <table width="80%" align="left" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td height="auto">
+                        <p style="text-transform: uppercase;">Cash Discount</p>
+                    </td>
+                </tr>
+            </table>
+            <!--[if mso]>
+            </td></td>
+            <![endif]-->
+            <!--[if (gte mso 9)|(IE)]>
+            <table width="190" align="right" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>
+            <![endif]-->
+            <table align="left" border="0" cellpadding="0" cellspacing="0" style="width: 20%;">
+                <tr>
+                    <td height="auto">
+                        <table align="left" width="auto" border="0" cellspacing="0" cellpadding="0"
+                               style="background-color: #ffffff;">
+                            <tr>
+                                <td height="auto" width="auto" style="padding: 5px;font-size: 16px;">
+                                    <p>-Rs. {{'%0.2f' % (order.offer_discount)}}</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </td>
+    </tr>
+    {% endif %}
+    <tr>
+        <td style="color: #153643 !important; font-size: 16px; line-height: 22px; background-color: #cccccc; padding: 0 15px;">
+            <table width="80%" align="left" border="0" cellpadding="0" cellspacing="0"
+                   style="margin-top: 6px; font-weight: bold;">
+                <tr>
+                    <td height="auto">
+                        <p style="text-transform: uppercase;">Total</p>
+                    </td>
+                </tr>
+            </table>
+            <!--[if mso]>
+            </td></td>
+            <![endif]-->
+            <!--[if (gte mso 9)|(IE)]>
+            <table width="190" align="right" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>
+            <![endif]-->
+            <table align="left" border="0" cellpadding="0" cellspacing="0" style="width: 20%;">
+                <tr>
+                    <td height="auto">
+                        <table align="left" width="auto" border="0" cellspacing="0" cellpadding="0" style="">
+                            <tr>
+                                <td height="auto" width="auto" style="padding: 5px;font-size: 16px; font-weight: bold;">
+                                    <p>Rs. {{'%0.2f' % (order.offered_price + shipping_charges - order.offer_discount)}}</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </td>
+    </tr>
+    {% endif %}
+
+    </tr>
+
+    <tr>
+        <td valign="top"
+            style="font-family: Arial, Helvetica, sans-serif; text-align:center; padding-top:10px; background:#ffffff;">
+            <a href="{{Hkp_app_url}}" style="font-size:20px; color:#4a4a4a; text-decoration:initial;"
+               title="Click Here to download">
+                Download 1mg Mobile App from
+                <table width="80%" border="0" cellspacing="0" style="width:550px; text-align:center; margin:0px auto;">
+                    <tr>
+                        <td align="left" valign="top" style="padding:10px; width:170px;">
+                            <img src="{{Hkp_url}}/images/ios-button.png" alt="iOS App" style="max-width:100%;"/>
+                        </td>
+                        <td align="left" valign="top" style="padding:10px; width:170px;">
+                            <img src="{{Hkp_url}}/images/android-button.png" alt="Android App" style="max-width:100%;"/>
+                        </td>
+                        <td align="left" valign="top" style="padding:10px; width:170px;">
+                            <img src="{{Hkp_url}}/images/window-button.png" alt="Windows App" style="max-width:100%;"/>
+                        </td>
+                    </tr>
+                </table>
+            </a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

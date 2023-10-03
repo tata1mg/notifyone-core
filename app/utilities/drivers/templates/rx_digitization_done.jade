@@ -1,0 +1,21 @@
+extends ./layouts/onemg.jade
+
+block content
+  - var email_header_heading = 'Prescription verified'
+  - var email_header_subheading = 'Our support team will call to verify your order at the earliest'
+  - var email_header_status = 'success'
+  - var email_header_cta_type = 'track'
+  {% if not (order and (order.tags and 'Lily Order' in order.tags)) %}  
+  a.link-labs-banner(href='{{base_url or Hkp_url}}/labs/new-delhi?utm_source=pharmaemail&utm_medium=email&utm_campaign=crosssell')
+    img(src="{{base_url or Hkp_url}}/images/emails/labs-email-banner.png", alt="labs banner icon")
+  {% endif %}
+  .card.order-placed-card
+      .card-content
+          b Hello {{order.user.properties.name}}
+          .subtle The prescription uploaded by you has been verified by our certified pharmacists.
+              $include_start-1-$include_end
+      $include_start-2-$include_end
+
+  $include_start-7-$include_end
+  $include_start-8-$include_end
+

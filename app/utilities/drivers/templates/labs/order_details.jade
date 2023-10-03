@@ -1,0 +1,115 @@
+.order-lines
+    if not hide_total_payable
+        .subtle Order ID: {{order.appointment_id}}
+        if order.status|lower == 'delivered' or order.status|lower == 'conducted' or order.status|lower == 'cancelled' or order.status|lower == 'request for return and refund' or order.status|lower == 'out for return and refund' or order.status|lower == 'returned and refunded'
+            div
+        else
+            .section-title.darker.section-title-large
+                .row
+                    if order.payment_mode
+                        .left-col
+                            span Payment Mode
+                        .right-col
+                            .col {{order.payment_mode}}
+            .separator-light
+
+    .item-table
+        if order.diagnostic_lab
+                .item-row.product-info
+                    .item-left-col.download-strip
+                        .section-title.darker.section-title-large
+                            .item {{order.diagnostic_lab}}
+                        if order.category == "RADIOLOGY"
+                            .item {{order.street}}, {{order.city}}, {{order.state}}-{{order.pin_code}}
+        .separator-light
+
+        for booking in order.bookings_list
+            .item-row.product-info
+                .item-left-col
+                    .item {{booking.test_name}}
+                .item-right-col
+                    .item Rs.{{'%0.2f' % (booking.price)}}
+.separator-light
+
+    .pricing-table
+    if order.mrp
+        .row
+            .left-col.subtle
+                .item Subtotal
+            .right-col
+                .item Rs.{{'%0.2f' % order.mrp|float}}
+    if order.discount
+        .row
+            .left-col.subtle
+                .item Discount
+            .right-col
+                .item (-) Rs.{{'%0.2f' % (order.discount)}}
+    if order.coupon_discount
+        .row
+            .left-col.subtle
+                .item Coupon Discount
+                    sup *
+            .right-col
+                .item (-) Rs.{{'%0.2f' % (order.coupon_discount)}}
+    if order.shipping_charges and order.shipping_charges >= 0
+        .row
+            .left-col.subtle
+                .item Shipping Charges
+            .right-col
+                .item (+) Rs.{{'%0.2f' % order.shipping_charges}}
+    if order.online_collected
+        .row
+            .left-col.subtle
+                .item Paid Online
+            .right-col
+                .item (-) Rs.{{'%0.2f' % (order.online_collected)}}
+    if order.cashback_availed
+        .row
+            .left-col.subtle
+                .item 1mgCash Used
+            .right-col
+                .item (-) Rs.{{'%0.2f' % (order.cashback_availed)}}
+    if order.report_charges
+        .row
+            .left-col.subtle
+                .item Report Delivery Charges
+            .right-col
+                .item (+) Rs.{{'%0.2f' % (order.report_charges)}}
+    if order.vendor_fee
+        .row
+            .left-col.subtle
+                .item Report Vendor Fee
+            .right-col
+                .item (+) Rs.{{'%0.2f' % (order.vendor_fee)}}
+
+    .row.total-payable.highlight
+        if order.payment_mode|lower != 'cash' or order.status|lower == 'delivered' or order.status|lower == 'conducted' or order.status|lower == 'cancelled' or order.status|lower == 'request for return and refund' or order.status|lower == 'out for return and refund' or order.status|lower == 'returned and refunded'
+            if order.amount_payable >= 0
+                .left-col.subtle
+                    span Total Paid
+                .right-col
+                    .col Rs.{{'%0.2f' % order.amount_payable}}
+            else
+                .left-col.subtle  Refunded
+                .right-col
+                    .col Rs.{{'%0.2f' % (order.amount_payable * -1)}}
+        else
+            if order.amount_payable >= 0
+                .left-col.subtle
+                    span To be Paid
+                .right-col
+                    .col Rs.{{'%0.2f' % order.amount_payable}}
+            else
+                .left-col.subtle To be Refunded
+                .right-col
+                    .col Rs.{{'%0.2f' % (order.amount_payable * -1)}}
+    if order.is_hard_copy and  not order.report_charges
+        .subtle (+) Report Delivery: Rs.{{order.hard_copy_charges}} *
+        .subtler
+            sup *
+            span Report delivery charges applicable only once on total order
+    if order.coupon_discount
+        .subtler
+            sup *
+            span Coupon value may change if the total order value changes
+

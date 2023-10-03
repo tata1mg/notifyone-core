@@ -1,0 +1,64 @@
+extends ./layouts/onemg.jade
+block content
+    - var email_header_heading = 'Delivery to be Re-Attempted'
+    - var email_header_subheading = 'On the Way'
+    - var email_header_status = 'warning'
+    - var email_header_cta_type = 'track'
+    - var email_header_need_help = 'help'
+    if order.eta and order.eta.eta_to
+        - var email_header_eta_to = order.eta.eta_to|format_eta_timestamp
+    if order.eta and order.eta.eta_from
+        - var email_header_eta_from = order.eta.eta_from|format_eta_timestamp
+    .card
+        .card-content
+            b Hello {{order.user.properties.name}}
+            .subtle Our courier partner couldn't deliver your order
+                | <span> </span>
+                b {{order.order_id}}
+                | <span> </span>
+                | today. We will contact you when our partner re-attempts delivery.
+            {% if order.shipment_detail.delivery_partners_code == "1mg" %}
+            //- .para You can contact the delivery agent of {{order.shipment_detail.vendor.name}},
+            //-     |<span> </span>
+            //-     b {{order.shipment_detail.fe_name}}
+            //-     |<span> </span>at
+            //-     |<span> </span>
+            //-     b {{order.shipment_detail.fe_phone_number}}
+            //-     |<span> </span> to schedule a suitable time for delivery.
+            {% elif order.shipment_detail.delivery_partners_code == "GurgaonX" %}
+            //- .para You can contact the delivery agent of {{order.shipment_detail.vendor.name}},
+            //-     |<span> </span>
+            //-     b {{order.shipment_detail.fe_name}}
+            //-     |<span> </span>at
+            //-     |<span> </span>
+            //-     b {{order.shipment_detail.fe_phone_number}}
+            //-     |<span> </span> to schedule a suitable time for delivery.
+            {% elif (order.shipment_detail.delivery_partners_code == "delhivery" or order.shipment_detail.delivery_partners_code == "Delhivery-Surface") %}
+            .subtle You may track the shipment via
+                |<span> </span>
+                a(href=order.shipment_detail.tracking_url) {{order.shipment_detail.delivery_partners_other_details.parent_name}}
+                |.
+            {% elif order.shipment_detail.delivery_partners_other_details and order.shipment_detail.delivery_partners_other_details.behaviour.type_communication == '3pl' %}
+            .subtle You may track the shipment via
+                |<span> </span>
+                a(href=order.shipment_detail.tracking_url) {{order.shipment_detail.delivery_partners_other_details.parent_name}}
+                |<span> </span> with AWB number
+                |<span> </span>
+                b {{order.shipment_detail.tracking_number}}
+                |.
+            {% endif %}
+        include includes/email_header_new
+
+
+
+    if order.order_lines
+        .card
+            .card-content
+                include includes/order_lines.jade
+                .separator-light
+                include includes/cart_summary.jade
+    include includes/refund_due.jade
+    include includes/cashback_eligible.jade
+    include includes/order_address.jade
+
+    include includes/regards

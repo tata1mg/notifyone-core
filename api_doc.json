@@ -1,0 +1,580 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "paths": {
+    "\/ping": {
+      "get": {
+        "tags": [],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/events": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/event\/add_action": {
+      "put": {
+        "tags": [
+          "Events"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/events\/custom": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/event\/create": {
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application\/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "event_id": {
+                      "type": "string",
+                      "description": "Event ID generated for this event",
+                      "example": 111,
+                      "required": true
+                    },
+                    "event_name": {
+                      "type": "string",
+                      "description": "Event name",
+                      "example": "test_event",
+                      "required": true
+                    },
+                    "app_name": {
+                      "type": "string",
+                      "description": "App name",
+                      "example": "test_app",
+                      "required": true
+                    },
+                    "action": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "integer",
+                          "format": "int32",
+                          "example": 1
+                        },
+                        "sms": {
+                          "type": "integer",
+                          "format": "int32",
+                          "example": 1
+                        },
+                        "push": {
+                          "type": "integer",
+                          "format": "int32",
+                          "example": 1
+                        },
+                        "whatsapp": {
+                          "type": "integer",
+                          "format": "int32",
+                          "example": 1
+                        }
+                      }
+                    },
+                    "trigger_limit": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Whatsapp template name for Interkt",
+                          "example": "order_delivered",
+                          "required": true
+                        }
+                      }
+                    },
+                    "created_by": {
+                      "type": "string",
+                      "description": "Email ID of the user requesting to create the event",
+                      "example": "test@test.com"
+                    }
+                  }
+                }
+              }
+            },
+            "status": 200,
+            "description": "Default Response"
+          }
+        },
+        "summary": "API to create a new event",
+        "description": "The API can be used to create new events in the system",
+        "requestBody": {
+          "content": {
+            "application\/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "event_name": {
+                    "type": "string",
+                    "description": "Event name",
+                    "example": "test_event",
+                    "required": true
+                  },
+                  "app_name": {
+                    "type": "string",
+                    "description": "App name",
+                    "example": "test_app",
+                    "required": true
+                  },
+                  "email": {
+                    "type": "object",
+                    "properties": {
+                      "description": {
+                        "type": "string",
+                        "description": "Description of your event",
+                        "example": "This is test event",
+                        "required": true
+                      },
+                      "subject": {
+                        "type": "string",
+                        "description": "Email subject",
+                        "example": "Regarding your Order {{body.order_id}}",
+                        "required": true
+                      },
+                      "content": {
+                        "type": "string",
+                        "description": "Email body",
+                        "example": "Your order {{{{body.order_id}}}} has been processed",
+                        "required": true
+                      }
+                    }
+                  },
+                  "sms": {
+                    "type": "object",
+                    "properties": {
+                      "content": {
+                        "type": "string",
+                        "description": "Email body",
+                        "example": "Your order {{{{body.order_id}}}} has been processed",
+                        "required": true
+                      }
+                    }
+                  },
+                  "push": {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "description": "Push message title",
+                        "example": "Order update",
+                        "required": true
+                      },
+                      "body": {
+                        "type": "string",
+                        "description": "Push message body text",
+                        "example": "Order {{body.order_id}} has been delivered",
+                        "required": true
+                      }
+                    }
+                  },
+                  "whatsapp": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Whatsapp template name for Interkt",
+                        "example": "order_delivered",
+                        "required": true
+                      }
+                    }
+                  },
+                  "priority": {
+                    "type": "string",
+                    "description": "Priority for this event. Priority can be one of these values - critical\/high\/medium\/low",
+                    "example": "high",
+                    "required": true
+                  },
+                  "event_type": {
+                    "type": "string",
+                    "description": "Type for this event. Type can be one of these values - promotional\/transactional\/other",
+                    "example": "transactional",
+                    "required": true
+                  },
+                  "user_email": {
+                    "type": "string",
+                    "description": "Email ID of the user requesting to create the event",
+                    "example": "test@test.com",
+                    "required": true
+                  }
+                }
+              }
+            }
+          },
+          "required": null,
+          "description": null
+        }
+      }
+    },
+    "\/events\/handle-email-template-update": {
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/prepare-notification": {
+      "post": {
+        "tags": [
+          "Notify"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/email\/template": {
+      "put": {
+        "tags": [
+          "EmailAPIs"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/email\/include\/template": {
+      "post": {
+        "tags": [
+          "EmailAPIs"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/email\/template\/preview": {
+      "post": {
+        "tags": [
+          "EmailAPIs"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/push\/template\/preview": {
+      "post": {
+        "tags": [
+          "PushAPIs"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/push\/template": {
+      "put": {
+        "tags": [
+          "PushAPIs"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/sms\/template": {
+      "put": {
+        "tags": [
+          "SmsAPIs"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/sms\/template\/preview": {
+      "post": {
+        "tags": [
+          "SmsAPIs"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/whatsapp\/template": {
+      "put": {
+        "tags": [
+          "WhatsappAPIs"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/apps": {
+      "post": {
+        "tags": [
+          "Apps"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application\/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int32",
+                      "description": "ID of the newly created app",
+                      "example": 111
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "App name provided in the request body",
+                      "example": "test_app"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message string",
+                      "example": "App created successfully"
+                    }
+                  }
+                }
+              }
+            },
+            "status": 200,
+            "description": "Default Response"
+          }
+        },
+        "summary": "API to create a new app",
+        "description": "The API can be used to create new apps in the system",
+        "requestBody": {
+          "content": {
+            "application\/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "App name provided in the request body",
+                    "example": "test_app"
+                  },
+                  "info": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "object",
+                        "properties": {
+                          "sender_name": {
+                            "type": "string",
+                            "description": "Sender name to be used in sending email",
+                            "example": "Tata 1mg",
+                            "required": true
+                          },
+                          "sender_address": {
+                            "type": "string",
+                            "description": "Sender email address to be used in sending email",
+                            "example": "sender@xyzmail.com",
+                            "required": true
+                          },
+                          "reply_to": {
+                            "type": "string",
+                            "description": "Reply to email address for sending email",
+                            "example": "reply@xyzmail.com",
+                            "required": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": null,
+          "description": null
+        }
+      }
+    },
+    "\/notifications\/{notification_request_id}": {
+      "get": {
+        "tags": [
+          "NotificationStatus"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "notification_request_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\/event\/{id}": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "required": true,
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Events"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "event_id",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "required": true,
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Events"
+    },
+    {
+      "name": "Notify"
+    },
+    {
+      "name": "EmailAPIs"
+    },
+    {
+      "name": "PushAPIs"
+    },
+    {
+      "name": "SmsAPIs"
+    },
+    {
+      "name": "WhatsappAPIs"
+    },
+    {
+      "name": "Apps"
+    },
+    {
+      "name": "NotificationStatus"
+    }
+  ],
+  "servers": [],
+  "components": null,
+  "externalDocs": null
+}

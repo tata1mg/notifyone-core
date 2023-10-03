@@ -1,0 +1,29 @@
+extends ./layouts/onemg.jade
+
+block content
+    - var email_header_heading = 'Collections Handed Over Yesterday'
+    - var email_header_status = 'success'
+    .card
+        .card-content
+            p Hi, cash of Rs {{cash_handed_over}} ({{number_of_delivered_orders}} order(s)) and material worth Rs {{cancelled_orders_total_worth}} ({{number_of_cancelled_orders}} order(s)) has been handed over to you on {{hand_over_date}} against {{number_of_delivered_orders + number_of_cancelled_orders}} order(s) for vendor: {{vendor.code}}.
+                p
+                {% if delivered_order_details %}
+                {% set count = 1 %}
+                b Orders for which cash is handed over:
+                {% for order in delivered_order_details %}
+                p {{count}}. {{order.order_id}}: Bill Number: {{order.bill_number}} | Payable Amount: {{order.payable_amount}} | MRP: {{order.mrp}}
+                {% set count = count + 1 %}
+                {% endfor %}
+                {% endif %}
+
+                {% if cancelled_order_details %}
+                {% set count = 1 %}
+                b Orders for which packets are handed over:
+                {% for order in cancelled_order_details %}
+                p {{count}}. {{order.order_id}}: Bill Number: {{order.bill_number}} | Payable Amount: {{order.payable_amount}} | MRP: {{order.mrp}}
+                {% set count = count + 1 %}
+                {% endfor %}
+                {% endif %}
+                p Please check and update in case of any discrepancy within the next 2 days. All these orders would be deemed settled otherwise.
+
+    include includes/regards

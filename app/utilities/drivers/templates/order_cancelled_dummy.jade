@@ -1,0 +1,21 @@
+extends ./layouts/onemg.jade
+block content
+    p.title Hello {{order.user.properties.name}}
+    .para We are sorry that we are unable to process your order
+        | <span> </span>
+        b {{order.order_id}}
+        |.
+
+    div.order-text Items Cancelled
+    include ./includes/order_lines.jade
+    include ./includes/cart_summary.jade
+    include ./includes/cart_total.jade
+    include ./includes/terms_conditions.jade
+
+    .para We wish you good health!
+
+    div.regards
+        div Regards,
+        div Team 1mg
+
+

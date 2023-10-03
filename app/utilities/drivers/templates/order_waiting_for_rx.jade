@@ -1,0 +1,30 @@
+extends ./layouts/onemg.jade
+block content
+    if order.order_lines
+        - var email_header_heading = 'Order To be Confirmed'
+        - var email_header_subheading = 'We Will Contact Shortly'
+        - var email_header_cta_type = 'track'
+    else
+        - var email_header_heading = 'Order Stuck'
+        - var email_header_subheading = 'Share Valid Prescription'
+        - var email_header_cta_type = 'upload'
+    - var email_header_status = 'error'
+    - var email_header_eta_to = 'N/A'
+    - var email_header_need_help = 'help'
+    .card
+        .card-content.subtle
+            b Hello {{order.user.properties.name}}
+            if order.order_lines
+                div Your Prescription has been verified. Our team will get in touch with you shortly to confirm the medicines and their quantity to be dispensed by our pharmacy partner.
+            else
+                div Your order will be processed after you share a valid prescription. Please send it as soon as possible.
+        include includes/email_header_new
+    unless order.order_lines
+        include ./includes/sample_prescription.jade
+    if order.payment_summary.cashback_earned
+        include includes/cashback_eligible.jade
+    include includes/order_address.jade
+
+    include includes/regards
+    include includes/cancellation
+

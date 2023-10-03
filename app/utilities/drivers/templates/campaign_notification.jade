@@ -1,0 +1,30 @@
+extends ./layouts/onemg.jade
+
+block content
+    - var email_header_heading = ''
+    - var email_header_subheading = ''
+    - var email_header_status = 'success'
+    - var email_header_cta_type = ''
+    .card
+        .card-content
+            .savlon
+                .free-text
+                    b Thank you for placing an order with 1mg!
+                br
+                .free-text We care about your health.
+                .free-text That's why we are sending a healthy goodie
+                .free-text with your current order.
+                br
+                .free-text Get your Savlon Antiseptic Liquid (50ml) absolutely
+                br
+                .free-head
+                    i FREE
+                br
+                img(class="savlon-bottle",src="https://s3-ap-southeast-1.amazonaws.com/1mgstaticfiles/image/email+campaign/savlon/Savlon+ASDL_50ml_Bottle.jpg")
+                img(class="",src="https://s3-ap-southeast-1.amazonaws.com/1mgstaticfiles/image/email+campaign/savlon/savlon-3.jpg")
+    .para
+        .separator-dark.separator-broad
+
+    include includes/regards
+
+

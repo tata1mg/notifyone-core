@@ -1,0 +1,19 @@
+.para
+    if order.payment_summary.cashback_availed or order.payment_summary.mode and order.payment_summary.mode|lower == "online"
+        .section-title
+            .row
+                .left-col
+                    .item Payment Received
+                .right-col
+                    .col {{order.payment_summary.payment_received}}
+        if order.payment_summary.mode|lower == "online"
+            .row
+                .left-col Online payment
+                .right-col
+                    .col Rs.{{order.payment_summary.online_collected}}
+        if order.payment_summary.cashback_availed
+            .row
+                .left-col Payment via 1mgCash
+                .right-col
+                    .col Rs.{{order.payment_summary.cashback_availed}}
+

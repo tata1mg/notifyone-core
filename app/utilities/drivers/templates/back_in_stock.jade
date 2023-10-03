@@ -1,0 +1,17 @@
+extends ./layouts/onemg.jade
+block content
+    .card
+        .card-content
+            b Dear {{name}},
+
+            .subtle We have a fresh stock of the following items waiting to be shipped to you. You are getting this mail as you requested us to notify you once these items were back in stock.
+                ol.list {% for sku in sku_data %}
+                    li{% set medUrl = sku.link -%}
+                        a(href="{{medUrl}}"){{sku.name}} ({{sku.manufacturer}})
+                    {% endfor %}
+
+                div Click the items to place an order. Kindly ignore the mail if you believe it was sent by mistake.
+
+                div We wish you good health!
+
+    include includes/regards

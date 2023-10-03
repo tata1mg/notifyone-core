@@ -1,0 +1,53 @@
+.pricing-table
+    .row
+        .left-col.subtle
+            .item Subtotal
+        .right-col
+            .item Rs.{{'%0.2f' % order.payment_summary.discounted_mrp|float}}
+    if order.payment_summary.coupon_discount
+        .row
+            .left-col.subtle
+                .item Coupon Discount<sup>*</sup>
+            .right-col
+                .item (-) Rs.{{'%0.2f' % (order.payment_summary.coupon_discount)}}
+    if order.payment_summary.shipping_charges >= 0
+        .row
+            .left-col.subtle
+                .item Shipping Charges
+            .right-col
+                .item (+) Rs.{{'%0.2f' % order.payment_summary.shipping_charges}}
+    if order.payment_summary.online_collected
+        .row
+            .left-col.subtle
+                .item Paid Online
+            .right-col
+                .item (-) Rs.{{'%0.2f' % (order.payment_summary.online_collected)}}
+    if order.payment_summary.cashback_availed
+        .row
+            .left-col.subtle
+                .item 1mgCash Used
+            .right-col
+                .item (-) Rs.{{'%0.2f' % (order.payment_summary.cashback_availed)}}
+
+    .row.total-payable.highlight
+        if order.original_status|lower == 'delivered' or order.original_status|lower == 'cancelled' or order.original_status|lower == 'request for return and refund' or order.original_status|lower == 'out for return and refund' or order.original_status|lower == 'returned and refunded'
+            div
+        else
+            if order.payment_summary.amount_payable >= 0
+                .left-col.subtle
+                    span To be Paid
+                .right-col
+                    .col Rs.{{'%0.2f' % order.payment_summary.amount_payable}}
+            else
+                .left-col.subtle To be Refunded
+                .right-col
+                    .col Rs.{{'%0.2f' % (order.payment_summary.amount_payable * -1)}}
+
+    if order.shipment_detail.shipping_label_url
+        .shipping-label-link
+            a(href="{{order.shipment_detail.shipping_label_url}}") Receipt for Shipping Charges
+
+    .subtler
+        sup *
+        span Value may change if the total order value changes
+

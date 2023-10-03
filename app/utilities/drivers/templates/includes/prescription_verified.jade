@@ -1,0 +1,32 @@
+{% set required = false %}
+for order_line in order.order_lines
+    {% if order_line.sku.prescription_verified == true %}
+    {% set required = true %}
+    {% endif %}
+{% if required == true %}
+.para.order_lines
+    .prescription-not-required
+        .row.prescription-text Item(s) Ready for Processing
+    .item-table
+        for order_line in order.order_lines
+            {% if order_line.sku.prescription_verified == true %}
+            {% set medUrl = "" %}
+            {% set sku_slug = order_line.sku.name|get_slug_from_name %}
+            {% set prescription_status = "" %}
+            {% set prescription_status = order_line.prescription_status_for_user %}
+            {% if order_line.sku.type == "otc_drug" %}
+            {% set medUrl = '{}/drugs/{}-{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+            {% elif order_line.sku.type == "allopathy" %}
+            {% set medUrl = '{}/drugs/{}-{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+            {% else %}
+            {% set medUrl = '{}/otc/{}-otc{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+            {% endif %}
+            .item-row
+                .item-left-col
+                    a.item(href="{{medUrl}}") {{order_line.sku.name}}
+                    .pack-info {{order_line.pack_unit_form}}
+                .item-right-col(style='width: 20%')
+                    .item Verified
+            .separator-light
+            {% endif %}
+{% endif %}

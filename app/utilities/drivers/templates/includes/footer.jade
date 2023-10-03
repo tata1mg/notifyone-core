@@ -1,0 +1,13 @@
+.strip.footer
+  {% if not (order and (order.tags and 'Lily Order' in order.tags)) %}  
+  div.txt-support.link-email 
+    a.txt-help(href="{{base_url or Hkp_url}}/help") Need Help?
+      span Click to contact us for queries
+  .social-links
+    a.social-link(href='https://www.facebook.com/1mgOfficial', target='_blank', title='Like us on Facebook',rel='nofollow',data-value='Facebook')
+      img(src='https://1mgstaticfiles.s3-ap-southeast-1.amazonaws.com/prod/communication/facebook.png')
+    a.social-link(href='https://twitter.com/1mgofficial',target='_blank',title='Follow us on Twitter', rel='nofollow', data-value='Twitter')
+      img(src='https://1mgstaticfiles.s3-ap-southeast-1.amazonaws.com/prod/communication/twitter.png')
+    a.social-link(href='https://www.linkedin.com/company/5230742', target='_blank', title='Visit us on LinkedIn', rel='nofollow', data-value='LinkedIn')
+      img(src='https://1mgstaticfiles.s3-ap-southeast-1.amazonaws.com/prod/communication/linkedin.png')
+  {% endif %}

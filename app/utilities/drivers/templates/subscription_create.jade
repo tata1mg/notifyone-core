@@ -1,0 +1,59 @@
+extends ./layouts/onemg.jade
+
+block content
+    .card
+        .card-content
+            if user_name
+                b Dear {{user_name}},
+            .subscription-heading
+                img.green-tick-icon(src='{{base_url}}/images/emails/green-tick.png' alt="")
+                span Subscription Active
+
+            .subscription-subheading Your 1mg subscription is now active. Receive medicines at your doorstep without lifting a finger and at great discounts!
+
+            .first-subscription
+                .date First subscription order date: {{order_date}}
+                .text Before your order is shipped, you will receive a confirmation message.
+
+            .subscription-offer
+                .heading Great Savings, Every Time!
+                .sub-heading 20% off on medicines + Earn 5% 1mgCash on total order value
+                .text Every order in your subscription will automatically get a 20% discount on allopathy medicines that require a prescription. You will also earn 5% 1mgCash on total order value. This 1mgCash will be auto-redeemed on every subsequent subscription order.
+            
+            .subscription-detail Subscription Details
+            .order-details Product Details
+
+            .subscription.item-table
+                for sku in skus
+                    .item-row.product-info
+                        .sku-name {{sku.name}}
+                        .sku-quantity Quantity: {{sku.quantity}}
+
+            .separator-line
+
+            .subscription-address
+                .address-title Delivery Details
+                .address-text
+                    div {{address.name}}
+                    div {{address.street1}}
+                    if address.street2
+                        div {{address.street2}}
+                    div {{address.city}}
+                    if address.state
+                        span {{address.state}} -&nbsp;
+                    span {{address.pincode}}
+                    p Phone: {{address.contact_number}}
+
+            .separator-line
+
+            .subscription-payment
+                .payment-title Payment Mode: Cash on Delivery (Default)
+                .payment-text We will send you a link to pay online every time an order is generated.
+
+            .separator-line
+
+            .subscription-delivery Delivery Schedule: {{frequency}} 
+
+    include includes/need_help     
+
+    include includes/regards

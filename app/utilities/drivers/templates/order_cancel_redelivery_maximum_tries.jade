@@ -1,0 +1,32 @@
+extends ./layouts/onemg.jade
+block content
+    {% if order.is_split_order %}
+    - var email_header_heading = 'Part Order Cancelled'
+    {% else %}
+    - var email_header_heading = 'Order Cancelled'
+    {% endif %}
+
+    - var email_header_subheading = 'Delivery Attempt(s) Failed'
+    - var email_header_status = 'error'
+    - var email_header_cta_type = 'track'
+    - var email_header_need_help = 'help'
+    .card
+        .card-content
+            b Hello {{order.user.properties.name}}
+            {% if order.is_split_order%}
+            .subtle Part of your group order {{order.group_id}} has been cancelled as we failed to deliver your order in spite of multiple attempts.
+            {% else %}
+            .subtle Your order has been cancelled as we failed to deliver your order in spite of multiple attempts.
+            {% endif %}
+        include includes/email_header_new
+    include includes/refund_due
+    if order.order_lines
+        .card
+            .card-content
+                include includes/order_lines.jade
+                .separator-light
+                include includes/cart_summary.jade
+    include includes/cashback_not_credited.jade
+    include includes/order_address.jade
+
+    include includes/regards

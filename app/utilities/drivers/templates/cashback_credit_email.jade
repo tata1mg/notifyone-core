@@ -1,0 +1,22 @@
+extends ./layouts/onemg.jade
+block content
+    .card
+        .card-content
+            b Dear {{name}},
+
+            .subtle Thank you for your order on&nbsp;
+              a(href="{{base_url}}") 1mg
+              |. We are happy to inform you that we have processed an amount of ₹
+              b &nbsp;{{amount}}&nbsp;
+              span as 1mgCash. This cashback amount will expire in
+              b &nbsp;{{date_of_expiry}}
+              |.
+            br
+            .subtle Updated balance of your 1mgCash account is ₹
+              b &nbsp;{{total_amount}}
+              |. You may use this amount for your next order with 1mg. Click&nbsp;
+              a(href="{{url}}") here
+              span &nbsp;for more details.
+
+
+    include includes/regards

@@ -1,0 +1,35 @@
+extends ./layouts/onemg.jade
+block content
+
+    - var email_header_heading = 'Order to be Returned'
+    - var email_header_subheading = 'Processing Return Request'
+    - var email_header_status = 'warning'
+    - var email_header_cta_type = 'track'
+    - var email_header_need_help = 'help'
+    .card
+        .card-content
+            b Hello {{order.user.properties.name}}
+            .subtle
+
+            {% if order.shipment_detail.delivery_partners_code and order.shipment_detail.delivery_partners_other_details and order.shipment_detail.delivery_partners_other_details.behaviour.type_communication == '1mg' %}
+
+            p Delivery Agent {{order.shipment_detail.fe_name}} (Phone : {{order.shipment_detail.fe_phone_number}}) is out to pick-up the following item(s) in your order {{order.order_id}}.
+            {% elif order.shipment_detail.delivery_partners_code and order.shipment_detail.delivery_partners_other_details and order.shipment_detail.delivery_partners_other_details.behaviour.type_communication == '3pl' %}
+            p Our courier partner&nbsp;
+                a(href=order.shipment_detail.tracking_url){{order.shipment_detail.delivery_partners_other_details.parent_name}}
+                |&nbsp;would reach out to you when they are out to pick-up your order.
+            {% else %}
+            p Our courier partner would reach out to you when they are out to pick-up your order.
+            {% endif %}
+        include includes/email_header_new
+
+    if order.order_lines
+        .card
+            .card-content
+                include includes/order_lines.jade
+                .separator-light
+                include includes/cart_summary.jade
+    include includes/refund_due
+    include ./includes/cashback_not_credited.jade
+    include includes/order_address.jade
+    include includes/regards

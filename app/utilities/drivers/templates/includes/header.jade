@@ -1,0 +1,26 @@
+.div-header
+  .div-main
+    {% if not (order and (order.tags and 'Lily Order' in order.tags)) %}
+    a.link-logo(href='{{base_url or Hkp_url}}')
+      img.email-logo(src='https://1mgstaticfiles.s3.ap-southeast-1.amazonaws.com/prod/communication/tata_1mg.png')
+    {% if not order or (order and (order.order_meta_source == '1mg' or order.order_meta_source == '' or order.order_meta_source == 'HDFC')) %}
+    a.m-bottom.m-top(href='{{base_url or Hkp_url}}')
+      img(src='https://1mgstaticfiles.s3-ap-southeast-1.amazonaws.com/prod/communication/pharmacy-1x.png')
+      span.txt-verticals Pharmacy
+    a.m-bottom.m-top(href='{{base_url or Hkp_url}}/labs?utm_source=labs&utm_medium=email&utm_campaign=crosssell')
+      img(src='https://1mgstaticfiles.s3-ap-southeast-1.amazonaws.com/prod/communication/lab-1x.png')
+      span.txt-verticals Lab Tests
+    a.m-bottom.m-top(href='{{base_url or Hkp_url}}/online-consultation')
+      img(src='https://1mgstaticfiles.s3-ap-southeast-1.amazonaws.com/prod/communication/econsult-1x.png')
+      span.txt-verticals eConsult
+    {% endif %}
+    {% endif %}
+  div.download-strip.header
+    {% if not (order and (order.tags and 'Lily Order' in order.tags)) %}
+    span.download-parent
+      span.download-icons.txt-app-download Download the App Now
+      a.download-icons(href="https://play.google.com/store/apps/details?id=com.aranoah.healthkart.plus")
+        img.download-img(src='https://1mgstaticfiles.s3-ap-southeast-1.amazonaws.com/prod/communication/android-1x.png' alt="android")
+      a.download-icons(href="https://itunes.apple.com/in/app/1mg/id554578419?mt=8")
+        img.download-img(src='https://1mgstaticfiles.s3-ap-southeast-1.amazonaws.com/prod/communication/ios-1x.png' alt="ios")
+    {% endif %}

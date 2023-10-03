@@ -1,0 +1,24 @@
+.order-lines
+  .card-strip-error Send Valid Prescription for:
+  .card-content
+    .item-table
+        for order_line in order.order_lines
+            {% if order_line.sku.prescription_verified != undefined and order_line.sku.prescription_verified == false %}
+            {% set medUrl = "" %}
+            {% set sku_slug = order_line.sku.name|get_slug_from_name %}
+            {% set prescription_status = "" %}
+            {% set prescription_status = order_line.prescription_status_for_user|strip_status %}
+            {% if order_line.sku.type == "otc_drug" %}
+            {% set medUrl = '{}/drugs/{}-{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+            {% elif order_line.sku.type == "allopathy" %}
+            {% set medUrl = '{}/drugs/{}-{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+            {% else %}
+            {% set medUrl = '{}/otc/{}-otc{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+            {% endif %}
+            .item-row
+                .item-left-col
+                    a.item(href="{{medUrl}}") {{order_line.sku.name}}
+                    .pack-info {{order_line.pack_unit_form}}
+                .item-right-col(style='width: 40%')
+                    .item {{prescription_status}}
+            {% endif %}

@@ -1,0 +1,20 @@
+.address-table
+    .section-title.darker.section-title-large
+                .row
+                    .left-col
+                            span Address
+    .row
+        .left-col.subtle
+            .item {{order.full_name}}
+    .row
+        .left-col.subtle
+            .item {{order.street}}
+    .row
+        .left-col.subtle
+            .item {{order.city}}
+    .row
+        .left-col.subtle
+            .item {{order.state}}-{{order.pin_code}}
+    .row
+        .left-col.subtle
+            .item Phone : {{order.mobile_number}}

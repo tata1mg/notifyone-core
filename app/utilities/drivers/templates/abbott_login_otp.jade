@@ -1,0 +1,29 @@
+html
+  head
+    meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title One time password
+    include ./includes/styles.css
+  body
+    .container
+      .sub-container
+        .div-header
+          .div-main
+            a.link-logo(href='{{base_url or Hkp_url}}')
+              img.email-logo(src='https://1mgstaticfiles.s3-ap-southeast-1.amazonaws.com/prod/communication/1mg-1x.png')
+        block banner
+        .content
+            block content
+              .card
+                .card-content
+                  b Hello,
+                  .subtle
+                    p We have received a request for login. Your One Time Password (OTP) is&nbsp;
+                      b {{token}}
+                      | &nbsp;which is valid for 15 minutes.
+                    p If you face any issue, write to us at
+                      |<span> </span>
+                      a(href="mailto:care@1mg.com")
+                          span.special-text care@1mg.com
+                      | .
+              include includes/regards

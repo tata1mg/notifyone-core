@@ -1,0 +1,45 @@
+extends ./layouts/onemg.jade
+
+block content
+    if complete_group_in_stock
+        - var email_header_heading = 'Arranging Products'
+    else
+        - var email_header_heading = 'Order Verified'
+    - var email_header_subheading = 'Under processing'
+    - var email_header_status = 'warning'
+    - var email_header_cta_type = 'track'
+    - var email_header_need_help = 'help'
+    if complete_group_in_stock
+        - var email_header_eta_to = 'N/A'
+    else
+        if group_eta_to
+            - var email_header_eta_to = group_eta_to|format_eta_timestamp
+        if group_eta_from
+            - var email_header_eta_from = group_eta_from|format_eta_timestamp
+    .card
+        .card-content
+            b Hello {{order.user.properties.name}}
+            if complete_group_in_stock
+                .subtle Some of the products in the order {{order.group_id}} just went out of stock with our pharmacy partner. We are committed to your complete satisfaction and will send an update as soon as we are able to confirm availability. Usually, it takes us under a day to confirm.
+            else
+                {% set order_eta_to = order.eta.eta_to|format_eta_timestamp %}
+
+                .subtle Your order is being processed by our pharmacy partner {{order.shipment_detail.vendor.name}} and will be delivered
+                    if email_header_eta_from and email_header_eta_from != email_header_eta_to
+                        span &nbsp;between {{email_header_eta_from}} to {{email_header_eta_to}}.
+                    else
+                        span &nbsp;by {{email_header_eta_to}}.
+            include includes/cod_to_online
+        include includes/email_header_new
+
+    if order.order_lines
+        .card
+            .card-content
+                include includes/order_lines.jade
+                .separator-light
+                include includes/cart_summary.jade
+    include includes/cashback_eligible.jade
+    include includes/order_address.jade
+
+    include includes/regards
+    include includes/cancellation

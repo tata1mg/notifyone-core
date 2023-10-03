@@ -1,0 +1,39 @@
+extends ./layouts/onemg.jade
+block content
+
+    {% if order.is_split_order %}
+    - var email_header_heading = 'Part Order Cancelled'
+    {% else %}
+    - var email_header_heading = 'Order Cancelled'
+    {% endif %}
+
+    - var email_header_subheading = 'As per Your Request'
+    - var email_header_status = 'error'
+    - var email_header_need_help = 'help'
+    .card
+        .card-content
+            b Hello {{order.user.properties.name}}
+            {% if order.is_split_order%}
+            .subtle Part of your group order {{order.group_id}}
+                | <span> </span>has been cancelled
+                |<span> </span>as per your request.
+            {% else %}
+            .subtle Your order
+                | <span> </span>has been cancelled
+                |<span> </span>as per your request.
+            {% endif %}
+        include includes/email_header_new
+
+    if order.order_lines
+        .card
+            .card-content
+                include includes/order_lines.jade
+                .separator-light
+                include includes/cart_summary.jade
+    include includes/refund_due
+
+    include includes/cashback_not_credited
+    include includes/order_address.jade
+
+    include includes/regards
+

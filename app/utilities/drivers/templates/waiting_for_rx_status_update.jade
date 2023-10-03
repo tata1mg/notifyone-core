@@ -1,0 +1,59 @@
+extends ./layouts/onemg.jade
+
+block content
+    - var email_header_heading = 'Order Stuck'
+    - var email_header_status = 'error'
+    - var email_header_cta_type = 'upload'
+    - var email_header_eta_to = 'N/A'
+    - var email_header_need_help = 'help'
+    - var email_header_subheading = 'Share Valid Prescription'
+    if order.rejection_subheading
+        - var email_header_subheading = order.rejection_subheading
+
+    .card
+        .card-content.subtle
+            b Hello {{order.user.properties.name}}
+            if order.rejection_heading
+                div {{order.rejection_heading}}
+            else
+                div Your order will be processed after you share a valid prescription. Please send it as soon as possible.
+        include includes/email_header_new
+
+    .card
+        include ./includes/prescription_required.jade
+        include ./includes/prescription_verified.jade
+        .separator-light
+        .card-sub-content
+            .subtle You can also e-mail the prescription to
+                |<span> </span>
+                a(href="mailto:order@mail.1mg.com?subject={{order.order_id}}") order@mail.1mg.com
+                | . Please send it from
+                |<span> </span>
+                b {{order.email}}
+                |<span> </span>with your order ID
+                |<span> </span>
+                b {{order.order_id}}
+                |<span> </span>in the e-mail's subject line.
+    include includes/sample_prescription
+
+    if order.order_lines
+        .card
+            .card-content
+                include includes/order_lines.jade
+                include includes/cart_summary.jade
+
+    if order.payment_summary.cashback_earned
+        include includes/cashback_eligible.jade
+
+
+    include includes/order_address.jade
+
+    include includes/regards
+    include includes/cancellation
+    //- div.did-you-know
+    //-     .head Did you know ?
+    //-     .rx-left-col
+    //-         .para Customers who upload a valid prescription within 1 hour of placing an order, receive their medicines 3 times faster!
+    //-     .rx-right-col
+    //-         img(src="{{Hkp_url}}/images/emails/delivery_truck.png")
+

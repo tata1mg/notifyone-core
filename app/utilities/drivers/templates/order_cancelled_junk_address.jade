@@ -1,0 +1,26 @@
+extends ./layouts/onemg.jade
+block content
+    p.title Hello {{order.user.properties.name}}
+    .para We're sorry that we could not process your order
+      | <span> </span>
+      b {{order.order_id}}
+      | because we don’t deliver to your address.
+
+    if order.payment_summary.total_refund_due
+        include includes/refund_due
+
+    .para For any queries, please call us at
+      |<span> </span>
+      span.highlight  0124-4166666
+      | .
+    div.order-text Items Cancelled
+    include ./includes/order_lines.jade
+    include ./includes/cart_summary.jade
+    include ./includes/cart_total.jade
+    include ./includes/terms_conditions.jade
+
+    .para We wish you good health!
+
+    div.regards
+        div Regards,
+        div Team 1mg

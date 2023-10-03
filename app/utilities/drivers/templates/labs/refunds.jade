@@ -1,0 +1,26 @@
+extends ././layouts/onemg_labs.jade
+
+block content
+    - var email_header_status = 'warning'
+    .card
+        .card-content
+            b Hello {{order.full_name}}
+            if stage|lower == "refund update"
+                - var email_header_heading =  stage
+                - var email_header_subheading = 'Refund '+ order.refund_status
+                .subtle Your refund of Rs.{{order.payable_price}} with respect to Order id: {{order.appointment_id}} {{order.order_id}} has been {{order.refund_status}} and will be credited to your account within the next 5 to 7 days. Please get back to us in case of any issue.
+            if stage|lower == "onemg cashback refund"
+                .subtle  Thank you for your order on Tata 1mgLabs. We have processed a refund of ₹ {{order.refund_cashback}} as 1mgCash. This cashback amount will expire in 90 days.
+            if stage|lower == "onemg cashback reward"
+                .subtle  Thank you for your order on Tata 1mgLabs. We are happy to inform you that we have processed an amount of ₹ {{order.refund_cashback}} as 1mgCash. This cashback amount will expire in 90 days.
+        include includes/email_header_new
+
+
+    if stage|lower == 'onemg cashback refund' or stage|lower == 'onemg cashback reward'
+        .card
+            .card-content
+                .subtle Updated balance of your 1mgCash account is ₹ {{order.total_cashback}} You may use this amount for your next order with Tata 1mg. Click
+                    a(href="https://www.1mg.com/1mgcash/dashboard")here
+                    |&nbsp;for more details.
+
+    include labs/regards.jade

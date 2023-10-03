@@ -1,0 +1,548 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Order Cancelled</title>
+</head>
+
+<body yahoo
+      style="width: 100%; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; background-color: #FFFFFF;">
+<table width="100%" bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0"
+       style="table-layout: fixed; overflow: hidden;">
+    <tr style="width: 100%;">
+        <td>
+            <!-- [if (gte mso 9)|(IE)]>
+            <table width="600" align="center" cellpadding="0" cellspacing="0" border="0"
+                   style="table-layout: fixed; overflow: hidden;">
+                <tr style="width: 100%;">
+                    <td>
+            <![endif]-->
+            <table class="content" align="center" cellpadding="0" cellspacing="0" border="0"
+                   style="background-color: #ffffff;width: 100%; max-width: 600px; table-layout: fixed; overflow: hidden;">
+                <tr style="width: 100%;">
+                    <td>
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="width: 100%;height: 20px;background-color: #2DBCB5;">
+                                    <table width="100%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto" style="padding: 0px;">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="border-bottom: 1px solid #221f1f; padding: 0 15px;">
+                                    <table width="55%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto" style="padding: 13px 0;">
+                                                <a href="{{Hkp_url}}">
+                                                    <img src="{{Hkp_url}}/images/logo-1mg.png" width="100" height="auto"
+                                                         border="0" alt=""/>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!--[if mso]>
+                                    </td></td>
+                                    <![endif]-->
+                                    <!--[if (gte mso 9)|(IE)]>
+                                    <table width="190" align="right" cellpadding="0" cellspacing="0" border="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td>
+                                    <![endif]-->
+                                    <table width="42%" align="right" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto" style="vertical-align: bottom; padding-bottom: 10px;">
+                                                <table align="right" width="auto" border="0" cellspacing="0"
+                                                       cellpadding="0"
+                                                       style="background-color: #ffffff; border: 1px solid #2DBCB5; border-radius: 5px; margin: 45px 0; table-layout: fixed; overflow: hidden;">
+                                                    <tr style="width: 100%;">
+                                                        <td height="auto" width="auto"
+                                                            style="padding: 5px;font-size: 12px; font-weight: bold;">
+                                                            <a href="{{Hkp_app_url}}"
+                                                               style="color: #111111; text-decoration: none;">DOWNLOAD
+                                                                APP</a>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!--[if (gte mso 9)|(IE)]>
+                                    </td>
+                                    </tr>
+                                    </table>
+                                    <![endif]-->
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="color: #153643; font-size: 16px; line-height: 22px; padding: 0 15px;">
+                                    <p style="color: #2DBCB5; font-size: 28px; text-transform: capitalize;">Your order
+                                        has been cancelled</p>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="color: #6d7071; font-size: 16px; line-height: 22px; padding: 0 15px;">
+                                    <table width="100%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto" style="padding: 0px;">
+                                                <p style="color: #153643; font-size: 16px; margin: 0px">Hello
+                                                    {{order.user.properties.name}}</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="color: #6d7071; font-size: 16px; line-height: 22px; padding: 0 15px;">
+                                    <table width="100%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto" style="padding: 0px;">
+                                                {% if cancel_reason == "Dummy order" %}
+                                                <p style="display: table; margin-bottom: 0px">We're sorry that we are unable to process your
+                                                    order <span
+                                                            style="color: #153643;">{{order.order_id}}. </span></p>
+                                                {% elif cancel_reason == "Customer cancelled - price mismatch" %}
+                                                <p style="display: table; margin-bottom: 0px">We're sorry that we could not process your order <span
+                                                        style="color: #153643;">{{order.order_id}}</span>
+                                                    because <span style="color: #153643;"> the final price was different from the one listed while ordering.</span>
+                                                </p>
+                                                {% elif cancel_reason == "Out of stock" %}
+                                                <p style="display: table; margin-bottom: 0px"> We are sorry to inform that our partner pharmacies have currently run out of stock on the following items from your order <span style="color: #153643;">{{order.order_id}}</span>.
+                                                    We are working hard in making them available once again.</p>
+                                                {% elif cancel_reason == "Order auto cancel due to Junk Rx" %}
+                                                <p style="display: table; margin-bottom: 0px">This is to inform you that we've cancelled your
+                                                    order <span
+                                                            style="color: #153643;">{{order.order_id}}</span> as the picture you
+                                                    uploaded does not look like a prescription.</p>
+                                                {% elif cancel_reason == "Rx invalid" %}
+                                                <p style="display: table; margin-bottom: 0px">We're sorry that we could not process your order <span
+                                                        style="color: #153643;">{{order.order_id}}</span>
+                                                    because <span style="color: #153643;">the prescription we’ve received doesn't look valid. We request you to try again.</span>
+                                                </p>
+                                                {% elif cancel_reason == "Junk address" %}
+                                                <p style="display: table; margin-bottom: 0px">We're sorry that we could not process your order <span
+                                                        style="color: #153643;">{{order.order_id}}</span>
+                                                    because <span style="color: #153643;"> we don’t deliver medicines to your address.</span>
+                                                </p>
+                                                {% elif cancel_reason == "PHONE" or order.cancel_reason == "SMS" or order.cancel_reason == "EMAIL" %}
+                                                <p style="display: table; margin-bottom: 0px">We would like to inform you that we have processed the
+                                                    cancellation request for
+                                                    <span style="color: #153643;">{{order.order_id}}</span>.</p>
+                                                {% else %}
+                                                <p style="display: table; margin-bottom: 0px">We're sorry that we could not process your order <span
+                                                        style="color: #153643;">{{order.order_id}}. </span>
+                                                    If this is a mistake please contact our customer care executive.</p>
+                                                {% endif %}
+                                                {% if payment_method and payment_method|lower == 'online' and amount_paid and amount_paid > 0 %}
+                                                <p style="display: table;">
+                                                    We will also be refunding Rs {{'%0.2f' % amount_paid}} within 24
+                                                    hours to your Paytm wallet.
+                                                </p>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="color: #153643; font-size: 16px; line-height: 22px;border-bottom: 1px solid #cccccc; padding: 0 15px;">
+                                    <table width="100%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto" style="padding: 0px;">
+                                                <p style="color: #999999; font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 0;">
+                                                    Order Details:</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="color: #153643; font-size: 16px; line-height: 22px; padding: 0 15px;">
+                                    <table width="100%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto" style="padding: 0px;">
+                                                <p style="color: #6d7071; font-size: 16px; margin-bottom: 0px">Order
+                                                    Number: <span
+                                                            style="color: #153643;">{{order.order_id}}</span>
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="color: #153643; font-size: 16px; line-height: 22px; padding: 0 15px;">
+                                    <table width="100%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto" style="padding: 0px;">
+                                                <p style="color: #6d7071; font-size: 16px; margin-top: 0px">
+                                                    <span
+                                                            style="color: #6d7071 !important;">Placed on: </span> <span
+                                                        style="color: #153643;">{{order_date}}</span></p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="color: #153643; font-size: 16px; line-height: 22px;border-bottom: 1px solid #cccccc; padding: 0 15px;">
+                                    <table width="100%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto" style="padding: 0px;">
+                                                <p style="color: #999999; font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 0;">
+                                                    Medicines Cancelled:</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        {% for line in order.order_lines %}
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="color: #153643; font-size: 16px; line-height: 22px; padding: 0 15px;">
+                                    <table width="55%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto">
+                                                <p>
+                                                    {% set medUrl = "" -%}
+                                                    {% if line.sku.type == "otc_drug" %}
+                                                        {% set medUrl = (Hkp_url + "/drugs/drug-" + line.order_line_id) -%}
+                                                    {% elif line.sku.type == "allopathy" %}
+                                                        {% set medUrl = (Hkp_url + "/drugs/drug-" + line.order_line_id) -%}
+                                                    {% else %}
+                                                        {% set medUrl = (Hkp_url + "/otc/otc-otc" + line.order_line_id) -%}
+                                                    {% endif %}
+                                                    <a style="color:#153643 !important" target="_blank" href="{{ medUrl }}">
+                                                    <span
+                                                        style="color:#153643 !important">
+                                                        {{line.sku.name}}
+                                                    </span></a>
+                                                    <br/>
+                                                    <span
+                                                        style="font-size: 14px; color: #999;">
+                                                          {{line.pack_unit_form}}
+                                                    </span>
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!--[if mso]>
+                                    </td></td>
+                                    <![endif]-->
+                                    <!--[if (gte mso 9)|(IE)]>
+                                    <table width="190" align="right" cellpadding="0" cellspacing="0" border="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td>
+                                    <![endif]-->
+                                    <table width="42%" align="right" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto">
+                                                <table align="right" width="auto" border="0" cellspacing="0"
+                                                       cellpadding="0"
+                                                       style="background-color: #ffffff; table-layout: fixed; overflow: hidden;">
+                                                    <tr style="width: 100%;">
+                                                        <td height="auto" width="auto"
+                                                            style="padding: 5px;font-size: 16px;">
+                                                            <p style="margin-top: 10px"><span
+                                                                    style="color:#153643 !important">Rs. {{'%0.2f' % (line.quantity * line.unit_offered_price)}}</span><br/>
+                                                                {% if (line.offer.discount_value) and
+                                                                (line.offer.discount_value|float) > 0.0 %}
+                                                                <del><span style="color:#153643 !important">Rs. {{'%0.2f' % (line.quantity * line.unit_current_mrp)}}</span>
+                                                                </del>
+                                                                <br/>
+                                                                <span style="font-size: 14px; color: #589D07;">({{'%0.0f' % (((line.unit_current_mrp - line.unit_offered_price)/line.unit_current_mrp) * 100)}}% off)</span>
+                                                                {% endif %}
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!--[if (gte mso 9)|(IE)]>
+                                    </td>
+                                    </tr>
+                                    </table>
+                                    <![endif]-->
+                                </td>
+                            </tr>
+                        </table>
+                        {% endfor %}
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="color: #153643; font-size: 16px; line-height: 22px; border-top: 2px solid #cccccc; padding: 0 15px; padding-top: 20px;">
+                                    <table width="55%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto">
+                                                <table width="100%" align="left" border="0" cellpadding="0"
+                                                       cellspacing="0"
+                                                       style="table-layout: fixed; overflow: hidden;">
+                                                    <tr style="width: 100%;">
+                                                        <td height="auto" style="padding: 0px;">
+                                                            <p style="text-transform: uppercase;">Subtotal</p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!--[if mso]>
+                                    </td></td>
+                                    <![endif]-->
+                                    <!--[if (gte mso 9)|(IE)]>
+                                    <table width="190" align="right" cellpadding="0" cellspacing="0" border="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td>
+                                    <![endif]-->
+                                    <table width="42%" align="right" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto">
+                                                <table align="right" width="auto" border="0" cellspacing="0"
+                                                       cellpadding="0"
+                                                       style="background-color: #ffffff; table-layout: fixed; overflow: hidden;">
+                                                    <tr style="width: 100%;">
+                                                        <td height="auto" width="auto"
+                                                            style="padding: 5px;font-size: 16px;">
+                                                            <input id="orderAmtBeforeCash" type="hidden"
+                                                                   value="{{order.total_discounted_price}}"/>
+
+                                                            <p style="margin-top: 10px">Rs. <span
+                                                                    id="orderAmtBeforeCashText">{{'%0.2f' % (order.offered_price)}}</span>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!--[if (gte mso 9)|(IE)]>
+                                    </td>
+                                    </tr>
+                                    </table>
+                                    <![endif]-->
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="table-layout: fixed; overflow: hidden;width:100%;padding: 0 15px;font-size:16px">
+                            <tr>
+                                <td style="width:50%">
+                                    SHIPPING CHARGES
+                                </td>
+                                <td style="width:50%;text-align:right;padding:5px">
+                                    Rs. {{'%0.2f' % (shipping_charges)}}
+                                </td>
+                            </tr>
+                        </table>
+                        {% if order.offer_discount > 0.0 %}
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="color: #589D07; font-size: 16px; line-height: 22px; padding: 0 15px;">
+                                    <table width="55%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto">
+                                                <p style="text-transform: uppercase;">Cash Discount</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!--[if mso]>
+                                    </td></td>
+                                    <![endif]-->
+                                    <!--[if (gte mso 9)|(IE)]>
+                                    <table width="190" align="right" cellpadding="0" cellspacing="0" border="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td>
+                                    <![endif]-->
+                                    <table width="42%" align="right" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto">
+                                                <table align="right" width="auto" border="0" cellspacing="0"
+                                                       cellpadding="0"
+                                                       style="background-color: #ffffff; table-layout: fixed; overflow: hidden;">
+                                                    <tr style="width: 100%;">
+                                                        <td height="auto" width="auto"
+                                                            style="padding: 5px;font-size: 16px;">
+                                                            <p style="margin-top: 10px">-Rs. {{'%0.2f' %
+                                                                (order.offer_discount)}}</p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!--[if (gte mso 9)|(IE)]>
+                                    </td>
+                                    </tr>
+                                    </table>
+                                    <![endif]-->
+                                </td>
+                            </tr>
+                        </table>
+                        {% endif %}
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="color: #153643; font-size: 16px; line-height: 22px; background-color: #cccccc; padding: 0 15px;">
+                                    <table width="55%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="margin-top: 6px; font-weight: bold; table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto">
+                                                <p style="text-transform: uppercase;">Total</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!--[if mso]>
+                                    </td></td>
+                                    <![endif]-->
+                                    <!--[if (gte mso 9)|(IE)]>
+                                    <table width="190" align="right" cellpadding="0" cellspacing="0" border="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td>
+                                    <![endif]-->
+                                    <table width="42%" align="right" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto">
+                                                <table align="right" width="auto" border="0" cellspacing="0"
+                                                       cellpadding="0"
+                                                       style="table-layout: fixed; overflow: hidden;">
+                                                    <tr style="width: 100%;">
+                                                        <td height="auto" width="auto"
+                                                            style="padding: 5px;font-size: 16px; font-weight: bold;">
+                                                            <p>Rs. {{'%0.2f' % (order.offered_price + shipping_charges - order.offer_discount)}}</p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!--[if (gte mso 9)|(IE)]>
+                                    </td>
+                                    </tr>
+                                    </table>
+                                    <![endif]-->
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="color: #999; font-size: 16px; line-height: 22px; border-top: 1px solid #cccccc; padding: 0 15px;">
+                                    <table width="100%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto" style="padding: 0px;">
+                                                <p style="margin: 50px 0;">Regards,<br/>1mg Team</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="font-size: 11px; color: #666666; border-top: 1px solid gray;">
+                                    <table width="100%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto" style="padding: 0px;">
+                                                <center>
+                                                    <p class="footer-links"
+                                                       style="text-align:center; font-size: 12px; color: #999999;"><a
+                                                            href="tel:0124-4166666"
+                                                            style="text-decoration: none; color: #999999;">0124-4166666</a>
+                                                        | <a href="mailto:care@1mg.com"
+                                                             style="text-decoration: none; color: #999999;">care@1mg.com</a><a
+                                                                href="https://www.facebook.com/1mgOfficial"
+                                                                style="vertical-align: sub; margin-left: 10px;text-decoration: none;"><img
+                                                                src="{{Hkp_url}}/images/facebook.png" height="auto"></a><a
+                                                                href="https://twitter.com/1mgofficial"
+                                                                style="vertical-align: sub; margin-left: 10px;text-decoration: none;"><img
+                                                                src="{{Hkp_url}}/images/twitter.png" height="auto"></a>
+                                                    </p>
+                                                </center>
+                                                {% if is_labs_present %}
+                                                <a href="https://www.1mglabs.com/?utm_source=emailer&utm_medium=transactional&utm_campaign=Footer">
+                                                    <img style="width: 100%;"
+                                                         src="{{Hkp_url}}/images/labs.jpg"
+                                                         height="auto"> </a>
+                                                {% else %}
+                                                <a href="http://ad.apsalar.com/api/v1/ad?re=1&st=315847851153&h=76d2271c27966c6535ae0a9f678c9a9162347181">
+                                                    <img style="width: 100%;"
+                                                         src="{{Hkp_url}}/images/online-consultation.jpg"
+                                                         height="auto"> </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="table-layout: fixed; overflow: hidden;">
+                            <tr style="width: 100%;">
+                                <td style="width: 100%;height: 10px;background-color: #2DBCB5;">
+                                    <table width="100%" align="left" border="0" cellpadding="0" cellspacing="0"
+                                           style="table-layout: fixed; overflow: hidden;">
+                                        <tr style="width: 100%;">
+                                            <td height="auto" style="padding: 0px;">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </td>
+    </tr>
+</table>
+<script type="text/javascript">
+    document.getElementById("orderAmtBeforeCashText").textContent = parseFloat(document.getElementById("orderAmtBeforeCash").value).toFixed(2);
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+if order.payment_summary.cashback_earned
+    .card
+        .card-content.subtle
+            .section-title
+                .row
+                    .left-col 1mgCash
+                        sup *
+            span Eligible 1mgCash of Rs. {{'%0.2f' % order.payment_summary.cashback_earned}} will not be credited because
+            | <span> </span>
+            {% if order.original_status|lower == "cancelled" %}
+            | the order has been cancelled.
+            {% elif order.original_status|lower == "out for return and refund" or order.original_status|lower == "request for return and refund" %}
+            | a return request has been initiated for this order.
+            {% elif order.original_status|lower == "returned and refunded" %}
+            | the order has been returned.
+            {% else %}
+            | the order has been cancelled.
+            {% endif %}

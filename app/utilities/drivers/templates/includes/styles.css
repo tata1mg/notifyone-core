@@ -1,0 +1,987 @@
+<style>
+.success {
+  color: #1aab2a;
+}
+.warning {
+  color: #8a2422;
+  font-weight: bold;
+}
+.error {
+  color: #ef4747;
+}
+.container {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.6em;
+  padding: 0;
+  position: relative;
+  background: #f8f8f8;
+  color: #303030;
+}
+.sub-container {
+  max-width: 500px;
+  margin: 0 auto;
+
+}
+.content {
+  padding: 0;
+}
+a, a:visited, a:clicked {
+  text-decoration: none;
+}
+.list {
+  padding-left: 20px;
+}
+.card {
+  background: white;
+  box-shadow: 0 1px 2px 0 #d3d3d3;
+  border-radius: 3px;
+  margin-bottom: 16px;
+  font-size: 12px;
+}
+.card .card-content{
+  padding: 12px;
+}
+.card-sub-content {
+padding: 0 12px 5px;
+}
+.card .card-footnote {
+  background-color: #f8f8f8;
+}
+.card .card-strip,
+.card .card-strip-success,
+.card .card-strip-warning,
+.card .card-strip-error {
+  background: #f2f2f2;
+  padding: 8px 12px;
+}
+.card .card-strip-success {
+  background-color: #e4f8e9;
+  color: #0bb838;
+  font-weight: bold;
+}
+
+.card .card-strip-warning {
+  background-color: #ffebeb;
+  color: #f7b632;
+  font-weight: bold;
+}
+
+.card .card-strip-error {
+  background-color: #ffebeb;
+  color: #ff2135;
+  font-weight: bold;
+}
+
+.product-info {
+  font-size: 12px;
+}
+.para {
+  margin: 12px 8px 12px;
+}
+.para.order-lines {
+  padding-bottom: 0;
+}
+
+.email-header {
+  color: #212121;
+}
+
+.email-header .email-header-heading {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+
+.email-header .email-header-subheading {
+  font-size: 12px;
+}
+
+.email-header .email-header-cta {
+  text-align: center;
+  margin: 8px 0;
+}
+
+.email-header .email-header-eta {
+  color: #1aab2a;
+  font-size: 12px;
+}
+
+.email-header .email-header-eta-na {
+  color: #959595;
+  font-size: 12px;
+}
+
+.email-header .email-header-eta-value {
+  font-weight: bold;
+  text-align: right;
+}
+
+.email-header-title {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+.email-header-text {
+  line-height: 1.3em;
+}
+
+
+.separator {
+  color: #0BC5D8;
+  display: inline-block;
+  padding:0 5px;
+}
+.separator-light {
+  border: 0;
+  margin:10px 0;
+  border-top: 1px solid #dcdcdc;
+}
+.separator-dark {
+  border-top: 1px solid #dcdcdc;
+}
+.separator-broad {
+  border-top-width: 5px;
+  border: 0;
+}
+.separator-line {
+  border: 0;
+  margin:15px 0;
+  border-top: 1px solid #e3e0e0;
+}
+.strip {
+  background-color: #fffcf8;
+}
+.download-strip {
+  background-color: #FFFFFF;
+  text-align: center;
+}
+.strip.header,
+.download-strip.header{
+  border-top: 1px solid #9e9e9e;
+  border-bottom: 1px solid #9e9e9e;
+  padding: 10px 10px 10px;
+  /*height: 50px;*/
+}
+
+.div-header {
+  /*max-height: 92px;*/
+}
+
+.download-img {
+  margin-left: 8px;
+}
+
+.strip.header .logo {
+  display: inline-block;
+  vertical-align: middle;
+  padding-right:20px;
+  float: left;
+}
+
+.div-main {
+   background-color: #FFFFFF;
+   /*padding: 12px 0;*/
+}
+
+.div-main a{
+  width: 24%;
+  display: inline-block;
+  text-align: center;
+  /*padding: 30px 0;*/
+}
+.m-top{
+  margin-top: 8px;
+}
+.m-bottom {
+  margin-bottom: 3px;
+}
+
+.link-logo {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.div-main a img {
+  display: block;
+  margin: 0 auto;
+}
+
+.div-main a span {
+  display: block;
+  margin-top: 4px;
+}
+
+.strip.header .logo img{
+  height: 50px;
+}
+.strip.header .download-app {
+  display: block;
+  text-align: right;
+}
+.strip.header .download-app a {
+  color: #dcdcdc;
+  margin-top: 14px;
+}
+
+.pack-info {
+  color: #757575;
+  font-size: 12px;
+  line-height: 1em;
+}
+
+
+.button {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+.download-icons {
+  display: inline-block;
+  position: relative;
+}
+.button.button-large{
+  padding: 10px 20px;
+  width: 100%;
+  box-sizing: border-box;
+
+}
+.button.button-primary {
+  background: #ff6f61;
+  color: white;
+}
+.button.button-refill {
+  background: #ffb601;
+  color: black;
+  font-weight: bold;
+  border: none;
+}
+.refill-para {
+  text-align: center;
+}
+
+.strip.footer {
+  padding: 20px 15px;
+  color:  #dcdcdc;
+  font-size: 12px;
+  text-align: center;
+}
+
+.social-links {
+  text-align: center;
+}
+.social-links .social-link {
+  padding: 8px;
+  padding-top: 20px;
+  display: inline-block
+}
+
+.social-links .social-link img {
+  height: 40px;
+}
+
+.link-email span,
+.link-email a {
+  margin-right: 4px;
+}
+
+.link-email span {
+  color: #000;
+}
+
+.footer-links {
+  padding-top: 15px;
+  text-align: center;
+}
+.footer-links .content-holder {
+  display: inline-block;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+.div-main a span.txt-verticals{
+  display: inline;
+}
+.txt-verticals {
+  color: #000;
+  font-size: 12px;
+}
+.footer-disclaimer {
+  background: #f8f8f8;
+  color: #818181;
+  padding: 20px 15px;
+  font-size: 10px;
+  line-height: 1.4em;
+}
+.special-text, a {
+  color: #ff6f61;
+}
+.txt-support {
+  color: #ffffff;
+}
+.txt-foot-title {
+  font-size: 14px;
+}
+.title {
+  font-weight: bold;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+ .regards {
+}
+.highlight {
+  font-weight: bold;
+}
+.order-text, .section-title {
+  font-size: 12px;
+  color: #000;
+  font-weight: bold;
+}
+
+.section-title-large {
+  font-size: 14px;
+}
+.item-row {
+  display: table;
+  width: 100%;
+}
+.item-table .separator-light {
+  display: table;
+  width: 97%;
+  overflow: hidden;
+  margin: 0 auto;
+}
+.total-span {
+  background: #08657d;
+  font-weight: bold;
+  font-size: 18px;
+  color: #FFF;
+  padding: 20px;
+}
+.item-left-col {
+  display: table-cell;
+  vertical-align: top;
+  padding: 4px 0 4px 0;
+}
+.item-right-col {
+  display: table-cell;
+  vertical-align: top;
+  padding: 4px 0 4px 0;
+}
+.item-right-col .item {
+  float: right;
+}
+.pricing-table {
+  font-size: 12px;
+}
+.row {
+  display: table;
+  width: 100%;
+}
+.left-col {
+  float: left;
+  width: 50%;
+}
+.right-col {
+  float: right;
+  width: 50%;
+}
+.col{
+  float: right;
+}
+.right-col .item {
+  float: right;
+}
+.reset-link {
+  word-wrap: break-word;
+}
+.did-you-know {
+  background-color: rgb(4, 36, 48);
+  width: 100%;
+  display: inline-table;
+}
+.did-you-know .head {
+  padding-top: 20px;
+  padding-left: 20px;
+  color: #00cadd;
+  font-size: larger;
+  font-weight: bold;
+}
+.did-you-know .para {
+  color: white;
+}
+.valid-rx{
+  background-color: rgb(4, 36, 48);
+  color: #00cadd;
+  align-content: stretch;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.valid-rx h2{
+  text-align: center;
+}
+.valid-rx-img img{
+  max-width: 100%;
+}
+.rx-left-col {
+  width: 80%;
+  float: left;
+  display: inline-block;
+}
+.rx-right-col {
+  vertical-align: bottom;
+  display: table-cell;
+  padding-right: 20px;
+  padding-bottom: 20px;
+
+}
+.rx-right-col img{
+  max-width: 100%;
+  vertical-align: bottom;
+}
+.feedback{
+  margin-left: 20px;
+  margin-right: 20px;
+}
+.least-score {
+  float: left;
+
+}
+.max-score {
+  float: right;
+
+}
+.scores{
+  padding-top: 8px;
+  display: inline-block;
+  text-align: center;
+  width: 100%
+}
+.scores .input-wrap {
+  display: inline-block;
+  width: 7%;
+}
+
+.scores span {
+  display: block;
+  text-align: center;
+}
+
+.red{
+  color: #F07672;
+}
+
+.banner-container {
+  padding: 20px 15px;
+  text-align: center;
+  background-color: rgba(11, 196, 216, 0.65);
+}
+.banner-text {
+  font-size: 36px;
+  line-height: 1;
+  text-align: center;
+  color: #ffffff;
+  padding: 0 0 20px 0;
+}
+
+.save-text {
+  font-size: 28px;
+  text-align: center;
+  color: #ffffff;
+  padding-bottom: 10px;
+}
+
+.coupon-container {
+  background-image: url({{base_url or Hkp_url}}/images/emails/couponContainer.png);
+    display: flex;
+    height: 45px;
+    width: 224px;
+    margin: auto;
+}
+
+.coupon-text {
+  color: #054356;
+    font-size: 14px;
+    font-weight: bold;
+    margin: auto;
+    padding-top: 0.6em;
+    padding-left: 1em;
+}
+
+.capsules-container{
+  padding: 20px;
+}
+.capsules {
+  width: 200px;
+  height: 48px;
+}
+.cashback-disclaimer {
+  font-size: 12px;
+}
+.terms_conditions{
+  display: table;
+  width: 100%;
+  margin-left: 20px;
+  font-size: smaller;
+  color: grey
+}
+
+.total-payable {
+  margin-top: 8px;
+}
+
+.subtle, .subtler, .subtler-height1 {
+  color: #757575;
+  font-size: 12px;
+}
+.subtler {
+  font-size: 10px;
+}
+
+.subtler-height1 {
+  line-height: 12px;
+  font-size: 10px;
+}
+
+.subtle.split-eta {
+  background: #f2f2f2;
+  padding: 6px 10px;
+  background-color: #e4f8e9;
+  color: #1aab2a;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.subtle.no-split-eta {
+  background-color: #f2f2f2;
+  color: #757575;
+  padding: 6px 10px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.prescription-required {
+  background-color: #ef4747;
+}
+.prescription-not-required {
+  background-color: #1aab2a;
+}
+.prescription-text{
+ color: #ffffff;
+ font-size: 16px;
+ padding: 8px;
+}
+.numberCircle {
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+}
+.numberCircle span {
+    text-align: center;
+    line-height: 20px;
+    display: block;
+    color: #ffffff;
+}
+.nps-color-bad {
+  background-color: #ef4747;
+}
+.nps-color-med {
+  background-color: #f7b632;
+}
+.nps-color-good {
+  background-color: #1aab2a;
+}
+.savlon {
+  text-align: center;
+}
+.savlon-bottle {
+  width: 30%;
+}
+.free-text {
+  font-size: 16px;
+}
+.free-head {
+  font-size: 44px;
+  font-weight: bold;
+}
+.make-box-with-eta{
+	background: white;
+	margin-bottom: 2px;
+	margin-top: 2px;
+}
+.make-box-without-eta {
+    border-top: 15px solid #f8f8f8;
+    padding: 5px;
+    background: white;
+	margin-bottom: 2px;
+	margin-top: 2px;
+}
+.help-link {
+	padding: 6px 6px 0;
+	font-size: 16px;
+	text-decoration: underline;
+	color: #66ccff;
+	text-align: center;
+    }
+.only-center{
+	text-align: center;
+	font-size: 12px;
+	color: #757575;
+	padding-bottom: 6px;
+    }
+.shipping-label-link{
+    display: table-cell;
+    padding: 4px 0 4px 0;
+    vertical-align: top;
+    text-decoration: underline;
+}
+
+.email-logo {
+  height: auto;
+  margin-top: 10px;
+  max-width: 75%;
+}
+
+.div-main a img.email-logo{
+  margin-left: 16px;
+}
+
+.txt-help {
+  margin-right: 4px;
+  margin-left: 5px;
+}
+
+.txt-app-download {
+  color: #000000;
+  vertical-align: top;
+}
+
+.subscription-heading, .subscription-subheading, .first-subscription {
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+.subscription-heading span {
+  font-size: 18px;
+  color: #1aab2a;
+}
+
+.first-subscription .date, .first-subscription .text, .subscription-subheading {
+  font-size: 12px;
+  color: #757575;
+}
+
+.first-subscription .date {
+  font-weight: bold;
+}
+
+.subscription-detail, .order-details  {
+  font-size: 14px;
+  font-weight: bold;
+  color: #212121;
+}
+
+.order-details {
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.subscription-offer {
+  border-radius: 3px;
+  background-color: rgba(26, 171, 42, 0.48);
+  margin: 15px 0 20px 0;
+  padding: 10px;
+  line-height: 1.5;
+}
+
+.subscription-offer .heading, .subscription-offer .sub-heading {
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.subscription-offer .heading {
+  font-weight: bold;
+}
+
+.subscription-offer .text {
+  margin-top: 5px;
+  font-size: 12px;
+  color: rgba(25, 25, 25, 0.87);
+}
+
+.subscription .sku-name {
+  font-size: 12px;
+  color: #0bc5d8;
+  line-height: 1.5;
+}
+
+.subscription .sku-quantity {
+  font-size: 10px;
+  color: #757575;
+}
+
+.subscription-address {
+  font-size: 12px;
+}
+
+.subscription-address .address-title, .subscription-delivery, .subscription-payment .payment-title {
+  font-weight: bold;
+  color: #212121;
+  line-height: 2.5;
+}
+
+.subscription-address .address-text, .subscription-payment .payment-text {
+  color: #626262;
+  line-height: 1.7;
+}
+
+.need-help {
+  padding: 15px 20px;
+  line-height: 1.5;
+}
+
+.need-help .row {
+  margin-top: 8px;
+}
+
+.need-help .section-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #212121;
+}
+
+.need-help .number, .need-help a {
+  font-size: 14px;
+  color: #757575;
+  text-decoration: none;
+}
+
+.green-tick-icon {
+  margin-right: 5px;
+  vertical-align: top;
+}
+
+.icon {
+  vertical-align: middle;
+  margin-right: 10px;
+}
+.order-placed-card,
+.order-delivered-card {
+  padding: 0;
+}
+
+.link-labs-banner {
+  display: block;
+}
+
+.download-parent {
+  display: inline-block;
+}
+
+.card-without-padding {
+  background: white;
+  box-shadow: 0 1px 2px 0 #d3d3d3;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.card-without-padding .card-content{
+  padding: 12px;
+}
+
+.green-text-underline a {
+   color:green;
+   font-size: 13px;
+}
+
+img{
+   max-width: 100%;
+}
+.lab-img img{
+  width: 100%;
+}
+.txt-help span{
+  margin-left: 4px;
+}
+
+.email-container {
+  width: 100%;
+  margin: auto;
+  box-sizing: border-box;
+  line-height: initial;
+  font-family: ClearSans , sans-serif;
+}
+
+.new-header{
+  background-color: #194b67;
+  box-sizing: border-box;
+  padding: 6.5%;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  width: 100%;
+}
+
+.email-refill-table{
+  padding: 6.5%;
+  color: #212121;
+  background-color: #ffffff;
+  border-collapse: unset;
+  border-spacing: unset;
+  font-family: ClearSans , sans-serif;
+}
+
+.email-intro-text > h1{
+  font-weight: 500;
+  font-size: 31px;
+  margin-bottom: 8px;
+}
+
+.doctor-img {
+  width: 40%;
+}
+
+.email-intro-text > p{
+  font-size: 22px;
+  color: #616161;
+  margin: 0;
+}
+
+table[class="medicine-list"]{
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+.medicine-list > h2{
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.email-text-body > button{
+  width: 100%;
+  background-color: #0880c4;
+  border-radius: 4px;
+  color: white;
+  padding: 16px;
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
+  margin-bottom: 24px;
+  cursor: pointer;
+}
+
+table[class="medicine-list-item"]{
+  margin-bottom: 24px;
+}
+
+.medicine-list-item > p{
+  margin: 0;
+  font-weight: 300;
+  font-size: 16px;
+  color: #616161;
+}
+
+.medicine-details > p{
+  margin: 0;
+  font-size: 24px;
+  font-weight: 300;
+  width: 90%;
+}
+
+.medicine-details > p > img {
+  padding-left: 5px;
+  display: inline-block;
+}
+
+.medicine-details > span {
+  font-size: 23px;
+  font-weight: 300;
+  color: #212121;
+}
+
+.email-coupon-info{
+  font-size: 24px;
+  font-weight: 300;
+  color: #616161;
+  margin-top: 20px;
+  line-height: 1.3;
+}
+
+.email-coupon-info > span{
+  background-color: rgba(250, 235, 215, 16);
+  padding: 0 5px;
+}
+
+.email-reorder-details > h3{
+  margin-bottom: 0;
+}
+
+.email-reorder-details > p {
+  font-size: 22px;
+  font-weight: 300;
+  color: #212121;
+  margin-top: 24px;
+}
+
+.email-reorder-details > p span {
+  border-radius: 4px;
+  background-color: rgba(8, 128, 196, 0.25); 
+}
+
+.new-footer{
+  display: table;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6.5%;
+  border-collapse: initial;
+  background-color: rgba(215, 234, 245, 0.45);
+}
+
+.new-footer > table{
+  width: 100%;
+}
+
+.new-footer > table > tbody > tr > td{
+  width: 33%;
+}
+
+/* _______________________________________________________________
+   |                    MEDIA  QUERIES                            | 
+   |______________________________________________________________|
+*/
+
+@media screen and (max-width: 500px) {
+
+  .email-intro-text > h1{
+    margin-bottom: 15px;
+    font-size: 26px;
+  }
+
+  .email-intro-text > p{
+    font-size: 19px;
+  }
+
+  .email-coupon-info{
+    line-height: 1.5em;
+    font-size: 18px;
+  }
+
+  .medicine-list > h2{
+    font-size: 27px;
+  }
+
+  .medicine-list-item > p{
+    font-size: 10px;
+  }
+
+  .medicine-details > p{
+    font-size: 18px;
+  }
+
+  .email-reorder-details > p {
+    font-size: 16px;
+    line-height: 1.5em;
+  }
+
+}
+
+</style>

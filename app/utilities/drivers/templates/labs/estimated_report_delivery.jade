@@ -1,0 +1,12 @@
+.card
+    .card-content
+        .section-title.darker.section-title-large
+                    .item-row.tat-info
+                            .item-left-col
+                                .item Estimated Report Delivery Time
+                    each booking in order.bookings_list
+                        .item-row.tat-info
+                            .item-left-col
+                                .item {{booking.test_name}}
+                            .item-right-col
+                                .item  {{booking.tat}} HRS

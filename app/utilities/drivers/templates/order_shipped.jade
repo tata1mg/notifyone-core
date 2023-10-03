@@ -1,0 +1,75 @@
+extends ./layouts/onemg.jade
+block content
+    {% if order.shipment_detail.delivery_partners_code|lower in ['1mg', 'gurgaonx', 'c3logistics', 'jugnoo', 'shadowfax', 'vdeliver', 'wowm', 'wow'] %}
+
+    - var email_header_heading = 'Order Dispatched'
+    - var email_header_subheading = 'Out for Delivery'
+
+    {% elif is_order_being_reshipped %}
+    - var email_header_heading = 'Order Re-Dispatched'
+    - var email_header_subheading = 'Out for Delivery'
+    - var email_delivery_text = 'Your order has been re-dispatched via'
+    {% else %}
+    - var email_header_heading = 'Order Dispatched'
+    - var email_header_subheading = 'In Transit'
+    - var email_delivery_text = 'Your order has been dispatched via'
+    {% endif %}
+    if order.eta and order.eta.eta_to
+        - var email_header_eta_to = order.eta.eta_to|format_eta_timestamp
+    if order.eta and order.eta.eta_from
+        - var email_header_eta_from = order.eta.eta_from|format_eta_timestamp
+
+    - var email_header_status = 'warning'
+    - var email_header_need_help = 'help'
+    - var email_header_cta_type = 'track'
+
+    .card
+        .card-content
+            b Hello {{order.user.properties.name}}
+
+            {% if is_order_being_reshipped and order.shipment_detail.delivery_partners_other_details and order.shipment_detail.delivery_partners_other_details.behaviour.type_communication == '1mg' %}
+            .subtle Delivery Agent {{order.shipment_detail.fe_name}} (Phone: {{order.shipment_detail.fe_phone_number}}) is out to re-deliver your Order {{order.order_id}}.
+            {% elif order.shipment_detail.delivery_partners_other_details and order.shipment_detail.delivery_partners_other_details.behaviour.type_communication == '1mg' %}
+            .subtle Delivery Agent {{order.shipment_detail.fe_name}} (Phone: {{order.shipment_detail.fe_phone_number}}) is out to deliver your order {{order.order_id}}.
+            {% elif (order.shipment_detail.delivery_partners_code == "delhivery" or order.shipment_detail.delivery_partners_code == "Delhivery-Surface") %}
+            .subtle {{email_delivery_text}}&nbsp;
+                a(href=order.shipment_detail.tracking_url) {{order.shipment_detail.delivery_partners_other_details.parent_name}}
+                span . {{order.shipment_detail.delivery_partners_other_details.parent_name}} team would reach out to you when they are out to deliver your order.
+            {% elif order.shipment_detail.delivery_partners_other_details and order.shipment_detail.delivery_partners_other_details.behaviour.type_communication == '3pl' %}
+            .subtle {{email_delivery_text}}&nbsp;
+                a(href=order.shipment_detail.tracking_url) {{order.shipment_detail.delivery_partners_other_details.parent_name}}
+                span &nbsp;with AWB number&nbsp;
+                b {{order.shipment_detail.tracking_number}}
+                span . {{order.shipment_detail.delivery_partners_other_details.parent_name}} team would reach out to you when they are out to deliver your order.
+
+            {% endif %}
+        include includes/email_header_new
+
+    //-if (order.payment_summary.online_refund_due and order.payment_summary.online_refund_due >= 0.01) or (order.payment_summary.cashback_refund_due and  order.payment_summary.cashback_refund_due >= 0.01)
+        .card
+            .card-content
+                .red The price of your item(s) has dropped!
+                .para The amount you paid is Rs.{{'%0.2f' % (order.payment_summary.online_collected + order.payment_summary.cashback_availed)}}.
+                if order.payment_summary.online_refund_due >= 0.01
+                    if order.payment_summary.gateway_name|lower == "razorpay"
+                        .para Your online payment of Rs {{'%0.2f' % (order.payment_summary.online_refund_due)}} will be refunded to your account within the next 10 days.
+                    else
+                        .para We will refund Rs.{{'%0.2f' % (order.payment_summary.online_refund_due)}} within 24 hours.
+                if order.payment_summary.cashback_refund_due >= 0.01
+                    if order.payment_summary.online_refund_due >= 0.01
+                        span and 1mgCash of Rs. {{'%0.2f' % (order.payment_summary.cashback_refund_due)}} used to place this order has been refunded as 1mgCash.
+                    else
+                        .para 1mgCash of Rs. {{'%0.2f' % (order.payment_summary.cashback_refund_due)}} has been refunded as 1mgCash.
+    //-else
+        .card
+            .card-content The current total payable amount is Rs.{{'%0.2f' % (order.payment_summary.amount_payable)}}.
+    if order.order_lines
+        .card
+            .card-content
+                include ./includes/order_lines.jade
+                .separator-light
+                include ./includes/cart_summary.jade
+
+    include ./includes/cashback_eligible.jade
+    include includes/order_address.jade
+    include includes/regards

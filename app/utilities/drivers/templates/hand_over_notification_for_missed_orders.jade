@@ -1,0 +1,18 @@
+extends ./layouts/onemg.jade
+
+block content
+    - var email_header_heading = 'Collections Handed Over Before Yesterday But Update Missed'
+    - var email_header_status = 'error'
+    .card
+        .card-content
+            p Hi, following order(s) were handed over to Vendors but their notifications got missed.
+                p
+                {% if missed_orders %}
+                {% set count = 1 %}
+                {% for order in missed_orders %}
+                p {{count}}. {{order.order_id}}
+                {% set count = count + 1 %}
+                {% endfor %}
+                {% endif %}
+
+    include includes/regards

@@ -1,0 +1,29 @@
+extends ./layouts/onemg.jade
+block content
+    .card
+        .card-content
+            b Dear {{username}},
+
+            .subtle
+                p Thank you for getting in touch with us. We will get back to you as soon as possible.
+                p This was the message you had sent us -
+                p
+                    div
+                        b Name:
+                        |<span> </span>{{username}}
+                    div
+                        b Email ID:
+                        |<span> </span>{{email}}
+                    div
+                        b Contact No.:
+                        |<span> </span>{{phone_number}}
+                    div
+                        b Subject:
+                        |<span> </span>{{subject}}
+                    div
+                        b Message:
+                        |<span> </span>{{message}}
+
+
+
+    include includes/regards

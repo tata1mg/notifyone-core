@@ -1,0 +1,27 @@
+table.medicine-list(width='100%', align='center', cellpadding="0", cellspacing="0")
+  tbody
+    tr
+      td.medicine-list
+        h2 Your Last Order
+    if medicines_mapping
+      for medicine in medicines_mapping
+        tr
+          td
+            table(class="medicine-list-item", width='100%', cellpadding="0", cellspacing="0")
+              tbody
+                tr(valign='center') 
+                  td.medicine-details
+                    if medicine.name
+                      p 
+                        | {{medicine.name}}
+                        if medicine.type and medicine.type == "allopathy"
+                          img(src='{{base_url or Hkp_url}}/images/emails/rx-prescription-small.png', alt='rx')
+                  td.medicine-details(align='right')
+                    if medicine.price
+                      span ₹{{'%0.2f' % (medicine.price)}}
+                tr
+                  td.medicine-list-item
+                    if medicine.pack_form
+                      p {{medicine.pack_form}} 
+                      if medicine.pack_size
+                        | of {{medicine.pack_size}}

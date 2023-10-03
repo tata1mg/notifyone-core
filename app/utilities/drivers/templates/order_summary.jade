@@ -1,0 +1,81 @@
+extends ./layouts/onemg.jade
+
+block content
+    - var email_header_cta_type = 'feedback'
+    .card
+        .card-content
+            b Hello {{order.user.properties.name}}
+            {% set no_of_orders = all_orders_details_in_group|length %}
+            {% if no_of_orders > 1 %}
+            .subtle Your order has been completed in {{no_of_orders}} parts by our pharmacy partners with order ID(s)&nbsp;
+            - var i = 0;
+            for order in all_orders_details_in_group
+                i = i+1
+                b {{order.order_id}}
+                if i == no_of_orders
+                    |.
+                else
+                    |,&nbsp;
+            {% else %}
+            .subtle Your order has been completed by our pharmacy partner {{order.shipment_detail.vendor.name}}.&nbsp;
+            {% endif %}
+            include includes/email_header_new
+            br
+            b Help us improve. Please rate your experience.
+            .subtle On a scale of 0 to 10, how likely are you to recommend 1mg to your friends?
+                .scores
+                 .input-wrap
+                     a(href='{{Hkp_url}}/feedback?score=0&orderId={{order.group_id}}&emailAddress={{order.email}}' target='_blank')
+                         .numberCircle.nps-color-bad
+                             span 0
+                 .input-wrap
+                     a(href='{{Hkp_url}}/feedback?score=1&orderId={{order.group_id}}&emailAddress={{order.email}}' target='_blank')
+                         .numberCircle.nps-color-bad
+                             span 1
+                 .input-wrap
+                     a(href='{{Hkp_url}}/feedback?score=2&orderId={{order.group_id}}&emailAddress={{order.email}}' target='_blank')
+                         .numberCircle.nps-color-bad
+                             span 2
+                 .input-wrap
+                     a(href='{{Hkp_url}}/feedback?score=3&orderId={{order.group_id}}&emailAddress={{order.email}}' target='_blank')
+                         .numberCircle.nps-color-bad
+                             span 3
+                 .input-wrap
+                     a(href='{{Hkp_url}}/feedback?score=4&orderId={{order.group_id}}&emailAddress={{order.email}}' target='_blank')
+                         .numberCircle.nps-color-bad
+                             span 4
+                 .input-wrap
+                     a(href='{{Hkp_url}}/feedback?score=5&orderId={{order.group_id}}&emailAddress={{order.email}}' target='_blank')
+                         .numberCircle.nps-color-bad
+                             span 5
+                 .input-wrap
+                     a(href='{{Hkp_url}}/feedback?score=6&orderId={{order.group_id}}&emailAddress={{order.email}}' target='_blank')
+                         .numberCircle.nps-color-bad
+                             span 6
+                 .input-wrap
+                     a(href='{{Hkp_url}}/feedback?score=7&orderId={{order.group_id}}&emailAddress={{order.email}}' target='_blank')
+                         .numberCircle.nps-color-med
+                             span 7
+                 .input-wrap
+                     a(href='{{Hkp_url}}/feedback?score=8&orderId={{order.group_id}}&emailAddress={{order.email}}' target='_blank')
+                         .numberCircle.nps-color-med
+                             span 8
+                 .input-wrap
+                     a(href='{{Hkp_url}}/feedback?score=9&orderId={{order.group_id}}&emailAddress={{order.email}}' target='_blank')
+                         .numberCircle.nps-color-good
+                             span 9
+                 .input-wrap
+                     a(href='{{Hkp_url}}/feedback?score=10&orderId={{order.group_id}}&emailAddress={{order.email}}' target='_blank')
+                         .numberCircle.nps-color-good
+                             span 10
+                 .feedback
+                     span.least-score Not at all
+                     span.max-score Very likely
+
+    if all_orders_details_in_group
+        include includes/split_order_lines.jade
+
+    include includes/cashback_eligible.jade
+    include includes/order_address.jade
+
+    include includes/regards

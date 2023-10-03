@@ -1,0 +1,38 @@
+.order-lines
+    if not hide_total_payable
+        .subtle Order ID: {{order.order_id}}
+        if order.original_status|lower == 'delivered' or order.original_status|lower == 'cancelled' or order.original_status|lower == 'request for return and refund' or order.original_status|lower == 'out for return and refund' or order.original_status|lower == 'returned and refunded'
+            div
+        else
+            .section-title.darker.section-title-large
+                .row
+                    if order.payment_summary.amount_payable >= 0
+                        .left-col
+                            span To be Paid
+                        .right-col
+                            .col Rs.{{'%0.2f' % order.payment_summary.amount_payable}}
+                    else
+                        .left-col To be Refunded
+                        .right-col
+                            .col Rs.{{'%0.2f' % (order.payment_summary.amount_payable * -1)}}
+            .separator-light
+
+    .item-table
+        for order_line in order.order_lines
+            {% set medUrl = "" %}
+            {% set sku_slug = order_line.sku.name|get_slug_from_name %}
+            {% if order_line.sku.type == "otc_drug" %}
+            {% set medUrl = '{}/drugs/{}-{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+            {% elif order_line.sku.type == "allopathy" %}
+            {% set medUrl = '{}/drugs/{}-{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+            {% else %}
+            {% set medUrl = '{}/otc/{}-otc{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+            {% endif %}
+            .item-row.product-info
+                .item-left-col
+                    a(href="{{medUrl}}") {{order_line.sku.name}}
+                    .pack-info {{order_line.pack_unit_form}}
+                .item-right-col
+                    .item Rs.{{'%0.2f' % (order_line.quantity * order_line.unit_offered_price)}}
+
+

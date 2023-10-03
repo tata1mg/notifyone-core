@@ -1,0 +1,25 @@
+.pricing-table
+    .row
+        .left-col
+            .item Subtotal
+        .right-col
+            .item Rs.{{'%0.2f' % order.payment_summary.discounted_mrp|float}}
+    {% if order.payment_summary.coupon_discount %}
+    .row.highlight
+        .left-col
+            .item Discount
+        .right-col
+            .item -Rs.{{'%0.2f' % (order.payment_summary.coupon_discount)}}*
+    {% endif %}
+    .row
+        .left-col
+            .item Shipping Charges
+        .right-col
+            .item Rs.{{'%0.2f' % order.payment_summary.shipping_charges}}
+    {% if order.payment_summary.cashback_availed %}
+    .row
+        .left-col
+            .item 1mgCash Used
+        .right-col
+            .item Rs.{{'%0.2f' % (order.payment_summary.cashback_availed)}}
+    {% endif %}

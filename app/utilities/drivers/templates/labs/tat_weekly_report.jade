@@ -1,0 +1,60 @@
+extends ././layouts/onemg_labs.jade
+
+block content
+    .card
+        .card-content
+            table(border='1', style='border-collapse:collapse;')
+                tr
+                    td(rowspan='2') {{order.lab_name}}
+                    td(colspan='2') Last Week ({{order.dates[0].start_time}} to {{order.dates[0].end_time}})
+                    td(colspan='2') Week Before that ({{order.dates[1].start_time}} to {{order.dates[1].end_time}})
+                    td(colspan='2') Week Before that ({{order.dates[2].start_time}} to {{order.dates[2].end_time}})
+                tr
+                    td Number of delivered tests
+                    td Within TAT delivery %
+                    td Number of delivered tests
+                    td Within TAT delivery %
+                    td Number of delivered tests
+                    td Within TAT delivery %
+                    each city, values in order.cities.items()
+                        tr
+                            td {{city}}
+                            td {{values[0].total_count}}
+                            td {{values[0].percentage_in_tat}}
+                            td {{values[1].total_count}}
+                            td {{values[1].percentage_in_tat}}
+                            td {{values[2].total_count}}
+                            td {{values[2].percentage_in_tat}}
+
+            p
+              br
+              b FAQs:
+              br
+              b 1. What is the purpose of this email?
+              br
+              |   The purpose of this email is to give you an overall summary of your lab's performance on Tata 1mg and take necessary steps to make service improvements.
+              br
+              br
+              b 2. Why is it important to monitor TATs?
+              br
+              |   TAT performance is a major contributor to the overall rating of a lab shown on Tata 1mg. Customers are more likely to choose a lab with higher rating as compared to a lab with lower rating. Our best performing lab partner with a sizeable order volume consistently achieves over 95% within-TAT delivery.
+              br
+              br
+              b 3. What is the TAT for tests?
+              br
+              |   TAT for all routine tests and profiles is same day of sample collection; and for routine packages, it is next day after sample collection. For advanced tests, TATs may be longer and we communicate the same to our customers as well.
+              br
+              br
+              |   Our phlebotomists collect samples till 11 am and centrifuge them at pre-analytical centres before they are sent to respective labs in the afternoon. We expect our lab partners to register and process our samples on priority and deliver reports as per TATs mentioned above for a great customer experience.
+              br
+              br
+              b
+                | 4. There seems to be a discrepancy in the TAT numbers mentioned in the email. How are TATs calculated?
+              br
+              |   TATs mentioned in the email are system generated and are calculated by capturing the time at which the report is marked delivered at Tata 1mg. If the report is marked delivered on the same day as collection for routine tests, it is considered as within TAT. We request you to kindly monitor the time of report delivery at your lab's end. Labs that consistently perform better are either integrated with 1mg's systems for automated report delivery or have the facility to auto-trigger report delivery via email to 1mglabs.
+              br
+              br
+              b
+                | 5. Who do I contact if I have more questions or suggestions to improve my lab's within TAT delivery performance?
+              br
+              |   Please contact your Point of Contact from Tata 1mglabs and we will work closely with you and your team to improve the TAT metrics and deliver the best possible customer experience. We hope and look forward for your kind cooperation and welcome any suggestions you may have.

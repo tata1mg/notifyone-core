@@ -1,0 +1,17 @@
+extends ./layouts/onemg.jade
+block content
+    .card
+        .card-content
+            b Hello
+            .subtle
+                p It looks like the order ID sent in your email is incorrect.
+                div We request you to:
+                ol.list
+                    li Include the correct order ID in the subject line
+                    li Send your prescription from your registered email id to
+                        |<span> </span>
+                        a(href='mailto:order@mail.1mg.com') order@mail.1mg.com
+                p We request your cooperation as it will ensure your order is processed smoothly. Thank you for your patience and we wish you good health!
+    include includes/sample_prescription
+    include includes/regards
+

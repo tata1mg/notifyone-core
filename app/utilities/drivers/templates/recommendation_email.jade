@@ -1,0 +1,101 @@
+extends ./layouts/onemg.jade
+block content
+  style.
+    .regards {
+      padding: 15px 25px 5px 30px;
+      background: #ffffff;
+    }
+    .recommendation-mail-container{
+      background-color: #fff;
+    }
+    .recommendation-mail-container .mail-text{
+        padding: 15px 25px 5px 30px;
+        border-bottom: 1px solid #eeeeee;
+    }
+    .mail-text div{
+      margin: 5px 0px 5px 0px;
+    }
+    .card-container .main-table{
+      border-bottom: solid 1px #efefef;
+      line-height: 19px;
+    }
+    .sku-info{
+      float:left;
+      padding: 5px;
+      margin-top:12px
+    }
+    .sku-img{
+      vertical-align: top;
+      max-width: 120px!important;
+    }
+    .sku-img img{
+       width: 125px;
+    }
+    .sku-name a{
+      color: #2DBCB5;
+      text-decoration:none;
+      max-width: 100%;
+      overflow: hidden;
+      display: block;
+      max-height: 37px;
+      line-height: 18px;
+    }
+    .price-label{
+      color: #8a8a8a;
+      font-size: 12px;
+      margin-right: 7px;
+    }
+    .price-value{
+      font-size:13px;
+    }
+    .btn-container{
+      margin-right: 10px;
+    }
+    .btn-container a{
+      cursor: pointer;
+      padding: 5px 7px;
+      border-radius: 3px;
+      background-color:#f6b745;
+      border-color: #f6b745;
+      font-size: 15px;
+      font-weight: bold;
+      color: #303030;
+    }
+  .recommendation-mail-container
+    .mail-text
+      span
+        b Hello {{data.name}},
+      div(style='color:#383838')
+        | Here are personalized health product recommendations for you based on items you purchased or viewed
+    table(width="100%")
+      tbody    
+        for sku in data.skus
+          tr.card-container
+            td
+              table.main-table(width="100%")
+                tr
+                  td(style='width:25%')
+                    table(width="100%",cellspacing="0",cellpadding="0", border="0", style="border-collapse:collapse;border-collapse:collapse; margin:0px")
+                      tbody
+                        tr
+                          td.sku-img
+                            a(href=sku.url, target="_blank")
+                              img(src=sku.image_url)
+                  td(style='width:60%')
+                    span.sku-name
+                      a(href=sku.url, target="_blank") {{sku.name}}
+                    div
+                      span.price-label MRP:
+                      span.price-value ₹{{sku.price}}
+                    if sku.discount_percent != 0
+                      div
+                        span.price-label Special Price:  
+                        span.price-value ₹{{sku.discounted_price}}
+                    if sku.discount_percent != 0
+                      div
+                        span.price-label You Save:
+                        span.price-value(style='color: #558a42; font-weight:bold') ₹{{sku.price_diff}} ({{sku.discount_percent}}%)
+                  td(style='width:14%')
+                    div.btn-container            
+                      a(href=sku.url,target="_blank") BUY
+  include includes/regards

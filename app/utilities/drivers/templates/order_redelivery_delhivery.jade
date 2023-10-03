@@ -1,0 +1,29 @@
+extends ./layouts/onemg.jade
+block content
+    p.title Hello {{order.user.properties.name}}
+    .para The most recent delivery attempt by our delivery partner Delhivery was unsuccessful. As a result, your delivery needs to be rescheduled. It maybe that the delivery agent tried to call you but it did not connect. The agent will complete the delivery as soon as possible.
+
+    .para You may track the shipment via
+        <span> </span>
+        a(href="http://www.delhivery.com") http://www.delhivery.com
+        <span> </span>
+        | OR
+        <span> </span>
+        a(href="http://www.jvxp.in") http://www.jvxp.net
+        <span> </span>
+        | with AWB number {{order.shipment_detail.tracking_number}}. In case of any queries, please call us attempt
+        <span> </span>
+        span.highlight 0124-4166666
+        | .
+    {% if order.payment_summary.cashback_earned %}
+    include ./includes/cashback_eligible.jade
+    {% endif %}
+    div.order-text Your Order
+    include ./includes/order_lines.jade
+    include ./includes/cart_total.jade
+
+    .para We wish you good health!
+
+    div.regards
+        div Regards,
+        div Team 1mg

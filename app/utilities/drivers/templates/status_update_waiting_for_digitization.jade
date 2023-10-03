@@ -1,0 +1,33 @@
+extends ./layouts/onemg.jade
+
+block content
+    - var email_header_heading = 'Prescription Received'
+    - var email_header_subheading = 'Verifying Your Prescription'
+    - var email_header_status = 'warning'
+    - var email_header_cta_type = 'track'
+    - var email_header_eta_to = 'N/A'
+    - var email_header_need_help = 'help'
+    .card
+        .card-content
+            b Hello {{order.user.properties.name}}
+            .subtle Our certified pharmacists are verifying your prescription. We usually take less than a couple of business hours to process. We’ll send an update as soon as we are done.
+
+        include includes/email_header_new
+    .card
+        .card-content
+            .section-title Why are we verifying your prescription?
+            .subtle We at 1mg care about your health and want to make sure that our partner pharmacies only send you medicines prescribed by your doctor. Also, according to the Indian Drugs and Cosmetics Act,1940 and Rules,1945, pharmacies cannot dispense prescription drugs without a valid prescription.
+    if order.order_lines
+        .card
+            .card-content
+                include includes/order_lines.jade
+                .separator-light
+                include includes/cart_summary.jade
+    if order.payment_summary.cashback_earned
+        include includes/cashback_eligible.jade
+    include includes/order_address.jade
+
+    include includes/regards
+    include includes/cancellation
+
+

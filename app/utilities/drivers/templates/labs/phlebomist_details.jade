@@ -1,0 +1,27 @@
+.card
+    .card-content
+        .section-title.darker.section-title-large
+                        .item-row.tat-info
+                                .item-left-col
+                                    if order.phlebo_name
+                                        .item Phlebotomist Details
+                                    else
+                                        .item Sample Collection Date & Time
+                    if order.phlebo_name
+                        .item-row.tat-info
+                            .item-left-col
+                                .item Name
+                            .item-right-col
+                                .item  {{order.phlebo_name}}
+                    if order.phlebo_number
+                        .item-row.tat-info
+                            .item-left-col
+                                .item Contact Number
+                            .item-right-col
+                                .item  {{order.phlebo_number}}
+                    if order.collection_time
+                        .item-row.tat-info
+                            .item-left-col
+                                .item Sample Collection Time
+                            .item-right-col
+                                .item  {{order.collection_time}}

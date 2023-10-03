@@ -1,0 +1,214 @@
+extends ././layouts/onemg_labs.jade
+
+block content
+    - var email_header_heading =  stage
+    - var email_header_status = 'warning'
+    .card
+        .card-content
+            b Hello {{order.full_name}}
+            if stage|lower == "booking changed"
+                - var email_header_subheading = change_type+' updated'
+                .subtle Your&nbsp;
+                    b {{change_type}}
+                    |&nbsp;has been updated  for booking of&nbsp;
+                    b {{order.test_name}}
+                    |. Please find the updated details below.
+                .subtle If you have not requested this or were not informed about it in advance, please let us know at care@1mg.com or 0124-4166666.
+            if stage|lower == "booking received"
+                - var email_header_subheading = 'Checking time slot availability'
+                .subtle  We have received your request for the below mentioned test(s). We are checking time slot availability with our collection partner and will confirm your booking shortly.
+            if stage|lower == "camp order"
+                - var email_header_heading =  "Camp Order Received"
+                .subtle  Thank you for attending the camp.You can expect to receive test report for {{order.test_name}} within 48 hours for your Order ID {{order.appointment_id}}.
+            if stage|lower == "booking confirmed"
+                - var email_header_status = 'success'
+                .subtle Following test(s) are confirmed with&nbsp;
+                    b {{order.diagnostic_lab}}
+                    |&nbsp;for {{order.collection_time}}
+            if stage|lower == "phlebo assigned"
+                - var email_header_heading =  "Phlebotomist Assigned"
+                .subtle Following phlebotomist has been assigned to collect your sample for&nbsp;
+                    b {{order.test_name}}
+                    |&nbsp;scheduled on&nbsp;
+                    b {{order.collection_time}}.
+            if stage|lower == "sample collected"
+                .subtle Your sample has been collected for below mentioned tests. Soft copy of test reports is expected to be available to you within below mentioned hours of sample collection (Sundays and public holidays not accounted for).
+                .subtle
+                    a(href="https://goo.gl/forms/ttX71oQzDdViObRt2") Click here
+                    | , if you want to report an issue with your sample collection
+                if order.report_charges
+                    .subtle If you have ordered hard copy of the test reports then it will be delivered within 2-3 days after delivery of soft copy.
+            if stage|lower == "booking conducted"
+                - var email_header_heading =  "Test Conducted"
+                - var email_header_subheading = 'Your test is conducted'
+                .subtle Your test is conducted for&nbsp;
+                    b {{ order.test_name }}
+                    |&nbsp;with {{order.diagnostic_lab}}  for Order ID {{ order.appointment_id }}.
+            if stage|lower == "sent to lab"
+                .subtle Sample sent to lab for {% if type == "PARTIAL" %} part of your{% endif %} {% if type == "FINAL" %} final part of your {% endif %} order id: {{ order.appointment_id }}
+            if stage|lower == "reports recieved"
+                - var email_header_heading =  "Reports Delivered"
+                - var email_header_status = 'success'
+                .subtle Reports for below mentioned tests with respect to Order ID {{order.appointment_id}} are now available from&nbsp;
+                    b {{order.diagnostic_lab}}
+                    |. For your convenience, the reports have been attached to this email.
+                if order.is_partial
+                    .subtle We will email you as soon as the diagnostic center {{order.diagnostic_lab}} sends across pending test reports for order.
+            if stage|lower == "camp reports recieved"
+                - var email_header_heading =  "Reports Delivered"
+                - var email_header_status = 'success'
+                .subtle Your test results are now available. Please visit&nbsp;
+                    a(href="https://www.1mg.com/labs/mybookings") https://www.1mg.com/labs/mybookings
+                    |&nbsp;and refer to the steps below to view your report.
+            if stage|lower == "booking cancelled"
+                - var email_header_status = 'error'
+                .subtle Your booking of {{order.test_name}} with  {{order.diagnostic_lab}} has been cancelled. We apologize for the inconvenience caused to you. If you have not requested for this or were not informed about it in advance, feel free to let us know at care@1mg.com or 0124-4166666.
+            if stage|lower == "sample collection slot update"
+                - var email_header_subheading = 'Updated Slot: ' + order.collection_time
+                .subtle Your sample collection date/time has been updated for the below mentioned test with reference to your order ID {{order.appointment_id}}. If you have not requested for this change or were not informed about it in advance, feel free to let us know at care@1mg.com or 0124-416666.
+            if stage|lower == "address update"
+                .subtle There's been an update of address for booking of&nbsp;
+                    b {{order.test_name}}
+                    |.Please find below the updated details.
+        include includes/email_header_new
+        if stage|lower == 'sample collected'
+            .card-strip-success
+                .savlon
+                    .green-text-underline
+                        a(href='{{order.post_sample_collection_url}}')  What happens to my sample now >
+
+
+    if order.is_digitized
+        .card
+            a(href='{{order.digi_report_url}}')
+                img.image(src="https://onemg.gumlet.io/banner/DR_Banner_new_bg.png" alt="Digitial Report")
+
+    if stage|lower == 'phlebo assigned' or stage|lower == "booking changed"
+        if  order.phlebo_name or order.phlebo_number or order.collection_time
+                include labs/phlebomist_details.jade
+
+    if stage|lower == 'sample collected'
+        include labs/estimated_report_delivery.jade
+
+    if stage|lower == 'booking cancelled' and order.booking_list
+        include labs/booking_cancelled.jade
+    if stage|lower == 'camp reports recieved'
+        .card
+            .card-content
+                ul
+                    li
+                        .subtle Your Tata 1mg account is already registered and instructions to reset your password have been sent earlier to your registered email address.
+                    li
+                        .subtle In case you have not reset your password earlier, click on 'Forgot Password' and follow the steps to reset your password.
+                    li
+                        .subtle Once you are logged in, visit your profile page and select 'My Bookings'.
+                    li
+                        .subtle Click on the 'Report' icon next to the 'Test Name' to view your report
+                .separator-light
+                .subtle If you wish to get any further tests done at home, we are offering a flat 25% discount for our camp participants. The coupon code is&nbsp;
+                    b OFF25*
+                    |.
+
+
+
+    if stage|lower == 'booking received' or stage|lower == 'booking confirmed' or stage|lower == 'phlebo assigned' or stage|lower == 'reports recieved' or stage|lower == 'sample collection slot update' or stage|lower == 'booking changed'
+        .card
+            .card-content
+                include labs/order_details.jade
+
+    if stage|lower == 'camp reports recieved'
+        .card
+            .card-content
+                .item-table
+                        .item-row.product-info
+                            .item-left-col
+                                .subtle Order ID: {{order.appointment_id}}
+                        if order.diagnostic_lab
+                                .item-row.product-info
+                                    .item-left-col.download-strip
+                                        .section-title.darker.section-title-large
+                                            .item {{order.diagnostic_lab}}
+                        .separator-light
+                        .item-row.product-info
+                            .item-left-col
+                                .item {{order.test_name}}
+
+    if stage|lower == 'booking cancelled'
+        .card
+            .card-content
+                .item-table
+                        .item-row.product-info
+                            .item-left-col
+                                .subtle Order ID: {{order.appointment_id}}
+                        if order.diagnostic_lab
+                                .item-row.product-info
+                                    .item-left-col.download-strip
+                                        .section-title.darker.section-title-large
+                                            .item {{order.diagnostic_lab}}
+                                        if order.category == "RADIOLOGY"
+                                            .item {{order.street}}, {{order.city}}, {{order.state}}-{{order.pin_code}}
+                        .separator-light
+                        .item-row.product-info
+                            .item-left-col
+                                .item {{order.test_name}}
+                        .separator-light
+                        if order.refund_amount
+                            .item-row.product-info
+                                .item-left-col
+                                    .item Refund Amount:
+                                .item-right-col
+                                    .item {{order.refund_amount}}
+
+    if stage|lower != "reports recieved"
+        .card
+            .card-content
+                include labs/patient_details.jade
+                if order.category == "PATHOLOGY"
+                    if stage|lower != "camp order" and stage|lower != "camp reports recieved"
+                        .separator-light
+                        include labs/address_details.jade
+
+
+    if stage|lower == 'booking confirmed' or stage|lower == 'phlebo assigned' or stage|lower == 'report delayed' or stage|lower == 'booking conducted'
+        .card
+            .card-content
+                if stage|lower == 'report delayed'
+                    .subtle We regret the inconvenience caused due to this delay. Please accept a "flat 40% off your next order" coupon for being a valued Tata 1mg customer. Avail the offer by simply applying coupon code WECARE during checkout.
+                    .subtle The offers are applicable on all Pathology & Radiology Tests & Packages on Tata 1mg platforms except Dr Lal PathLabs, Apollo Diagnostics, SRL Limited, Mahajan Imaging Centre & Nueclear Healthcare Limited.
+                elif order.category == "PATHOLOGY"
+                        .subtle Kindly allow 30 minutes time(+/-) for the phlebotomist to find and reach your location through possible traffic/weather
+                        if order.report_charges
+                            .subtle Hard copy of the test reports then it will be delivered within 2-3 days after delivery of soft copy.
+                elif order.category == "RADIOLOGY"
+                        .subtle Remember to email receipt at care@1mg.com to avail 40% discount on your next Pathology order. In case your reports are delayed, please call our customer support for assistance.
+
+
+    if stage|lower == "booking confirmed" or stage|lower == "phlebo assigned"
+        if order.test_precaution
+            .card
+                .card-content
+                    .item-table
+                        .section-title.darker.section-title-large
+                            .item-row.test-precautions
+                                .item-left-col
+                                    .item Test Precaution(s)
+                        for  precaution in order.test_precaution
+                            .item-row.test-precautions
+                                .item-left-col
+                                    .item {{precaution}}
+
+    if stage|lower == "reports recieved" and order.consultation
+        .card
+            .card-content
+                .item-table
+                        .section-title.darker.section-title-large
+                            .item-row.test-precaution
+                                .item-left-col
+                                    .item Useful Tips from our Pathologist
+                        .item-row.test-precautions
+                            .item-left-col
+                                .item {{order.consultation}}
+
+
+
+    include labs/regards.jade

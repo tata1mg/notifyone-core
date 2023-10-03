@@ -1,0 +1,296 @@
+extends ./layouts/onemg.jade
+block content
+  - var email_header_heading = 'Order Placed'
+  - var email_header_status = 'success'
+  - var email_header_cta_type = 'track'
+  {% if not order or (order and ((order.order_meta_source == '1mg' or order.order_meta_source == '' or order.order_meta_source == 'HDFC') and (order.delivery_address and order.delivery_address.cluster_id))) %}
+  {% if not (order and (order.tags and 'Lily Order' in order.tags)) %}
+  a.link-labs-banner(href='https://www.1mg.com/family-health-fest?utm_source=email&utm_medium=transaction_emailer&utm_campaign=healthfest_25_27Nov')
+    img(src="https://res.cloudinary.com/du8msdgbj/image/upload/v1606300323/AppBannerImage/Labs_FamilyHealthFest_Transactional_Strip_500x146.png
+")
+  {% endif %}
+  {% endif %}
+  .card.order-placed-card
+      .card-content
+         b Helloo {{order.user.properties.name}}
+         {% if order and order.tags and 'Cart_econsult_order' in order.tags %}
+         br
+         b We're glad that you chose us as your health companion! 
+         .subtle A specialist from our team of doctors will also reach out to you soon for processing your order on your registered mobile number {% if order.user.number %}{{order.user.number}}{% else %}{{order.delivery_address.contact_number}}{% endif %}.
+         {% else %}
+         br
+         b We’re glad that you chose us as your health companion!
+         .subtle Your order {{order.group_id}} has been successfully placed and will be delivered
+         {% if order.placed_comm_eta %}
+         {% if order.placed_comm_eta.start_eta == 0 %}
+         b by {{ order.placed_comm_eta.end_eta|format_eta_timestamp_with_hour}}.
+         {% else %} 
+         {% set order_start_eta = order.placed_comm_eta.start_eta|format_eta_timestamp%}
+         b between {{order_start_eta}} to {{ order.placed_comm_eta.end_eta|format_eta_timestamp}}.
+         {% endif %}
+         {% endif %}
+         {% endif %}
+         if (order.payment_summary.mode|lower == 'cod' and order.payment_summary.amount_payable|lower != '0' and order.is_prescription_order | lower != 'true' and order.is_loyalty_customer | lower != 'true')
+            .subtle  You can now Pay Online and get {{order.eligible_online_payment}} 1mgCash for your order by clicking &nbsp;
+                a(href="https://tdgx9.app.goo.gl/?link=https://www.1mg.com/order/history&apn=com.aranoah.healthkart.plus&amv=115&al=1mg://www.1mg.com/history&afl=https://www.1mg.com/order/history&isi=554578419&ibi=com.aranoah.healthkart&ifl=https://www.1mg.com/order/history?&utm_source=email&utm_campaign=PayOnline") here
+                span . Online Payment is valid till the order is packed by the Pharmacists.
+      .email-header
+          .card-sub-content
+              if email_header_heading
+                  div(class="email-header-heading {{email_header_status}}")
+                      span.email-header-icon
+                      span {{email_header_heading}}
+              if email_header_subheading
+                  .email-header-subheading {{email_header_subheading}}
+              if email_header_cta_type and not show_split_eta
+                  .email-header-cta
+                      {% if email_header_cta_type == 'track' %}
+                      a.button.button-large.button-primary(href="{{Hkp_url}}/trackOrder?orderId={{order.order_id}}&utm_source=email&utm_campaign=TrackOrder") TRACK ORDER
+                      {% elif email_header_cta_type == 'specify requirements'  %}
+                      a.button.button-large.button-primary(href="{{Hkp_url}}/trackOrder?orderId={{order.order_id}}&utm_source=email&utm_campaign=POSS") SPECIFY REQUIREMENTS
+                      {% elif email_header_cta_type == 'upload' and order.upload_prescription_url %}
+                      a.button.button-large.button-primary(href="{{Hkp_url}}/trackOrder?orderId={{order.order_id}}&utm_source=email&utm_campaign=TrackOrder") TRACK ORDER
+                      {% elif email_header_cta_type == 'upload' %}
+                      a.button.button-large.button-primary(href="{{Hkp_url}}/trackOrder?orderId={{order.order_id}}&utm_source=email&utm_campaign=TrackOrder") TRACK ORDER
+                      {% elif email_header_cta_type == 'reorder' %}
+                      a.button.button-large.button-primary(href="{{Hkp_url}}/order/history?reorderId={{order.order_id}}&utm_source=email&utm_campaign=ReOrder") RE-ORDER
+                      {% elif email_header_cta_type == 'retry_payment' %}
+                      a.button.button-large.button-primary(href="{{Hkp_url}}/trackOrder?orderId={{order.order_id}}&emailAddress={{order.email}}&utm_source=email&utm_campaign=PayOnline") RETRY PAYMENT
+                      {% endif %}
+          if email_header_eta_to and not show_split_eta
+              if email_header_eta_from and email_header_eta_from != email_header_eta_to
+                  .email-header-eta.card-strip-success
+                      .row
+                          .left-col Estimated Delivery
+                          .right-col.email-header-eta-value {{email_header_eta_from}} - {{email_header_eta_to}}
+              else
+                  if email_header_eta_to == 'N/A'
+                      .email-header-eta-na.card-strip
+                          .row
+                              .left-col Estimated Delivery
+                              .right-col.email-header-eta-value {{email_header_eta_to}}
+                  else
+                      .email-header-eta.card-strip-success
+                          .row
+                              .left-col Estimated Delivery
+                              .right-col.email-header-eta-value {{email_header_eta_to}}
+          if email_header_need_help
+              if not show_split_eta and email_header_eta_to 
+                  .make-box-with-eta
+                      .help-link
+                          a(href="https://tdgx9.app.goo.gl/?link={{Hkp_url}}/help?orderId={{order.order_id}}&al=1mg://{{Hkp_url}}/help?orderId={{order.order_id}}&apn=com.aranoah.healthkart.plus&isi=554578419&ibi=com.aranoah.healthkart&ifl={{Hkp_url}}/help?orderId={{order.order_id}}&afl={{Hkp_url}}/help?orderId={{order.order_id}}")    Need Help?
+                      .only-center    Click to contact us with queries related to your order
+              else
+                  .make-box-without-eta
+                      .help-link
+                          a(href="https://tdgx9.app.goo.gl/?link={{Hkp_url}}/help?orderId={{order.order_id}}&al=1mg://{{Hkp_url}}/help?orderId={{order.order_id}}&apn=com.aranoah.healthkart.plus&isi=554578419&ibi=com.aranoah.healthkart&ifl={{Hkp_url}}/help?orderId={{order.order_id}}&afl={{Hkp_url}}/help?orderId={{order.order_id}}")    Need Help?
+                      .only-center    Click to contact us with queries related to your order
+  if order.order_lines
+      .card
+          .card-content
+              .order-lines
+                  if not hide_total_payable
+                      .subtle Order ID: {{order.order_id}}
+                      if order.original_status|lower == 'delivered' or order.original_status|lower == 'cancelled' or order.original_status|lower == 'request for return and refund' or order.original_status|lower == 'out for return and refund' or order.original_status|lower == 'returned and refunded'
+                          div
+                      else
+                          .section-title.darker.section-title-large
+                              .row
+                                  if order.payment_summary.amount_payable >= 0
+                                      .left-col
+                                          span To be Paid
+                                      .right-col
+                                          .col Rs.{{'%0.2f' % (order.payment_summary.amount_payable)}}
+                                  else
+                                      .left-col To be Refunded
+                                      .right-col
+                                          .col Rs.{{'%0.2f' % (order.payment_summary.amount_payable * -1)}}
+                          .separator-light
+                  .item-table
+                      for order_line in order.order_lines
+                          {% set medUrl = "" %}
+                          {% set sku_slug = order_line.sku.name|get_slug_from_name %}
+                          {% if order_line.sku.type == "otc_drug" %}
+                          {% set medUrl = '{}/drugs/{}-{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+                          {% elif order_line.sku.type == "allopathy" %}
+                          {% set medUrl = '{}/drugs/{}-{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+                          {% else %}
+                          {% set medUrl = '{}/otc/{}-otc{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+                          {% endif %}
+                          .item-row.product-info
+                              .item-left-col
+                                  if order_line.sku.freebie or order_line.sku.is_visible == false
+                                       span {{order_line.sku.name}}
+                                  else
+                                       a(href="{{medUrl}}") {{order_line.sku.name}}
+                                  .pack-info {{order_line.pack_unit_form}}
+                              .item-right-col
+                                  .item(style='font-size:10px')
+                                      {% if order_line.unit_offered_price == order_line.unit_cart_item_mrp %}
+                                      span(style='color:#999;') MRP
+                                      {% endif %}
+                                      span Rs.{{'%0.2f' % (order_line.quantity * order_line.unit_offered_price)}}
+                                  {% if order_line.unit_offered_price != order_line.unit_cart_item_mrp %}
+                                  br
+                                  .item(style='color:#999; font-size:10px;') MRP 
+                                      span(style='text-decoration:line-through;') Rs.{{'%0.2f' % (order_line.quantity * order_line.unit_cart_item_mrp)}}
+                                  {% endif %}
+              .separator-light
+              .pricing-table
+                  .row
+                      .left-col.subtle
+                          .item Subtotal
+                      .right-col
+                          .item Rs.{{'%0.2f' % order.payment_summary.discounted_mrp|float}}
+                  if order.payment_summary.coupon_discount
+                      .row
+                          .left-col.subtle
+                              .item Coupon Discount<sup>*</sup>
+                          .right-col
+                              .item (-) Rs.{{'%0.2f' % (order.payment_summary.coupon_discount)}}
+                  if order.payment_summary.instant_discount and order.payment_summary.instant_discount > 0
+                      .row
+                          .left-col.subtle
+                              .item Card Discount
+                          .right-col
+                              .item (-) Rs.{{'%0.2f' % (order.payment_summary.instant_discount)}}
+                  if order.payment_summary.shipping_charges >= 0
+                      .row
+                          .left-col.subtle
+                              .item Shipping Charges
+                          .right-col
+                              .item (+) Rs.{{'%0.2f' % order.payment_summary.shipping_charges}}
+                  if order.payment_summary.additional_charges
+                      {% for charges in order.payment_summary.additional_charges %}
+                      if charges.amount > 0
+                          .row
+                              .left-col.subtle
+                                  .item {{charges.display_text}}
+                              .right-col
+                                  .item (+) Rs.{{'%0.2f' % charges.amount}}
+                      {% endfor %}
+                  if order.payment_summary.vas
+                      {% for charges in order.payment_summary.vas %}
+                      if charges.amount > 0
+                          .row
+                              .left-col.subtle
+                                  .item {{charges.display_text}}
+                              .right-col
+                                  .item (+) Rs.{{'%0.2f' % charges.amount}}
+                      {% endfor %}
+                  {%set tata_point = order.payment_summary|get_total_neucoins%}
+                  if order.payment_summary.online_collected
+                      .row
+                          .left-col.subtle
+                              .item Paid Online
+                          .right-col
+                              .item (-) Rs.{{'%0.2f' % (order.payment_summary.online_collected-tata_point)}}
+                  if order.payment_summary.cashback_availed
+                      .row
+                          .left-col.subtle
+                              .item 1mgCash Used
+                          .right-col
+                              .item (-) Rs.{{'%0.2f' % (order.payment_summary.cashback_availed)}}
+                  if tata_point > 0.0
+                      .row
+                          .left-col.subtle
+                              .item NeuCoins Used
+                          .right-col
+                              .item (-) {{'%0.2f' % (tata_point)}}
+                  {% for payment in order.payment_summary.payments %}
+                  if payment.status=='SUCCESS'
+                      if payment.meta_info and payment.meta_info.display_name
+                          {% set display_name = payment.meta_info.display_name %}
+                      else:
+                          {% set display_name = payment.gateway_name %}
+                      .row
+                          .left-col.subtle
+                              .item {{ display_name }}
+                          .right-col
+                              .item (-) {{ '%0.2f' % (payment.amount) }}
+                  {% endfor %}
+                  .row.total-payable.highlight
+                      if order.original_status|lower == 'delivered' or order.original_status|lower == 'cancelled' or order.original_status|lower == 'request for return and refund' or order.original_status|lower == 'out for return and refund' or order.original_status|lower == 'returned and refunded'
+                          div
+                      else
+                          if order.payment_summary.amount_payable >= 0
+                              .left-col.subtle
+                                  span To be Paid
+                              .right-col
+                                  .col Rs.{{'%0.2f' % order.payment_summary.amount_payable}}
+                          else
+                              .left-col.subtle To be Refunded
+                              .right-col
+                                  if order.shipment_detail.amount_collected and order.source|lower=='ipd-icici'
+                                     .col Rs.{{'%0.2f' % (order.shipment_detail.amount_collected)}}
+                                  else
+                                     .col Rs.{{'%0.2f' % (order.payment_summary.amount_payable * -1)}}
+                  if order.shipment_detail.shipping_label_url
+                      .shipping-label-link
+                          a(href="{{order.shipment_detail.shipping_label_url}}") Receipt for Shipping Charges
+                  .subtler
+                      sup *
+                      span Value may change if the total order value changes
+  .para
+      .separator-dark.separator-broad
+  if order.payment_summary.cashback_earned
+      if order.payment_summary.cashback_earned
+          .card
+              .card-content.subtle
+                  .section-title
+                      .row
+                          .left-col 1mgCash
+                          .right-col
+                              .col Rs.{{order.payment_summary.cashback_earned}}
+                  span You are eligible to earn
+                  | <span> </span>
+                  b 1mgCash
+                  | <span> </span> of Rs.{{order.payment_summary.cashback_earned}}* with this order. Please note,
+                  ol.list
+                      li 1mgCash will be credited 7 days after your complete order is delivered.
+                      li  1mgCash will not be credited in case a return request is initiated for the order.
+                  .subtler
+                      sup *
+                      span Value may change if the total order value changes
+      if order.payment_summary.tcp_earned
+          .card
+              .card-content.subtle
+                  .section-title
+                      .row
+                          .left-col NeuCoins 
+                          .right-col
+                              .col  {{order.payment_summary.tcp_earned}}
+                  span You are eligible to earn
+                  | <span> </span>  {{order.payment_summary.tcp_earned}}*  <b>NeuCoins</b> with this order. Please note,
+                  ol.list
+                      li NeuCoins will be credited 7 days after your complete order is delivered.
+                      li  NeuCoins will not be credited in case a return request is initiated for the order.
+                  .subtler
+                      sup *
+                      span Value may change if the total order value changes
+  .card
+      .card-content
+          .section-title
+              .row
+                  .left-col Delivery Details
+                  .right-col
+                      .col {{order.delivery_address.city}}
+          .address.subtle
+              div {{order.delivery_address.name}}
+              div {{order.delivery_address.street1}}
+              if order.delivery_address.street2
+                  div {{order.delivery_address.street2}}
+              div {{order.delivery_address.city}}
+              if order.delivery_address.state
+                  span {{order.delivery_address.state}} -&nbsp;
+              span {{order.delivery_address.pincode}}
+              p Phone: {{order.delivery_address.contact_number}}
+  .regards
+      div Regards,
+      div Team TATA 1mg
+  .subtler
+          span Click&nbsp;
+          a(href="{{Hkp_url}}/trackOrder?orderId={{order.order_id}}&emailAddress={{order.email}}&utm_source=email&utm_campaign=CancelOrder") here&nbsp;
+          span  to cancel the order. View our&nbsp;
+          a(href="{{Hkp_url}}/return-policy?utm_source=email&utm_campaign=NeedHelp") cancellation policy&nbsp;
+          span for more details.

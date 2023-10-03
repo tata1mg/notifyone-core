@@ -1,0 +1,31 @@
+extends ./layouts/onemg.jade
+block content
+    if order.eta and order.eta.eta_to
+        - var email_header_eta_to = order.eta.eta_to|format_eta_timestamp
+    if order.eta and order.eta.eta_from
+        - var email_header_eta_from = order.eta.eta_from|format_eta_timestamp
+
+    - var email_header_heading = 'Arriving Early'
+    - var email_header_subheading = 'On the Way'
+    - var email_header_status = 'success'
+    - var email_header_cta_type = 'track'
+    - var email_header_need_help = 'help'
+
+    .card
+        .card-content
+            b Hello {{order.user.properties.name}}
+            {% set order_eta_to = order.eta.eta_to|format_eta_timestamp %}
+            p We're happy to let you know that your order {{order.order_id}} is arriving early and will be delivered {% if order.eta and order.eta.eta_from %}between {{order.eta.eta_from|format_eta_timestamp}} and {{order.eta.eta_to|format_eta_timestamp}} {% else %}on {{order.eta.eta_to|format_eta_timestamp}} {%endif%} via {{order.shipment_detail.delivery_partners_code}}. To track your order visit
+              a(href=order.shipment_detail.tracking_url) here
+              |.
+        $include_start-2-$include_end
+
+    if order.order_lines
+        .card
+            .card-content
+                $include_start-3-$include_end
+                $include_start-4-$include_end
+    $include_start-18-$include_end
+    $include_start-5-$include_end
+    $include_start-6-$include_end
+    $include_start-7-$include_end

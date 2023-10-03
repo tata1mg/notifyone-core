@@ -1,0 +1,32 @@
+extends ./layouts/onemg.jade
+block content
+    - var email_header_need_help = 'help'
+    p.title Hello {{order.user.properties.name}}
+    .para Not all of your items were available with one pharmacy. As a result, we had to split your order
+        |<span> </span>
+        b {{order.group_id}}
+        | . Below are the details of one sub-order
+        |<span> </span>
+        b {{order.order_id}}
+        | <span> </span>which is being fulfilled by {{order.shipment_detail.vendor.name}}.
+
+    .para Please note that your order will be fulfilled by different pharmacies and hence may be delivered at different times. You will receive a message once your sub-order
+        |<span> </span>
+        b {{order.order_id}}
+        | <span> </span> is ready for delivery.
+    {% if order.payment_summary.cashback_earned %}
+    include ./includes/cashback_eligible.jade
+    {% endif %}
+    div.order-text Items confirmed in your order
+    include ./includes/order_lines.jade
+    include ./includes/cart_summary_pre_shipping.jade
+    include ./includes/cart_total.jade
+    include ./includes/terms_conditions.jade
+
+    .para We wish you good health!
+
+    div.regards
+        div Regards,
+        div Team 1mg
+
+

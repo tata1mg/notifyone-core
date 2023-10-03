@@ -1,0 +1,23 @@
+html
+    head
+        meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        title 1mg
+        include ./includes/styles.css
+        style.
+            @font-face{
+                font-family: 'Clear Sans';
+                src: url('{{base_url or Hkp_url}}/css/fonts/clearsans-1.00/EOT/ClearSans-Regular.eot');
+                src: url('{{base_url or Hkp_url}}/css/fonts/clearsans-1.00/EOT/ClearSans-Regular.eot?iefix') format('eot'),
+                url('{{base_url or Hkp_url}}/css/fonts/clearsans-1.00/WOFF2/ClearSans-Regular.woff2') format('woff2'),
+                url('{{base_url or Hkp_url}}/css/fonts/clearsans-1.00/WOFF/ClearSans-Regular.woff') format('woff'),
+                url('{{base_url or Hkp_url}}/css/fonts/clearsans-1.00/TTF/ClearSans-Regular.ttf') format('truetype'),
+                url('{{base_url or Hkp_url}}/css/fonts/clearsans-1.00/SVG/ClearSans-Regular.svg#webfont') format('svg');
+            }
+    body
+        .container
+            .sub-container
+                include ./includes/header-new
+                .content
+                    block content
+                include ./includes/footer-new

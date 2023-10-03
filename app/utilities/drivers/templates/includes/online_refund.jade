@@ -1,0 +1,24 @@
+{% if (order.payment_summary.online_collected and order.payment_summary.online_collected >= 0.01) and (order.payment_summary.cashback_availed and order.payment_summary.cashback_availed >= 0.01) %}
+{% if order.payment_summary.gateway_name|lower == "razorpay" %}
+.para Your payment of Rs {{'%0.2f' % order.payment_summary.online_collected}} will be refunded to your account within the next 10 days and
+    | <span> </span>
+    b 1mgCash
+    | <span> </span> of Rs. {{'%0.2f' % order.payment_summary.cashback_availed }} used to place this order has been refunded.
+{% else %}
+.para Your payment of Rs. {{'%0.2f' % order.payment_summary.online_collected}} will be refunded within 24 hours and
+    | <span> </span>
+    b 1mgCash
+    | <span> </span> of Rs. {{'%0.2f' % order.payment_summary.cashback_availed }} used to place this order has been refunded.
+{% endif %}
+{% elif order.payment_summary.online_collected and order.payment_summary.online_collected >= 0.01 %}
+{% if order.payment_summary.gateway_name|lower == "razorpay" %}
+.para Your payment of Rs {{'%0.2f' % order.payment_summary.online_collected}} will be refunded to your account within the next 10 days.
+{% else %}
+.para Your payment of Rs. {{'%0.2f' % order.payment_summary.online_collected}} will be refunded within 24 hours.
+{% endif %}
+{% elif order.payment_summary.cashback_availed and order.payment_summary.cashback_availed >= 0.01 %}
+.para
+    | <span> </span>
+    b 1mgCash
+    | <span> </span> of Rs. {{'%0.2f' % order.payment_summary.cashback_availed }} used to place this order has been refunded.
+{% endif %}

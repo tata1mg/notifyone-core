@@ -1,0 +1,59 @@
+if order.payment_summary.total_refund_due and order.payment_summary.total_refund_due >= 0.01
+    .card
+        .card-content
+            .section-title
+                .row
+                    .left-col
+                        .item Refund Initiated
+                    .right-col
+                        .col Rs.{{order.payment_summary.total_refund_due}}
+                            sup *
+
+            if order.payment_summary.mode|lower == "online"
+                .row
+                    .left-col Online refund amount
+                    .right-col
+                        .col Rs.{{order.payment_summary.online_refund_due}}
+            if order.payment_summary.cashback_availed
+                .row
+                    .left-col Cashback refund amount
+                    .right-col
+                        .col Rs.{{order.payment_summary.cashback_refund_due}}
+            .subtler
+                sup *
+                span Amount paid online will be refunded to your account within the next 5 to 7 days
+                    if order.payment_summary.cashback_availed
+                        span &nbsp;and 1mgCash has been refunded.
+                    else
+                        | .
+else
+    if order.payment_summary.total_refunded_amount and order.payment_summary.total_refunded_amount >= 0.01
+        .card
+            .card-content
+                .section-title
+                    .row
+                        .left-col
+                            .item Refund Initiated
+                        .right-col
+                            .col Rs.{{order.payment_summary.total_refunded_amount}}
+                                sup *
+
+                if order.payment_summary.mode|lower == "online"
+                    .row
+                        .left-col Online refund amount
+                        .right-col
+                            .col Rs.{{order.payment_summary.online_refund_initiated}}
+                if order.payment_summary.cashback_availed
+                    .row
+                        .left-col Cashback refund amount
+                        .right-col
+                            .col Rs.{{order.payment_summary.refunded_cashback}}
+                .subtler
+                    sup *
+                    span Amount paid online will be refunded to your account within the next 5 to 7 days
+                        if order.payment_summary.cashback_availed
+                            span &nbsp;and 1mgCash has been refunded.
+                        else
+                            | .
+
+

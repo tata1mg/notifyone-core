@@ -1,0 +1,60 @@
+extends ./layouts/onemg.jade
+block content
+    - var email_header_heading =  '1mg Voucher for a:care Rewards Redemption'
+    .card
+        .card-content
+            p Dear customer,
+            p Thank you for choosing 1mg as your local rewards partner. We are delighted to get an opportunity to serve you.
+            p(style="display:inline") You have transferred
+            b {{reward_points}} points
+            p(style="display:inline") from your a:care account to avail 1mg's ePharmacy services. In order to redeem these points, we have created a unique voucher
+            b {{coupon_code}}
+            p(style="display:inline") for you which can be used to avail a flat discount worth
+            b INR {{max_discount}}
+            p(style="display:inline") on our Pharmacy services*. Please note that this voucher can be used only once. Any remaining reward points, after you have used the voucher, will expire.
+            ul(style="list-style: none;padding-left: 0;") Here’s how you can redeem your voucher!
+                li
+                    b Step 1:
+                    p(style="display:inline")   Log on to on
+                    a(href="https://www.1mg.com") www.1mg.com
+                    p(style="display:inline") or download 1mg app from Play Store/App Store.
+                li
+                    b Step 2:
+                    p(style="display:inline")   Search and add the desired medicines to your cart
+                li
+                    b Step 3:
+                    p(style="display:inline")   Click on the cart icon and select 'Proceed to Cart' option
+                li
+                    b Step 4:
+                    p(style="display:inline")   Enter your voucher code in the field 'Coupon code' and proceed to 'Checkout'
+                li
+                    b Step 5:
+                    p(style="display:inline")   Upload a valid prescription for the medicines
+                li
+                    b Step 6:
+                    p(style="display:inline")   Enter your delivery address and 'Proceed to Payment'
+                li
+                    b Step 7:
+                    p(style="display:inline")   Select an option to pay and 'Place your order'
+            br
+            div(style="align:center")
+                 a(href="https://www.1mg.com")
+                     img(src="https://res.cloudinary.com/du8msdgbj/image/upload/v1536142474/marketing/l1eouuonqjazo9ru8vno.webp",style="display:block;margin-left: auto;
+    margin-right: auto;
+    width: 20%;")
+            br
+            ul(style="list-style: none;padding-left: 0;")
+                b *Terms and Conditions
+                li 1. This voucher code cannot be clubbed with any other offer or promotion.
+                li 2. The voucher can be availed at 1mg for only pharmacy purchases.
+                li
+                    | 3. The voucher will not be applicable for purchase of 'Speciality Medicines' and 'Infant products'.
+                li 4. The voucher can only be used once.
+                li 5. The voucher is valid for one year starting today.
+                li
+                    | 6. We cater to the demands of Allopathy medicine orders in Delhi – NCR and all major cities in Karnataka, Gujarat, Assam, Maharashtra, Haryana, Bihar, Punjab, Orissa, Rajasthan, Tamil Nadu, Telangana, Uttar Pradesh, Madhya Pradesh and West Bengal. Health/OTC products are delivered Pan-India.
+                li
+                    | 7. 1mg reserves an absolute right at any time to add, alter, withdraw, modify, change or vary any or all the terms and conditions of the offer at its sole discretion and the same shall be binding on the customer at all times.
+            div(style="line-height:1em")
+                  p We are here to take care,
+                  p Team 1mg

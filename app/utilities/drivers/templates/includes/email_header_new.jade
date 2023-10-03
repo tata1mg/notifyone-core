@@ -1,0 +1,47 @@
+.email-header
+    .card-sub-content
+        if email_header_heading
+            div(class="email-header-heading {{email_header_status}}")
+                span.email-header-icon
+                span {{email_header_heading}}
+        if email_header_subheading
+            .email-header-subheading {{email_header_subheading}}
+        if email_header_cta_type
+            .email-header-cta
+                {% if email_header_cta_type == 'track' %}
+                a.button.button-large.button-primary(href="{{Hkp_url}}/trackOrder?orderId={{order.order_id}}&emailAddress={{order.email}}") TRACK ORDER
+                {% elif email_header_cta_type == 'upload' and order.upload_prescription_url %}
+                a.button.button-large.button-primary(href="{{order.upload_prescription_url}}") UPLOAD PRESCRIPTION
+                {% elif email_header_cta_type == 'upload' %}
+                a.button.button-large.button-primary(href="{{base_url or Hkp_url}}/attach_prescription?orderId={{order.group_id}}") UPLOAD PRESCRIPTION
+                {% elif email_header_cta_type == 'reorder' %}
+                a.button.button-large.button-primary(href="{{Hkp_url}}/order/history?reorderId={{order.order_id}}") RE-ORDER
+                {% endif %}
+    if email_header_eta_to
+        if email_header_eta_from and email_header_eta_from != email_header_eta_to
+            .email-header-eta.card-strip-success
+                .row
+                    .left-col Estimated Delivery
+                    .right-col.email-header-eta-value {{email_header_eta_from}} - {{email_header_eta_to}}
+        else
+            if email_header_eta_to == 'N/A'
+                .email-header-eta-na.card-strip
+                    .row
+                        .left-col Estimated Delivery
+                        .right-col.email-header-eta-value {{email_header_eta_to}}
+            else
+                .email-header-eta.card-strip-success
+                    .row
+                        .left-col Estimated Delivery
+                        .right-col.email-header-eta-value {{email_header_eta_to}}
+    if email_header_need_help
+        if email_header_eta_to
+            .make-box-with-eta
+                .help-link
+                    a(href="https://tdgx9.app.goo.gl/?link={{Hkp_url}}/help?orderId={{order.order_id}}&al=1mg://{{Hkp_url}}/help?orderId={{order.order_id}}&apn=com.aranoah.healthkart.plus&isi=554578419&ibi=com.aranoah.healthkart&ifl={{Hkp_url}}/help?orderId={{order.order_id}}&afl={{Hkp_url}}/help?orderId={{order.order_id}}")    Need Help?
+                .only-center    Click to contact us with queries related to your order
+        else
+            .make-box-without-eta
+                .help-link
+                    a(href="https://tdgx9.app.goo.gl/?link={{Hkp_url}}/help?orderId={{order.order_id}}&al=1mg://{{Hkp_url}}/help?orderId={{order.order_id}}&apn=com.aranoah.healthkart.plus&isi=554578419&ibi=com.aranoah.healthkart&ifl={{Hkp_url}}/help?orderId={{order.order_id}}&afl={{Hkp_url}}/help?orderId={{order.order_id}}")    Need Help?
+                .only-center    Click to contact us with queries related to your order

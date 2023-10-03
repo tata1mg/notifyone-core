@@ -1,0 +1,23 @@
+.card
+    .card-content
+        .order-lines
+            .section-title.darker.section-title-large
+                .row
+                    .left-col Medicines in your last order
+        .separator-light
+        .item-table
+            for medicine in medicines_mapping
+                .item-row.product-info
+                    .item-left-col
+                        a(href="{{medicine.link}}") {{medicine.name}}
+                        .pack-info {{medicine.pack_form}}
+                    .item-right-col
+                        .item Rs.{{'%0.2f' % (medicine.price)}}
+        .separator-light
+        .pricing-table
+            .row.total-payable.highlight
+                .left-col.subtle Total
+                .right-col
+                    .col Rs.{{'%0.2f' % total}}
+
+

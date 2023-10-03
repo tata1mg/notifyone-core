@@ -1,0 +1,23 @@
+extends ./layouts/onemg.jade
+block content
+    - var email_header_heading = 'Order Returned'
+    - var email_header_subheading = 'Refund Initiated'
+    - var email_header_status = 'warning'
+    - var email_header_cta_type = 'track'
+    - var email_header_need_help = 'help'
+    .card
+        .card-content
+            b Hello {{order.user.properties.name}}
+            .subtle Your order {{order.order_id}} has been picked-up on {{current_date}}.
+        include includes/email_header_new
+
+    if order.order_lines
+        .card
+            .card-content
+                include includes/order_lines.jade
+                .separator-light
+                include includes/cart_summary.jade
+    include includes/refund_due
+    include includes/cashback_not_credited.jade
+    include includes/order_address.jade
+    include includes/regards

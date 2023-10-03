@@ -1,0 +1,11 @@
+extends ./layouts/onemg.jade
+
+block content
+    - var email_header_heading = 'Vendor MRP Updated'
+    - var email_header_status = 'warning'
+    .card
+        .card-content
+            b Hello
+            .subtle Total cart MRP for order: {{order.order_id}} got updated from Rs. {{order.original_order_vendor_mrp}} to Rs. {{order.new_order_vendor_mrp}}.
+
+    include includes/regards

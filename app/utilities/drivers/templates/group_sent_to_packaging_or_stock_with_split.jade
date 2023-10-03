@@ -1,0 +1,54 @@
+extends ./layouts/onemg.jade
+
+block content
+    - var show_split_eta = true
+    if complete_group_in_stock or ids_of_orders_in_packaging|length == 0
+        - var email_header_heading = 'Arranging Products'
+    else
+        if part_of_group_in_stock
+            - var email_header_heading = 'Part Order Verified'
+        else
+            - var email_header_heading = 'Order Verified'
+    - var email_header_subheading = 'Under processing'
+    - var email_header_status = 'warning'
+    - var email_header_cta_type = 'track'
+    - var email_header_need_help = 'help'
+    if ids_of_orders_cancel|length == 0
+        - var no_of_orders = all_orders_details_in_group|length
+    else
+        - var no_of_orders = all_orders_details_in_group|length - ids_of_orders_cancel.split(',')|length
+    if complete_group_in_stock
+        - var email_header_eta_to = 'N/A'
+    else
+        if group_eta_to
+            - var email_header_eta_to = group_eta_to|format_eta_timestamp
+        if group_eta_from
+            - var email_header_eta_from = group_eta_from|format_eta_timestamp
+    .card
+        .card-content
+            b Hello {{order.user.properties.name}}
+            if complete_group_in_stock or ids_of_orders_in_packaging|length == 0
+                .subtle Your order will be processed in {{no_of_orders}} part(s). Some of the products in the order, with order ID(s)&nbsp;
+                    b {{all_orders_ids_in_group_str}}
+                    |&nbsp;just went out of stock with our pharmacy partner. We are committed to your complete satisfaction and will send an update as soon as we are able to confirm availability. Usually, it takes us under a day to confirm.
+            else
+                if part_of_group_in_stock
+                    if ids_of_orders_in_packaging.split(',')|length > 1
+                        .subtle Your order will be processed in {{no_of_orders}} parts. Order IDs {{ids_of_orders_in_packaging}} are being processed by our pharmacy partner. Estimated date of delivery for each order is available next to the respective details.<br>Some of the products in your order, with order IDs {{ids_of_orders_in_stock}}, just went out of stock with our pharmacy partner. We are committed to your complete satisfaction and will send an update as soon as we are able to confirm availability. Usually, it takes us under a day to confirm.
+                    else
+                        .subtle Your order will be processed in {{no_of_orders}} parts. Order ID {{ids_of_orders_in_packaging}} is being processed by our pharmacy partner. Estimated date of delivery for the order is available next to its details.<br>Some of the products in your order, with order ID {{ids_of_orders_in_stock}}, just went out of stock with our pharmacy partner. We are committed to your complete satisfaction and will send an update as soon as we are able to confirm availability. Usually, it takes us under a day to confirm.
+                else
+                    .subtle Your order will be processed by our pharmacy partner in {{no_of_orders}} parts with order IDs&nbsp;
+                        b {{all_orders_ids_in_group_str}}
+                        |. Estimated date of delivery for each order is available next to the respective order's detail.
+            include includes/cod_to_online
+        include includes/email_header_new
+
+
+    if all_orders_details_in_group
+        include includes/split_order_lines.jade
+    include includes/cashback_eligible.jade
+    include includes/order_address.jade
+
+    include includes/regards
+    include includes/cancellation

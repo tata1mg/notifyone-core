@@ -1,0 +1,18 @@
+if order.payment_summary.cashback_earned
+    .card
+        .card-content.subtle
+            .section-title
+                .row
+                    .left-col 1mgCash
+                    .right-col
+                        .col Rs.{{order.payment_summary.cashback_earned}}
+            span You are eligible to earn
+            | <span> </span>
+            b 1mgCash
+            | <span> </span> of Rs.{{order.payment_summary.cashback_earned}}* with this order. Please note,
+            ol.list
+                li 1mgCash will be credited 7 days after your complete order is delivered.
+                li  1mgCash will not be credited in case a return request is initiated for the order.
+            .subtler
+                sup *
+                span Value may change if the total order value changes

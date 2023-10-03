@@ -1,0 +1,60 @@
+extends ./layouts/onemg.jade
+block content
+
+    {% if order.is_split_order %}
+    - var email_header_heading = 'Part Order Cancelled'
+    {% else %}
+    - var email_header_heading = 'Order Cancelled'
+    {% endif %}
+
+    - var email_header_status = 'error'
+    - var email_header_need_help = 'help'
+
+    {% if cancel_reason == "Dummy order" %}
+    - var email_header_subheading = 'Dummy order'
+    {% elif cancel_reason == "Customer cancelled - price mismatch" %}
+    - var email_header_subheading = 'Customer cancelled - price mismatch.'
+    {% elif cancel_reason == "Out of stock" %}
+    - var email_header_subheading = 'Out of stock.'
+    {% elif cancel_reason == "Order auto cancel due to Junk Rx" %}
+    - var email_header_subheading = 'Order auto cancel due to Junk Rx.'
+    {% elif cancel_reason == "Rx invalid" %}
+    - var email_header_subheading = 'Prescription Invalid.'
+    {% elif cancel_reason == "Junk address" %}
+    - var email_header_subheading = 'Junk Address.'
+    {% elif cancel_reason == "PHONE" or order.cancel_reason == "SMS" or order.cancel_reason == "EMAIL" %}
+    - var email_header_subheading = 'Customer requested.'
+    {% endif %}
+
+    .card
+        .card-content
+            b Hello {{order.user.properties.name}}
+            .subtle
+
+            {% if cancel_reason == "Out of stock" %}
+            p We are sorry but our pharmacy partner is unable to process {% if order.is_split_order %}part of your order{% else %}your order{% endif %}. The partner couldn't arrange the item(s) that you ordered and it's embarrassing. For now we have regretfully cancelled {% if order.is_split_order %}part of your order{% else %}your order{% endif %}.
+            {% elif cancel_reason == "Rx invalid" %}
+            p {% if order.is_split_order %}Part of your group order {{order.group_id}}{% else %}Your order{% endif %} has been cancelled. The reason for cancellation is Prescription Invalid.
+            {% elif cancel_reason == "Customer not reachable" %}
+            p We regret to inform that we're unable to fulfil your order. Items in your order required confirmation before processing and our team was unable to establish any contact with you even after multiple attempts.
+            {% elif cancel_reason in ["Dummy order", "Customer cancelled - price mismatch", "Order auto cancel due to Junk Rx", "Junk address", "PHONE", "SMS", "EMAIL"] %}
+            p {% if order.is_split_order %}Part of your group order {{order.group_id}}{% else %}Your order{% endif %} has been cancelled. The reason for cancellation is {{cancel_reason}}.
+            {% else %}
+            p {% if order.is_split_order %}Part of your group order {{order.group_id}}{% else %}Your order{% endif %} has been cancelled.
+            {% endif %}
+
+        include includes/email_header_new
+
+    include includes/refund_due
+
+    include ./includes/cashback_not_credited
+
+    if order.order_lines
+        .card
+            .card-content
+                include ./includes/order_lines.jade
+                .separator-light
+                include ./includes/cart_summary.jade
+
+    include includes/order_address
+    include includes/regards

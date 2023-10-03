@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+torpedo = {editable = true, ref = "1.0.0", git = "https://github.com/tata1mg/torpedo.git"}
+commonutils = {editable = true, ref = "1.0.0", git = "https://github.com/tata1mg/commonutils.git"}
+tortoise_wrapper = {editable = true, ref = "1.0.0", git = "https://github.com/tata1mg/tortoise_wrapper.git"}
+cache_wrapper = {editable = true, ref = "1.0.0", git = "https://github.com/tata1mg/cache_wrapper.git"}
+aerich = "0.7.2"
+premailer = "===3.10.0"
+pyjade = "===4.0.0"
+Jinja2 = "===2.10.1"
+MarkupSafe = "===0.23"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9.10"

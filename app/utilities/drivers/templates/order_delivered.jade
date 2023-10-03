@@ -1,0 +1,25 @@
+extends ./layouts/onemg.jade
+block content
+    - var email_header_heading = 'Order Delivered'
+    - var email_header_status = 'success'
+    - var email_header_need_help = 'help'
+    {% if not (order and (order.tags and 'Lily Order' in order.tags)) %}  
+    a.link-labs-banner(href='{{base_url or Hkp_url}}/labs/new-delhi?utm_source=pharmaemail&utm_medium=email&utm_campaign=crosssell')
+      img(src="{{base_url or Hkp_url}}/images/emails/labs-email-banner.png?98798", alt="labs banner icon")
+    {% endif %}
+    .card.order-delivered-card
+        .card-content
+            b Hello {{order.user.properties.name}}
+            .subtle Your order has been delivered.
+        include includes/email_header_new
+    if order.order_lines
+        .card
+            .card-content
+                include includes/order_lines.jade
+                .separator-light
+                include includes/cart_summary.jade
+    include includes/refund_due
+    include includes/cashback_eligible.jade
+    include includes/order_address.jade
+
+    include includes/regards

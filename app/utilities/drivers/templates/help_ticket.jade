@@ -1,0 +1,7 @@
+extends ./layouts/onemg.jade
+block content
+    .card
+        .card-content
+            | <a(href={{order_search_link}})> {{order_id}} </a>
+            b {{vendor_id}} , {{sku_id}} - {{pushback_reason}}
+            b pushback

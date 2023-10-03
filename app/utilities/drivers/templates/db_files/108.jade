@@ -1,0 +1,483 @@
+extends ././layouts/onemg_labs.jade
+block content
+    - var email_header_heading =  stage
+    - var email_header_status = 'warning'
+    a.link-labs-banner(href='https://www.1mg.com/labs/mybookings?utm_source=1mg&utm_medium=email&utm_campaign=crosssell')
+      img(src="https://onemg.gumlet.io/assets/4172284a-9cf5-11eb-9319-02186d684e20.png?format=auto", alt="labs banner icon")
+    .card
+        .card-content
+            b Hello {{order.full_name}}
+            if stage|lower == "booking changed"
+                - var email_header_subheading = change_type+' updated'
+                .subtle Your&nbsp;
+                    b {{change_type}}
+                    |&nbsp;has been updated  for booking of&nbsp;
+                    b {{order.test_name}}
+                    |. Please find the updated details below.
+                .subtle If you have not requested this or were not informed about it in advance, please let us know at care@1mg.com or 0124-4166666.
+            if stage|lower == "booking received"
+                - var email_header_subheading = 'Checking time slot availability'
+                .subtle  We have received your request for the below mentioned test(s). We are checking time slot availability with our collection partner and will confirm your booking shortly.
+            if stage|lower == "camp order"
+                - var email_header_heading =  "Camp Order Received"
+                .subtle  Thank you for attending the camp.You can expect to receive test report for {{order.test_name}} within 48 hours for your Order ID {{order.appointment_id}}.
+            if stage|lower == "booking confirmed"
+                - var email_header_status = 'success'
+                .subtle Following test(s) are confirmed with&nbsp;
+                    b {{order.diagnostic_lab}}
+                    |&nbsp;for {{order.collection_time}}
+            if stage|lower == "phlebo assigned"
+                - var email_header_heading =  "Phlebotomist Assigned"
+                .subtle Following phlebotomist has been assigned to collect your sample for&nbsp;
+                    b {{order.test_name}}
+                    |&nbsp;scheduled on&nbsp;
+                    b {{order.collection_time}}.
+            if stage|lower == "sample collected"
+                .subtle Your sample has been collected for below mentioned tests. Soft copy of test reports is expected to be available to you within below mentioned hours of sample collection (Sundays and public holidays not accounted for).
+                .subtle
+                    a(href="https://goo.gl/forms/ttX71oQzDdViObRt2") Click here
+                    | , if you want to report an issue with your sample collection
+                if order.report_charges
+                    .subtle If you have ordered hard copy of the test reports then it will be delivered within 2-3 days after delivery of soft copy.
+            if stage|lower == "booking conducted"
+                - var email_header_heading =  "Test Conducted"
+                - var email_header_subheading = 'Your test is conducted'
+                .subtle Your test is conducted for&nbsp;
+                    b {{ order.test_name }}
+                    |&nbsp;with {{order.diagnostic_lab}}  for Order ID {{ order.appointment_id }}.
+            if stage|lower == "sent to lab"
+                .subtle Sample sent to lab for {% if type == "PARTIAL" %} part of your{% endif %} {% if type == "FINAL" %} final part of your {% endif %} order id: {{ order.appointment_id }}
+            if stage|lower == "reports recieved"
+                - var email_header_heading =  "Reports Delivered"
+                - var email_header_status = 'success'
+                .subtle Reports for below mentioned tests with respect to Order ID {{order.appointment_id}} are now available from&nbsp;
+                    b {{order.diagnostic_lab}}
+                    |. For your convenience, the reports have been attached to this email. 
+                    a(href="https://www.1mg.com/labs/mybookings") Click here
+                    |&nbsp; to avail your free consultation.
+                if order.report_delivery_on_time
+                     .subtle {{order.report_delivery_on_time}}
+                if order.is_partial
+                    .subtle We will email you as soon as the diagnostic center {{order.diagnostic_lab}} sends across pending test reports for order.
+                if order.report_charges
+                    .subtle If you have ordered hard copy of the test reports then it will be delivered within 2-3 days.
+            if stage|lower == "camp reports recieved"
+                - var email_header_heading =  "Reports Delivered"
+                - var email_header_status = 'success'
+                .subtle Your test results are now available. We have attached the report PDF with this mail. You can view e-copy of your reports on 1mg website/app as well. 
+                .subtle Please visit&nbsp;
+                    a(href="https://www.1mg.com/labs/mybookings") https://www.1mg.com/labs/mybookings
+                    |&nbsp;and refer to the steps below to view your report.
+                if order.report_delivery_on_time
+                    .subtle {{order.report_delivery_on_time}}
+            if stage|lower == "booking cancelled"
+                - var email_header_status = 'error'
+                .subtle Your booking of {{order.test_name}} with  {{order.diagnostic_lab}} has been cancelled. We apologize for the inconvenience caused to you. If you have not requested for this or were not informed about it in advance, feel free to let us know at care@1mg.com or 0124-4166666.
+            if stage|lower == "sample collection slot update"
+                - var email_header_subheading = 'Updated Slot: ' + order.collection_time
+                .subtle Your sample collection date/time has been updated for the below mentioned test with reference to your order ID {{order.appointment_id}}. If you have not requested for this change or were not informed about it in advance, feel free to let us know at care@1mg.com or 0124-416666.
+            if stage|lower == "address update"
+                .subtle There's been an update of address for booking of&nbsp;
+                    b {{order.test_name}}
+                    |.Please find below the updated details.
+        .email-header
+            .card-sub-content
+                if email_header_heading
+                    div(class="email-header-heading {{email_header_status}}")
+                        span.email-header-icon
+                        span {{email_header_heading}}
+                if email_header_subheading
+                    .email-header-subheading {{email_header_subheading}}
+                if email_header_cta_type and not show_split_eta
+                    .email-header-cta
+                        {% if email_header_cta_type == 'track' %}
+                        a.button.button-large.button-primary(href="{{Hkp_url}}/trackOrder?orderId={{order.order_id}}&utm_source=email&utm_campaign=TrackOrder") TRACK ORDER
+                        {% elif email_header_cta_type == 'specify requirements'  %}
+                        a.button.button-large.button-primary(href="{{Hkp_url}}/trackOrder?orderId={{order.order_id}}&utm_source=email&utm_campaign=POSS") SPECIFY REQUIREMENTS
+                        {% elif email_header_cta_type == 'upload' and order.upload_prescription_url %}
+                        a.button.button-large.button-primary(href="{{Hkp_url}}/trackOrder?orderId={{order.order_id}}&utm_source=email&utm_campaign=TrackOrder") TRACK ORDER
+                        {% elif email_header_cta_type == 'upload' %}
+                        a.button.button-large.button-primary(href="{{Hkp_url}}/trackOrder?orderId={{order.order_id}}&utm_source=email&utm_campaign=TrackOrder") TRACK ORDER
+                        {% elif email_header_cta_type == 'reorder' %}
+                        a.button.button-large.button-primary(href="{{Hkp_url}}/order/history?reorderId={{order.order_id}}&utm_source=email&utm_campaign=ReOrder") RE-ORDER
+                        {% elif email_header_cta_type == 'retry_payment' %}
+                        a.button.button-large.button-primary(href="{{Hkp_url}}/trackOrder?orderId={{order.order_id}}&emailAddress={{order.email}}&utm_source=email&utm_campaign=PayOnline") RETRY PAYMENT
+                        {% endif %}
+            if email_header_eta_to and not show_split_eta
+                if email_header_eta_from and email_header_eta_from != email_header_eta_to
+                    .email-header-eta.card-strip-success
+                        .row
+                            .left-col Estimated Delivery
+                            .right-col.email-header-eta-value {{email_header_eta_from}} - {{email_header_eta_to}}
+                else
+                    if email_header_eta_to == 'N/A'
+                        .email-header-eta-na.card-strip
+                            .row
+                                .left-col Estimated Delivery
+                                .right-col.email-header-eta-value {{email_header_eta_to}}
+                    else
+                        .email-header-eta.card-strip-success
+                            .row
+                                .left-col Estimated Delivery
+                                .right-col.email-header-eta-value {{email_header_eta_to}}
+            if email_header_need_help
+                if not show_split_eta and email_header_eta_to 
+                    .make-box-with-eta
+                        .help-link
+                            a(href="https://tdgx9.app.goo.gl/?link={{Hkp_url}}/help?orderId={{order.order_id}}&al=1mg://{{Hkp_url}}/help?orderId={{order.order_id}}&apn=com.aranoah.healthkart.plus&isi=554578419&ibi=com.aranoah.healthkart&ifl={{Hkp_url}}/help?orderId={{order.order_id}}&afl={{Hkp_url}}/help?orderId={{order.order_id}}")    Need Help?
+                        .only-center    Click to contact us with queries related to your order
+                else
+                    .make-box-without-eta
+                        .help-link
+                            a(href="https://tdgx9.app.goo.gl/?link={{Hkp_url}}/help?orderId={{order.order_id}}&al=1mg://{{Hkp_url}}/help?orderId={{order.order_id}}&apn=com.aranoah.healthkart.plus&isi=554578419&ibi=com.aranoah.healthkart&ifl={{Hkp_url}}/help?orderId={{order.order_id}}&afl={{Hkp_url}}/help?orderId={{order.order_id}}")    Need Help?
+                        .only-center    Click to contact us with queries related to your order
+        .card-content
+            if stage|lower == "reports recieved" and  order.report_discripency_link
+                .subtle Need clarification or have doubts about your test results from {{order.lab_name}}? Please fill the form in the link below and we will arrange a callback from labs diagnostic expert. {{order.report_discripency_link}}
+        if stage|lower == 'sample collected'
+            .card-strip-success
+                .savlon
+                    .green-text-underline
+                        a(href='{{order.post_sample_collection_url}}')  What happens to my sample now >
+    if order.is_digitized
+        .card
+            a(href='{{order.digi_report_url}}')
+                img.image(src="https://res.cloudinary.com/onemg/image/upload/v1512651374/banner/DR_Banner_new_bg.png" alt="Digitial Report")
+    if stage|lower == 'phlebo assigned' or stage|lower == "booking changed"
+        if  order.phlebo_name or order.phlebo_number or order.collection_time
+                .card
+                    .card-content
+                        .section-title.darker.section-title-large
+                                        .item-row.tat-info
+                                                .item-left-col
+                                                    if order.phlebo_name
+                                                        .item Phlebotomist Details
+                                                    else
+                                                        .item Sample Collection Date & Time
+                                    if order.phlebo_name
+                                        .item-row.tat-info
+                                            .item-left-col
+                                                .item Name
+                                            .item-right-col
+                                                .item  {{order.phlebo_name}}
+                                    if order.phlebo_number
+                                        .item-row.tat-info
+                                            .item-left-col
+                                                .item Contact Number
+                                            .item-right-col
+                                                .item  {{order.phlebo_number}}
+                                    if order.collection_time
+                                        .item-row.tat-info
+                                            .item-left-col
+                                                .item Sample Collection Time
+                                            .item-right-col
+                                                .item  {{order.collection_time}}
+    if stage|lower == 'sample collected'
+        .card
+            .card-content
+                .section-title.darker.section-title-large
+                            .item-row.tat-info
+                                    .item-left-col
+                                        .item Estimated Report Delivery Time
+                            each booking in order.bookings_list
+                                .item-row.tat-info
+                                    .item-left-col
+                                        .item {{booking.test_name}}
+                                    .item-right-col
+                                        .item  {{booking.tat}} HRS
+    if stage|lower == 'booking cancelled' and order.booking_list
+        .card
+            .card-content
+                .section-title.darker.section-title-large
+                            .item-row.tat-info
+                                    .item-left-col
+                                        .item Following tests booking were cancelled
+                            for booking in order.bookings_list
+                                .item-row.tat-info
+                                    .item-left-col
+                                        a(href="{{booking.test_url}}") {{booking.test_name}}
+    if stage|lower == 'camp reports recieved'
+        .card
+            .card-content
+                ul
+                    li
+                        .subtle Your 1mg account is already registered and instructions to reset your password have been sent earlier to your registered email address.
+                    li
+                        .subtle In case you have not reset your password earlier, click on 'Forgot Password' and follow the steps to reset your password.
+                    li
+                        .subtle Once you are logged in, visit your profile page and select 'My Bookings'.
+                    li
+                        .subtle Click on the 'Report' icon next to the 'Test Name' to view your report
+                .separator-light
+                .subtle If you wish to get any further tests done at home, we are offering a flat 25% discount for our camp participants. The coupon code is&nbsp;
+                    b OFF25*
+                    |.
+    if stage|lower == 'booking received' or stage|lower == 'booking confirmed' or stage|lower == 'phlebo assigned' or stage|lower == 'reports recieved' or stage|lower == 'sample collection slot update' or stage|lower == 'booking changed'
+        .card
+            .card-content
+                .order-lines
+                    if not hide_total_payable
+                        .subtle Order ID: {{order.appointment_id}}
+                        if order.status|lower == 'delivered' or order.status|lower == 'conducted' or order.status|lower == 'cancelled' or order.status|lower == 'request for return and refund' or order.status|lower == 'out for return and refund' or order.status|lower == 'returned and refunded'
+                            div
+                        else
+                            .section-title.darker.section-title-large
+                                .row
+                                    if order.payment_mode
+                                        .left-col
+                                            span Payment Mode
+                                        .right-col
+                                            .col {{order.payment_mode}}
+                            .separator-light
+                    .item-table
+                        if order.diagnostic_lab
+                                .item-row.product-info
+                                    .item-left-col.download-strip
+                                        .section-title.darker.section-title-large
+                                            .item {{order.diagnostic_lab}}
+                                        if order.category == "RADIOLOGY"
+                                            .item {{order.street}}, {{order.city}}, {{order.state}}-{{order.pin_code}}
+                        .separator-light
+                        for booking in order.bookings_list
+                            .item-row.product-info
+                                .item-left-col
+                                    .item {{booking.test_name}}
+                                if (order.third_party==null or (order.third_party and order.order_details))
+                                    .item-right-col
+                                        .item Rs.{{'%0.2f' % (booking.price)}}
+                if (order.third_party==null or (order.third_party and order.order_details))
+                    .separator-light
+                        .pricing-table
+                        if order.mrp
+                            .row
+                                .left-col.subtle
+                                    .item Subtotal
+                                .right-col
+                                    .item Rs.{{'%0.2f' % order.mrp|float}}
+                        if order.discount
+                            .row
+                                .left-col.subtle
+                                    .item Discount
+                                .right-col
+                                    .item (-) Rs.{{'%0.2f' % (order.discount)}}
+                        if order.coupon_discount
+                            .row
+                                .left-col.subtle
+                                    .item Coupon Discount
+                                        sup *
+                                .right-col
+                                    .item (-) Rs.{{'%0.2f' % (order.coupon_discount)}}
+                        if order.shipping_charges and order.shipping_charges >= 0
+                            .row
+                                .left-col.subtle
+                                    .item Shipping Charges
+                                .right-col
+                                    .item (+) Rs.{{'%0.2f' % order.shipping_charges}}
+                        if order.online_collected
+                            .row
+                                .left-col.subtle
+                                    .item Paid Online
+                                .right-col
+                                    .item (-) Rs.{{'%0.2f' % (order.online_collected)}}
+                        if order.cashback_availed
+                            .row
+                                .left-col.subtle
+                                    .item 1mgCash Used
+                                .right-col
+                                    .item (-) Rs.{{'%0.2f' % (order.cashback_availed)}}
+                        if order.report_charges
+                            .row
+                                .left-col.subtle
+                                    .item Report Delivery Charges
+                                .right-col
+                                    .item (+) Rs.{{'%0.2f' % (order.report_charges)}}
+                        if order.phlebo_charges
+                            .row
+                                .left-col.subtle
+                                    .item 1mgLabs Certified Phlebotomist Charges 
+                                .right-col
+                                    .item (+) Rs.{{'%0.2f' % (order.phlebo_charges)}}
+                        if order.vendor_fee
+                            .row
+                                .left-col.subtle
+                                    .item Report Vendor Fee
+                                .right-col
+                                    .item (+) Rs.{{'%0.2f' % (order.vendor_fee)}}
+                        if order.slot_charges
+                            .row
+                                .left-col.subtle
+                                    .item Collection Charges 
+                                .right-col
+                                    .item (+) Rs.{{'%0.2f' % (order.slot_charges)}}
+                        if order.smart_health_report_charges
+                            .row
+                                .left-col.subtle
+                                    .item Smart e-Health Report Charges 
+                                .right-col
+                                    .item (+) Rs.{{'%0.2f' % (order.smart_health_report_charges)}}
+                        if order.home_collection_charge
+                             .row
+                                 .left-col.subtle
+                                     .item Home Collection Charges
+                                 .right-col
+                                      .item (+) Rs.{{'%0.2f' % (order.home_collection_charge)}}
+                        .row.total-payable.highlight
+                            if order.payment_mode|lower != 'cash' or order.status|lower == 'delivered' or order.status|lower == 'conducted' or order.status|lower == 'cancelled' or order.status|lower == 'request for return and refund' or order.status|lower == 'out for return and refund' or order.status|lower == 'returned and refunded'
+                                if order.amount_payable >= 0
+                                    .left-col.subtle
+                                        span Total Paid
+                                    .right-col
+                                        .col Rs.{{'%0.2f' % order.amount_payable}}
+                                else
+                                    .left-col.subtle  Refunded
+                                    .right-col
+                                        .col Rs.{{'%0.2f' % (order.amount_payable * -1)}}
+                            else
+                                if order.amount_payable >= 0
+                                    .left-col.subtle
+                                        span To be Paid
+                                    .right-col
+                                        .col Rs.{{'%0.2f' % order.amount_payable}}
+                                else
+                                    .left-col.subtle To be Refunded
+                                    .right-col
+                                        .col Rs.{{'%0.2f' % (order.amount_payable * -1)}}
+                        if (order.phlebotomist_charges and not order.phlebo_charges) or (order.is_hard_copy and  not order.report_charges):
+                            if order.is_hard_copy and  not order.report_charges
+                                .subtle (+) Report Delivery: Rs.{{order.hard_copy_charges}} **
+                            if order.phlebotomist_charges and not order.phlebo_charges
+                                .subtle (+) 1mgLabs Certified Phlebotomist: Rs.{{order.phlebotomist_charges}} **
+                            if order.slot_select_charges and not order.slot_charges
+                                .subtle (+) Collection Charges: Rs.{{order.slot_select_charges}}
+                            if order.smart_report_charges and not order.smart_health_report_charges
+                                .subtle (+) Smart e-Health Report Charges : Rs.{{order.smart_report_charges}} **
+                            if order.home_collection_charges and not order.home_collection_charge
+                                .subtle (+) Home Collection Charges: Rs.{{order.home_collection_charges}} **
+                            .subtler
+                                sup **
+                                span These charges are applicable only once on total order
+                        if order.coupon_discount
+                            .subtler
+                                sup *
+                                span Coupon value may change if the total order value changes
+    if stage|lower == 'camp reports recieved'
+        .card
+            .card-content
+                .item-table
+                        .item-row.product-info
+                            .item-left-col
+                                .subtle Order ID: {{order.appointment_id}}
+                        if order.diagnostic_lab
+                                .item-row.product-info
+                                    .item-left-col.download-strip
+                                        .section-title.darker.section-title-large
+                                            .item {{order.diagnostic_lab}}
+                        .separator-light
+                        .item-row.product-info
+                            .item-left-col
+                                .item {{order.test_name}}
+    if stage|lower == 'booking cancelled'
+        .card
+            .card-content
+                .item-table
+                        .item-row.product-info
+                            .item-left-col
+                                .subtle Order ID: {{order.appointment_id}}
+                        if order.diagnostic_lab
+                                .item-row.product-info
+                                    .item-left-col.download-strip
+                                        .section-title.darker.section-title-large
+                                            .item {{order.diagnostic_lab}}
+                                        if order.category == "RADIOLOGY"
+                                            .item {{order.street}}, {{order.city}}, {{order.state}}-{{order.pin_code}}
+                        .separator-light
+                        .item-row.product-info
+                            .item-left-col
+                                .item {{order.test_name}}
+                        .separator-light
+                        if order.refund_amount
+                            .item-row.product-info
+                                .item-left-col
+                                    .item Refund Amount:
+                                .item-right-col
+                                    .item {{order.refund_amount}}
+    if stage|lower != "reports recieved"
+        .card
+            .card-content
+                .patient-table
+                    .section-title.darker.section-title-large
+                                .row
+                                    .left-col
+                                            span Patient Details
+                    .row
+                        .left-col.subtle
+                            .item Patient Name
+                        .right-col
+                            .item {{order.full_name}}
+                    .row
+                        .left-col.subtle
+                            .item Contact Number
+                        .right-col
+                            .item {{order.mobile_number}}
+                if order.category == "PATHOLOGY"
+                    if stage|lower != "camp order" and stage|lower != "camp reports recieved"
+                        .separator-light
+                        .address-table
+                            .section-title.darker.section-title-large
+                                        .row
+                                            .left-col
+                                                    span Address
+                            .row
+                                .left-col.subtle
+                                    .item {{order.full_name}}
+                            .row
+                                .left-col.subtle
+                                    .item {{order.street}}
+                            .row
+                                .left-col.subtle
+                                    .item {{order.city}}
+                            .row
+                                .left-col.subtle
+                                    .item {{order.state}}-{{order.pin_code}}
+                            .row
+                                .left-col.subtle
+                                    .item Phone : {{order.mobile_number}}
+    if stage|lower == 'booking confirmed' or stage|lower == 'phlebo assigned' or stage|lower == 'report delayed' or stage|lower == 'booking conducted'
+        .card
+            .card-content
+                if stage|lower == 'report delayed'
+                    .subtle We regret the inconvenience caused due to this delay. Please accept a "flat 40% off your next order" coupon for being a valued 1mg customer. Avail the offer by simply applying coupon code WECARE during checkout.
+                    .subtle The offers are applicable on all Pathology & Radiology Tests & Packages on 1mg platforms except Dr Lal PathLabs, Apollo Diagnostics, SRL Limited, Mahajan Imaging Centre & Nueclear Healthcare Limited.
+                elif order.category == "PATHOLOGY"
+                        .subtle Kindly allow 30 minutes time(+/-) for the phlebotomist to find and reach your location through possible traffic/weather
+                        if order.report_charges
+                            .subtle Hard copy of the test reports then it will be delivered within 2-3 days after delivery of soft copy.
+                elif order.category == "RADIOLOGY"
+                        .subtle Remember to email receipt at care@1mg.com to avail 40% discount on your next Pathology order. In case your reports are delayed, please call our customer support for assistance.
+    if stage|lower == "booking confirmed" or stage|lower == "phlebo assigned"
+        if order.test_precaution
+            .card
+                .card-content
+                    .item-table
+                        .section-title.darker.section-title-large
+                            .item-row.test-precautions
+                                .item-left-col
+                                    .item Test Precaution(s)
+                        for  precaution in order.test_precaution
+                            .item-row.test-precautions
+                                .item-left-col
+                                    .item {{precaution}}
+    if stage|lower == "reports recieved" and order.consultation
+        .card
+            .card-content
+                .item-table
+                        .section-title.darker.section-title-large
+                            .item-row.test-precaution
+                                .item-left-col
+                                    .item Useful Tips from our Pathologist
+                        .item-row.test-precautions
+                            .item-left-col
+                                .item {{order.consultation}}
+    .regards
+        div Thank you for using Tata Tata 1mg Labs !
+        .subtle Our customer care executives are available from 6 AM - 8 PM (Monday - Sunday).

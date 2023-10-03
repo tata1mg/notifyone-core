@@ -1,0 +1,21 @@
+extends ./layouts/onemg.jade
+block content
+  .card
+    .card-content
+      b Dear Bharti AXA Customer,
+      .subtle
+        p You have successfully signed up for ‘Doctor Consultation Service’ powered by 1mg. Click on the below link to set a password for further logging in to your account directly.
+        a.reset-link(href="{{reset_password_link}}"){{reset_password_link}}
+        p Use the same email id as your username the next time.
+        p Here are benefits of the 'Doctor Consultation' exclusive service:
+          ol
+            li Free online consultation
+            li Qualified doctors to answer any medical query
+            li Unlimited chats with doctor for a year from registration date *
+        p Simply choose specialty of choice, post a query and get started.
+      .regards
+        div Thanks,
+        div Bharti AXA GI and 1mg Team
+      .subtler
+          sup *
+          span Bharti AXA General Insurance reserves right to change or modify the offer.

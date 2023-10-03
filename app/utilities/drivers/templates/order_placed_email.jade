@@ -1,0 +1,34 @@
+extends ./layouts/onemg.jade
+
+block content
+  - var email_header_heading = 'Order Placed'
+  - var email_header_subheading = 'Next update in 30 minutes'
+  - var email_header_status = 'success'
+  - var email_header_cta_type = 'track'
+  {% if not (order and (order.tags and 'Lily Order' in order.tags)) %}  
+  a.link-labs-banner(href='{{base_url or Hkp_url}}/labs/new-delhi?utm_source=pharmaemail&utm_medium=email&utm_campaign=crosssell')
+    img(src="{{base_url or Hkp_url}}/images/emails/labs-email-banner.png?98798", alt="labs banner icon")
+  {% endif %}
+  .card.order-placed-card
+      .card-content
+          b Hello {{order.user.properties.name}}
+          .subtle Thank you for your order on 1mg. We will send an update in the next 30 minutes.
+              include includes/cod_to_online
+      include includes/email_header_new
+
+  if order.order_lines
+      .card
+          .card-content
+              include includes/order_lines.jade
+              .separator-light
+              include includes/cart_summary.jade
+  .para
+      .separator-dark.separator-broad
+  if order.payment_summary.cashback_earned
+      include includes/cashback_eligible.jade
+
+  include includes/order_address.jade
+
+  include includes/regards
+  include includes/cancellation
+

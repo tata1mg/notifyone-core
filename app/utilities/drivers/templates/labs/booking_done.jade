@@ -1,0 +1,77 @@
+extends ././layouts/onemg_labs.jade
+
+block content
+    .card
+        .card-content
+            b Hello {{order.full_name}}
+            if stage|lower == "refund update"
+                .subtle Your refund of Rs.{{order.payable_price}} with respect to Order id: {{ order.appointment_id}}{{order.order_id }} has been {{order.refund_status}} and will be credited to your account within the next 5 to 7 days. Please get back to us in case of any issue.
+            if stage|lower == "invoice"
+                .subtle Thank you for placing your order with Tata 1mg. We have attached the invoice for Order ID {{order.appointment_id}} with this email.
+            if stage|lower == "rating"
+                .subtle We would like to get feedback on your recent experience with reference to Order ID: {{order.appointment_id}} with&nbsp;
+                    b {{order.diagnostic_lab}}
+                    |. This will help us serve you better. Please rate your experience.
+            if stage|lower == "report delayed"
+                .subtle We regret to inform you that there has been an unexpected delay in below test report(s) for order&nbsp;
+                    b {{order.appointment_id}}&nbsp;
+                    | with&nbsp;
+                    b {{order.diagnostic_lab}}.&nbsp;
+                    | Our team is coordinating with the lab partner to get your report(s) delivered as soon as possible.
+                    br
+                    b {{order.test_name}}
+                    br
+                    | In case you need doctor consultation on test reports, we got that covered for you. Click
+                    |<a href='https://www.1mg.com/online-consultation?utm_source=<labs>&utm_medium=<email>&utm_campaign=<report_delay>'> here</a>
+                    | or go to "Ask Doctor" on Tata 1mg app/website to get online consultation on your test reports for a nominal fee.
+                    br
+                    | We promise to serve you better in future. As a token of apology and to strengthen your trust in Tata 1mgLabs we have slashed 40% on your next booking with us. Use "WECARE" to avail the discount*.
+            if stage|lower == "camp rescheduled"
+                - var email_header_heading =  stage
+                - var email_header_status = 'error'
+                .subtle This is to inform you that {{order.camp_name}} has been rescheduled due to certain unavoidable issues.
+            if stage|lower == "camp cancelled"
+                - var email_header_heading =  stage
+                - var email_header_status = 'error'
+                - var email_header_subheading = 'Your checkup camp appointment has been cancelled.'
+                .subtle This is to inform you that {{order.camp_name}} scheduled for {{order.date}} has been cancelled. We apologize to you for any inconvenience this may have caused.
+        include includes/email_header_new
+
+
+
+    if stage|lower == "rating"
+        .card
+            .card-content
+                    include labs/user_rating.jade
+
+    if stage|lower == 'booking confirmed' or stage|lower == 'phlebo assigned' or stage|lower == 'report delayed'
+        .card
+            .card-content
+                if stage|lower == 'report delayed'
+                    .subtler-height1 *The offers are not applicable on Mahajan Imaging Center, Suraksha Diagnostic Pvt Ltd, Dr. Gulati Imaging Institute, Nueclear Imaging Centre, Nueclear Healthcare Limited, Clinrad Diagnostics & Research Centre, Scan Lab, Total Diagnostics Care, Primex Scans and Elbit Medical Diagnostics Limited for Radiology tests & Dr. Lal PathLabs, SRL Limited, Max Healthcare Institute Limited, The Family Doctor (powered by Anand Diagnostic Laboratory), Vijaya Diagnostics and Metropolis Laboratories Pvt. Ltd for Pathology tests.
+
+    if stage|lower == 'camp rescheduled'
+        .card
+            .card-content
+                .patient-table
+                    .section-title.darker.section-title-large
+                                .row
+                                    .left-col
+                                            span Rescheduled Camp Timings:
+                    .row
+                        .left-col.subtle
+                            .item Start Date/Time
+                        .right-col
+                            .item  {{order.new_date}}
+                    .row
+                        .left-col.subtle
+                            .item End Date/Time:
+                        .right-col
+                            .item  {{order.new_end_date}}
+
+    if stage|lower == 'camp cancelled'
+        .card
+            .card-content
+                .subtle If you wish to get any tests done at home, Tata 1mg is offering a flat 25% discount for camp participants. The coupon code is OFF25.
+
+    include labs/regards.jade

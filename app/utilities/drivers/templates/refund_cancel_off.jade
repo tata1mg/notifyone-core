@@ -1,0 +1,26 @@
+extends ./layouts/onemg.jade
+block content
+
+    - var email_header_heading = 'Order Return Cancelled'
+    - var email_header_subheading = 'Refund Cancelled'
+    - var email_header_status = 'success'
+    - var email_header_need_help = 'help'
+    .card
+        .card-content
+            b Hello {{order.user.properties.name}}
+            {% if order.is_split_order %}
+            .subtle Return request for part of your group order {{order.group_id}} has been cancelled.
+            {% else %}
+            .subtle Return request for your order {{order.order_id}} has been cancelled.
+            {% endif %}
+        include includes/email_header_new
+
+    if order.order_lines
+        .card
+            .card-content
+                include includes/order_lines.jade
+                include includes/cart_summary.jade
+    include includes/refund_due
+    include includes/cashback_eligible.jade
+    include includes/order_address.jade
+    include includes/regards

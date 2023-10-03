@@ -1,0 +1,97 @@
+for order in all_orders_details_in_group
+    .card
+        .card-content
+            .order-lines
+                if not hide_total_payable
+                    .subtle Order ID: {{order.order_id}}
+                    if show_split_eta and order.eta
+                        if order.eta.eta_from and order.eta.eta_to
+                            .subtle.split-eta Estimated Delivery: {{order.eta.eta_from|format_eta_timestamp}} - {{order.eta.eta_to|format_eta_timestamp}}
+                        else
+                            if order.eta.eta_to
+                                .subtle.split-eta Estimated Delivery: {{order.eta.eta_to|format_eta_timestamp}}
+                            else
+                                .subtle.split-eta Estimated Delivery: N/A
+                    .section-title.darker.section-title-large
+                        .row
+                            if order.status|lower == 'delivered' or order.status|lower == 'cancelled' or order.status|lower == 'returned and refunded'
+                                div
+                            else
+                                if order.payment_summary.amount_payable >= 0
+                                    .left-col To be Paid
+                                    .right-col
+                                        .col Rs.{{'%0.2f' % order.payment_summary.amount_payable}}
+                                else
+                                    .left-col To be Refunded
+                                    .right-col
+                                        .col Rs.{{'%0.2f' % (order.payment_summary.amount_payable * -1)}}
+                    .separator-light
+
+                .item-table
+                    for order_line in order.order_lines
+                        {% set medUrl = "" %}
+                        {% set sku_slug = order_line.sku.name|get_slug_from_name %}
+                        {% if order_line.sku.type == "otc_drug" %}
+                        {% set medUrl = '{}/drugs/{}-{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+                        {% elif order_line.sku.type == "allopathy" %}
+                        {% set medUrl = '{}/drugs/{}-{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+                        {% else %}
+                        {% set medUrl = '{}/otc/{}-otc{}'.format(Hkp_url,sku_slug, order_line.sku.sku_id) %}
+                        {% endif %}
+                        .item-row.product-info
+                            .item-left-col
+                                a(href="{{medUrl}}") {{order_line.sku.name}}
+                                .pack-info {{order_line.pack_unit_form}}
+                            .item-right-col
+                                .item Rs.{{'%0.2f' % (order_line.quantity * order_line.unit_offered_price)}}
+                .separator-light
+            .pricing-table
+                .row
+                    .left-col.subtle
+                        .item Subtotal
+                    .right-col
+                        .item Rs.{{'%0.2f' % order.payment_summary.discounted_mrp|float}}
+                if order.payment_summary.coupon_discount
+                    .row
+                        .left-col.subtle
+                            .item Coupon Discount<sup>*</sup>
+                        .right-col
+                            .item (-) Rs.{{'%0.2f' % (order.payment_summary.coupon_discount)}}
+                if order.payment_summary.shipping_charges >= 0
+                    .row
+                        .left-col.subtle
+                            .item Shipping Charges
+                        .right-col
+                            .item (+) Rs.{{'%0.2f' % order.payment_summary.shipping_charges}}
+                if order.payment_summary.online_collected
+                    .row
+                        .left-col.subtle
+                            .item Paid Online
+                        .right-col
+                            .item (-) Rs.{{'%0.2f' % (order.payment_summary.online_collected)}}
+                if order.payment_summary.cashback_availed
+                    .row
+                        .left-col.subtle
+                            .item 1mgCash Used
+                        .right-col
+                            .item (-) Rs.{{'%0.2f' % (order.payment_summary.cashback_availed)}}
+
+                .row.total-payable.highlight
+                    if order.status|lower == 'delivered' or order.status|lower == 'cancelled' or order.status|lower == 'returned and refunded'
+                        div
+                    else
+                        if order.payment_summary.amount_payable >= 0
+                            .left-col.subtle To be Paid
+                            .right-col
+                                .col Rs.{{'%0.2f' % order.payment_summary.amount_payable}}
+                        else
+                            .left-col.subtle To be Refunded
+                            .right-col
+                                .col Rs.{{'%0.2f' % (order.payment_summary.amount_payable * -1)}}
+
+                .subtler
+                    sup *
+                    span Value may change if the total order value changes
+
+
+

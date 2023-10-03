@@ -1,0 +1,52 @@
+extends ./layouts/onemg-new.jade
+
+block content
+  .email-container
+      table(class='email-refill-table', cellpadding="0", cellspacing="0")
+        tbody
+          tr 
+            td
+              .email-intro-text
+                h1 It’s time to reorder
+                  if name
+                    |, {{name}}
+                p The medicines in your order 
+                  if delivery_date
+                    | delivered on {{delivery_date}}
+                  | are on the verge of running out. Click the ‘Reorder’ button now to replenish your stock.
+            td.doctor-img
+              .doctor-image
+                img(src='{{base_url or Hkp_url}}/images/emails/oc-doctor.png', alt='doctor')
+          tr
+            td(colspan='2')
+              include ./includes/medicine-list.jade
+          tr
+            td(colspan='2')
+              a(href="{{target_link}}", target="_blank")
+                form.email-text-body
+                  button(type="button") REORDER
+          tr 
+            td(colspan='2') 
+              if best_coupon and "coupon_code" in best_coupon
+                .email-coupon-info
+                  | Use the code
+                  span {{best_coupon.coupon_code}}
+                  |  to save up to
+                  if best_coupon.discount_value and best_coupon.discount_value > 200
+                    span ₹{{best_coupon.discount_value}}
+                  else 
+                    if best_coupon.max_discount_percent
+                      span {{best_coupon.max_discount_percent|round|int}}%
+                  if best_coupon.cashback_value
+                    |   and earn 
+                    span ₹{{best_coupon.cashback_value}}
+                    |  cashback
+                  else
+                    | on this order.
+          tr
+            td(colspan='2')
+              .email-reorder-details
+                p
+                  | Stay Healthy,
+                  br
+                  | Team 1mg

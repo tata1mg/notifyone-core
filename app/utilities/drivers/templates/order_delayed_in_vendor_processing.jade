@@ -1,0 +1,34 @@
+extends ./layouts/onemg.jade
+block content
+    - var email_header_heading = 'Order Under Processing'
+    - var email_header_subheading = 'Revised Delivery Date'
+    - var email_header_status = 'warning'
+    - var email_header_cta_type = 'track'
+    - var email_header_need_help = 'help'
+    if order.eta and order.eta.eta_to
+        - var email_header_eta_to = order.eta.eta_to|format_eta_timestamp
+    if order.eta and order.eta.eta_from
+        - var email_header_eta_from = order.eta.eta_from|format_eta_timestamp
+
+    .card
+        .card-content
+            b Hello {{order.user.properties.name}}
+            {% set order_eta_to = order.eta.eta_to|format_eta_timestamp %}
+            .subtle Your order is being processed by our pharmacy partner and will be delivered
+                if order.eta.eta_from == 0
+                    span &nbsp;by {{order_eta_to}}.
+                else
+                    {% set order_eta_from = order.eta.eta_from|format_eta_timestamp %}
+                    span &nbsp;between {{order_eta_from}} to {{order_eta_to}}.
+        include includes/email_header_new
+    if order.order_lines
+        .card
+            .card-content
+                include includes/order_lines.jade
+                .separate-content
+                include includes/cart_summary.jade
+    include includes/refund_due.jade
+    include includes/cashback_eligible.jade
+    include includes/order_address.jade
+    include includes/regards
+    include includes/cancellation

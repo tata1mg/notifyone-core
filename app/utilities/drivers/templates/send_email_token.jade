@@ -1,0 +1,15 @@
+extends ./layouts/onemg.jade
+block content
+  .card
+    .card-content
+      b Hello {{name}},
+      .subtle
+        p We have received a request to reset your password. Your One Time Password (OTP) is&nbsp;
+          b {{token}}
+          | &nbsp;which is valid for 15 minutes.
+        p If you believe an unauthorized person has accessed your account, please reset your password immediately. In case you continue to face problems, write to us at
+          |<span> </span>
+          a(href="mailto:care@1mg.com")
+              span.special-text care@1mg.com
+          | .
+  include includes/regards

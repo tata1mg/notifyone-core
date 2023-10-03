@@ -1,0 +1,32 @@
+.strip.footer
+  div
+    <span></span>
+    a(href='{{base_url or Hkp_url}}/help' target='_blank')
+      span.special-text Need Help?
+    | &nbsp;Click to contact us for queries
+  .social-links
+      a.social-link(href='https://www.facebook.com/1mgOfficial', target='_blank', title='Like us on Facebook',rel='nofollow',data-value='Facebook')
+        img(src='{{base_url or Hkp_url}}/images/emails/facebook.png')
+      a.social-link(href='https://twitter.com/1mgofficial',target='_blank',title='Follow us on Twitter', rel='nofollow', data-value='Twitter')
+        img(src='{{base_url or Hkp_url}}/images/emails/twitter.png')
+      a.social-link(href='https://plus.google.com/+Healthkartplus', target='_blank', title='Follow us on Google+', rel='nofollow', data-value='Google')
+        img(src='{{base_url or Hkp_url}}/images/emails/google-plus.png')
+      a.social-link(href='https://www.linkedin.com/company/5230742', target='_blank', title='Visit us on LinkedIn', rel='nofollow', data-value='LinkedIn')
+        img(src='{{base_url or Hkp_url}}/images/emails/linkedin.png')
+  .footer-links
+      a.content-holder(href='https://www.1mg.com', data-value='Meds')
+        span Medicines
+      span.separator |
+      a.content-holder(href='https://www.1mg.com/labs', target='_blank', data-value='Labs')
+        span Labs
+      span.separator |
+      a.content-holder(href='https://www.1mgdoctors.com', target='_blank', data-value='Doctors')
+        span Doctors
+      span.separator |
+      a.content-holder(href='https://www.1mg.com/articles', target='_blank', data-value='Capsule')
+        span Articles
+.footer-disclaimer.
+  In compliance with the Drugs and Cosmetics Act, we do not
+    process requests for Schedule X  and other habit forming drugs.
+    For Schedule H and H1 drugs you need to upload a valid prescription
+    from a registered medical practitioner.

@@ -1,0 +1,17 @@
+.card
+    .card-content
+        .section-title
+            .row
+                .left-col Delivery Details
+                .right-col
+                    .col {{order.delivery_address.city}}
+        .address.subtle
+            div {{order.delivery_address.name}}
+            div {{order.delivery_address.street1}}
+            if order.delivery_address.street2
+                div {{order.delivery_address.street2}}
+            div {{order.delivery_address.city}}
+            if order.delivery_address.state
+                span {{order.delivery_address.state}} -&nbsp;
+            span {{order.delivery_address.pincode}}
+            p Phone: {{order.delivery_address.contact_number}}
