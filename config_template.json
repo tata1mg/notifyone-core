@@ -14,11 +14,11 @@
     "connections": {
       "default": {
         "credentials": {
-          "database": "lara_service_db",
-          "host": "postgres.1mginfra.com",
-          "password": "lara_service_pass",
+          "database": "postgres",
+          "host": "localhost",
+          "password": "postgres",
           "port": 5432,
-          "user": "lara_service_user"
+          "user": "postgres"
         },
         "engine": "tortoise.backends.asyncpg"
       }
