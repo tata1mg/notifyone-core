@@ -37,8 +37,10 @@
   "SUBSCRIBE_NOTIFICATION_STATUS_UPDATES": {
     "SQS": {
       "SQS_REGION": "eu-west-2",
-      "SQS_ENDPOINT_URL": "",
-      "SQS_MAX_CONNECTIONS": 10
+      "SQS_ENDPOINT_URL": "http://localhost:4566",
+      "SQS_MAX_CONNECTIONS": 10,
+      "AWS_ACCESS_KEY_ID": "",
+      "AWS_SECRET_ACCESS_KEY": ""
     },
     "SUBSCRIBE_TO": {
       "QUEUE_NAME": "stag-ns_notification_status_update",
@@ -49,8 +51,10 @@
   "DISPATCH_NOTIFICATION_REQUEST": {
     "SQS": {
       "SQS_REGION": "eu-west-2",
-      "SQS_ENDPOINT_URL": "",
-      "SQS_MAX_CONNECTIONS": 10
+      "SQS_ENDPOINT_URL": "http://localhost:4566",
+      "SQS_MAX_CONNECTIONS": 10,
+      "AWS_ACCESS_KEY_ID": "",
+      "AWS_SECRET_ACCESS_KEY": ""
     },
     "EMAIL": {
       "ASYNC_CHANNEL": {
@@ -95,8 +99,10 @@
   "NOTIFICATION_REQUEST": {
     "SQS": {
       "SQS_REGION": "eu-west-2",
-      "SQS_ENDPOINT_URL": "",
-      "SQS_MAX_CONNECTIONS": 10
+      "SQS_ENDPOINT_URL": "http://localhost:4566",
+      "SQS_MAX_CONNECTIONS": 10,
+      "AWS_ACCESS_KEY_ID": "",
+      "AWS_SECRET_ACCESS_KEY": ""
     },
     "SUBSCRIBE_TO": {
       "HIGH_PRIORITY": {
