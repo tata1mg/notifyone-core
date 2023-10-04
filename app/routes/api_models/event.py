@@ -6,18 +6,18 @@ from sanic_openapi import openapi
 
 class CreateEventEmailOpenApiModel:
     description = openapi.String(description="Description of your event", example="This is test event", required=True)
-    subject = openapi.String(description="Email subject", example="Regarding your Order {{body.order_id}}", required=True)
-    content = openapi.String(description="Email body", example="Your order {{{{body.order_id}}}} has been processed", required=True)
+    subject = openapi.String(description="Email subject", example="Regarding your Order {{order.order_id}}", required=True)
+    content = openapi.String(description="Email body", example="Your order {{order.order_id}} has been processed", required=True)
 
 
 class CreateEventSmsOpenApiModel:
-    content = openapi.String(description="Email body", example="Your order {{{{body.order_id}}}} has been processed",
+    content = openapi.String(description="Email body", example="Your order {{order.order_id}} has been processed",
                              required=True)
 
 
 class CreateEventPushOpenApiModel:
     title = openapi.String(description="Push message title", example="Order update", required=True)
-    body = openapi.String(description="Push message body text", example="Order {{body.order_id}} has been delivered", required=True)
+    body = openapi.String(description="Push message body text", example="Order {{order.order_id}} has been delivered", required=True)
 
 
 class CreateEventWhatsappOpenApiModel:

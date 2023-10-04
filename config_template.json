@@ -124,7 +124,7 @@
     "default": {
       "REDIS_HOST": "localhost",
       "REDIS_PORT": 6379,
-      "LABEL": "default"
+      "LABEL": "global"
     }
   },
   "SENTRY": {
