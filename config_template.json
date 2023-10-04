@@ -36,7 +36,7 @@
   },
   "SUBSCRIBE_NOTIFICATION_STATUS_UPDATES": {
     "SQS": {
-      "SQS_REGION": "ap-south-1",
+      "SQS_REGION": "eu-west-2",
       "SQS_ENDPOINT_URL": "",
       "SQS_MAX_CONNECTIONS": 10
     },
@@ -48,7 +48,7 @@
   },
   "DISPATCH_NOTIFICATION_REQUEST": {
     "SQS": {
-      "SQS_REGION": "ap-south-1",
+      "SQS_REGION": "eu-west-2",
       "SQS_ENDPOINT_URL": "",
       "SQS_MAX_CONNECTIONS": 10
     },
@@ -87,14 +87,14 @@
   },
   "CONTENT_LOG": {
     "S3": {
-      "AWS_REGION": "ap-south-1",
+      "AWS_REGION": "eu-west-2",
       "BUCKET_NAME": "1mg-staging-nscontentlogs",
       "MAX_POOL_CONNECTIONS": 10
     }
   },
   "NOTIFICATION_REQUEST": {
     "SQS": {
-      "SQS_REGION": "ap-south-1",
+      "SQS_REGION": "eu-west-2",
       "SQS_ENDPOINT_URL": "",
       "SQS_MAX_CONNECTIONS": 10
     },
