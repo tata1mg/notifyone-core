@@ -27,3 +27,11 @@ class NotificationRequestLogDBModel(BaseModel):
     metadata = fields.TextField(null=True)
     created = NaiveDatetimeField(auto_now=True, index=True)
     updated = NaiveDatetimeField(auto_now=True)
+
+    async def to_dict(
+        self, filter_keys=None, get_related=True, related_fields=None
+    ):
+        status = self.status
+        dict_data = await super(NotificationRequestLogDBModel, self).to_dict()
+        dict_data['status'] = status.value
+        return dict_data
