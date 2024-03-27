@@ -1,6 +1,3 @@
-import json
-
-
 class CreateAppFormData:
 
     _form_data = {
@@ -254,4 +251,4 @@ class CreateAppFormData:
 
     @classmethod
     def get(cls):
-        return json.dumps(cls._form_data)
+        return cls._form_data

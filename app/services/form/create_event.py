@@ -1,6 +1,3 @@
-import json
-
-
 class CreateEventFormData:
 
     _form_data = {
@@ -581,4 +578,4 @@ class CreateEventFormData:
 
     @classmethod
     def get(cls):
-        return json.dumps(cls._form_data)
+        return cls._form_data
