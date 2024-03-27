@@ -7,6 +7,7 @@ from app.routes.push import push_apis
 from app.routes.sms import sms_apis
 from app.routes.whatsapp import whatsapp_apis
 from app.routes.apps import apps_blueprint
+from app.routes.form.structure import form_bp
 
 
 blueprint_group = Blueprint.group(
@@ -17,5 +18,6 @@ blueprint_group = Blueprint.group(
     push_apis,
     sms_apis,
     whatsapp_apis,
-    apps_blueprint
+    apps_blueprint,
+    form_bp
 )

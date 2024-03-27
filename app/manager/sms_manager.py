@@ -34,7 +34,7 @@ class SmsManager(BaseManager):
             await cls._filter_sms_templates(sms_template)
             for sms_template in sms_templates
         ]
-        result = {"sms": filtered_sms_templates[0]} if len(filtered_sms_templates) == 1 else {"sms": filtered_sms_templates}
+        result = {"sms": filtered_sms_templates}
 
         if not event_id and query_params and (not query_params.get('app_name') or not query_params.get('event_name')):
             result['start'] = query_params.get('start', Event.DEFAULT_OFFSET)
