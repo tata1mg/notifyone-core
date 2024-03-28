@@ -3,6 +3,7 @@ from redis_wrapper import RegisterRedis
 
 
 from app.listeners import listeners
+from app.middlewares import custom_response_middlewares
 from app.routes import blueprint_group
 
 if __name__ == "__main__":
@@ -15,6 +16,9 @@ if __name__ == "__main__":
 
     # Register DB
     Host._db_config = CONFIG.config["DB_CONNECTIONS"]
+
+    # Add custom response middlewares
+    Host._custom_response_middlewares = custom_response_middlewares
 
     # register combined blueprint group here.
     # these blueprints are defined in the routes directory and has to be
