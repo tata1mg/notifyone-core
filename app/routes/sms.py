@@ -9,7 +9,7 @@ sms_apis = Blueprint("SmsAPIs")
 @sms_apis.route("/sms/template", methods=["PUT"], name="update_sms_template")
 async def update_sms_template(request: Request):
     payload = request.custom_json()
-    user_email = request.ctx.user
+    user_email = "temp@ns.com"
     sms_template_id = payload.get("id")
     if not sms_template_id:
         raise RequiredParamsException("template id is missing in payload")
@@ -27,7 +27,7 @@ async def update_sms_template(request: Request):
 )
 async def get_sms_template_previews(request: Request):
     payload = request.custom_json()
-    user_email = request.ctx.user
+    user_email = "temp@ns.com"
     content, event_name, data = (
         payload.get("content"),
         payload.get("event_name"),
