@@ -6,7 +6,8 @@ def _add_cors_headers(response, methods: Iterable[str]) -> None:
     if "OPTIONS" not in allow_methods:
         allow_methods.append("OPTIONS")
     headers = {
-        "Access-Control-Allow-Methods": ",".join(allow_methods),
+        # "Access-Control-Allow-Methods": ",".join(allow_methods),
+        "Access-Control-Allow-Methods": "*",
         "Access-Control-Allow-Origin": "*",
         # "Access-Control-Allow-Credentials": "true",
         # "Access-Control-Allow-Headers": (
