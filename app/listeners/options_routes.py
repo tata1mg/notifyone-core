@@ -1,7 +1,7 @@
 from collections import defaultdict
 from typing import Dict, FrozenSet
 
-from sanic import Sanic, response
+from sanic import response as sanic_response
 from sanic.router import Route
 from sanic_routing.exceptions import RouteExists
 
@@ -45,7 +45,7 @@ def _options_wrapper(handler, methods):
     return wrapped_handler
 
 
-async def options_handler(request, methods) -> response.HTTPResponse:
-    resp = response.empty()
+async def options_handler(request, methods) -> sanic_response.HTTPResponse:
+    resp = sanic_response.empty(status=200)
     _add_cors_headers(resp, methods)
     return resp
