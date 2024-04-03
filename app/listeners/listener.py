@@ -9,6 +9,8 @@ from app.services.push import PushHandler
 from app.services.whatsapp import WhatsappHandler
 from app.utilities.drivers import CustomJinjaEnvironment
 
+from .options_routes import setup_options
+
 
 async def subscribe_for_notification_requests(app, loop):
     await SubscribeNotificationRequest.setup_subscription()
@@ -41,4 +43,5 @@ listeners = [
     (setup_notification_channel_handlers, ListenerEventTypes.AFTER_SERVER_START.value),
     (initialize_jinja_environment, ListenerEventTypes.AFTER_SERVER_START.value),
     (setup_repositories, ListenerEventTypes.AFTER_SERVER_START.value),
+    (setup_options, ListenerEventTypes.BEFORE_SERVER_START.value),
 ]
