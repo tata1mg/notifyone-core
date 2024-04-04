@@ -9,7 +9,7 @@ push_apis = Blueprint("PushAPIs")
 @push_apis.route("/push/template", methods=["PUT"], name="update_push_template")
 async def update_push_template(request: Request):
     payload = request.custom_json()
-    user_email = request.ctx.user
+    user_email = "temp@ns.com"
     push_template_id = payload.get("id")
     if not push_template_id:
         raise RequiredParamsException("template id is missing in payload")
