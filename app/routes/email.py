@@ -9,7 +9,7 @@ email_apis = Blueprint("EmailAPIs")
 @email_apis.route("/email/template", methods=["PUT"], name="update_email_template")
 async def update_email_template(request: Request):
     payload = request.custom_json()
-    user_email = request.ctx.user
+    user_email = "admin@ns.com"
     email_template_id = payload.get("id")
     if not email_template_id:
         raise RequiredParamsException("template id is missing in payload")
@@ -26,7 +26,7 @@ async def update_email_template(request: Request):
 )
 async def get_email_template_previews(request: Request):
     payload = request.custom_json()
-    user_email = "temp@ns.com"
+    user_email = "admin@ns.com"
     template_id = payload.get("id")
     if not template_id:
         raise RequiredParamsException("template id is missing in payload")
@@ -45,7 +45,7 @@ async def get_email_template_previews(request: Request):
 )
 async def create_include_email_template(request: Request):
     payload = request.custom_json()
-    user_email = "temp@ns.com"
+    user_email = "admin@ns.com"
     name, content, description, subject = (
         payload.get("name"),
         payload.get("content"),
