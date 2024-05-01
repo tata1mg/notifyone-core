@@ -5,6 +5,7 @@ from app.exceptions import NotFoundException
 
 logger = logging.getLogger()
 
+
 class GenericDataStoreManager:
 
     @staticmethod

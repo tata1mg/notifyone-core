@@ -1,3 +1,5 @@
+from typing import Any, Dict, List, Optional
+
 from tortoise_wrapper.wrappers import ORMWrapper
 
 from app.caches import NotificationCoreCache
@@ -40,3 +42,17 @@ class AppsRepository:
         }
         row = await ORMWrapper.create(AppsDBModel, values)
         return AppsModel(await cls._convert_app_to_dict(row))
+
+    @classmethod
+    async def filter_cols(
+            cls,
+            filters: Optional[Dict[str, Any]] = None,
+            columns: Optional[List[str]] = None,
+            flat: bool = False,
+    ):
+        if not filters:
+            filters = {}
+        if not columns:
+            columns = []
+
+        return await AppsDBModel.filter(**filters).values_list(*columns, flat=flat)

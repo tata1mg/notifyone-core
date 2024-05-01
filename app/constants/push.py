@@ -1,3 +1,6 @@
+from commonutils.utils import CustomEnum
+
+
 class PushTarget:
     PROTOCOL = {
         "1MG": "onemg",
@@ -82,6 +85,12 @@ class PushTarget:
             ],
         },
     }
+
+
+class DeviceType(CustomEnum):
+    ALL = "ALL"
+    iOS = "IOS"
+    ANDROID = "ANDROID"
 
 
 class Push:

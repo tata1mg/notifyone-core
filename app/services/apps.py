@@ -6,6 +6,10 @@ from app.repositories.apps import AppsRepository
 class AppService:
 
     @classmethod
+    async def list_app_names(cls):
+        return await AppsRepository.filter_cols(columns=["name"], flat=True)
+
+    @classmethod
     async def create_app(cls, request_payload):
         # The info must contain email sender details (name, address and reply_to)
         app_name = request_payload.get("name")
