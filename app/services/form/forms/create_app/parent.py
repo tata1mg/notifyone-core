@@ -11,12 +11,44 @@ from app.services.form.fields import (
     SelectField,
     TextInput,
     UrlInput,
+    EmailInput,
 )
 from app.services.form import GenericForm
 from app.services.form.fields.field_rule import Required
 
 
 class CreateAppForm(GenericForm):
+
+    @classmethod
+    async def __get_metadata_components(cls) -> dict:
+        return {
+            "sender_details": Collection(
+                name="sender_details",
+                label="Sender Details",
+                order=["email"],
+                components=await cls.__get_sender_details_components()
+            )
+        }
+
+    @classmethod
+    async def __get_sender_details_components(cls) -> dict:
+        return {
+            "email": Collection(
+                name="email",
+                label="Email Sender Details",
+                order=["name", "address", "reply_to"],
+                components=await cls.__get_email_sender_components()
+            )
+        }
+
+    @classmethod
+    async def __get_email_sender_components(cls) -> dict:
+        return {
+            "name": TextInput(name="name", label="Email Sender Name"),
+            "address": EmailInput(name="address", label="Email Sender Address"),
+            "reply_to": EmailInput(name="reply_to", label="Reply To Address")
+        }
+
     @classmethod
     async def __get_callback_events_components(cls):
         return {
@@ -57,6 +89,12 @@ class CreateAppForm(GenericForm):
                 order=["email", "sms", "push", "whatsapp"],
                 components=await cls.__get_callback_events_components(),
             ),
+            "metadata": Collection(
+                name="metadata",
+                label="Meta Data",
+                order=["sender_details"],
+                components=await cls.__get_metadata_components()
+            )
         }
 
     @classmethod
@@ -69,6 +107,7 @@ class CreateAppForm(GenericForm):
                 "name",
                 "callback_url",
                 "callback_events",
+                "metadata"
             ],
             components=components,
         )

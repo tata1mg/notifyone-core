@@ -1,7 +1,7 @@
-from enum import Enum
+from commonutils.utils import CustomEnum
 
 
-class EmailEventStatus(str, Enum):
+class EmailEventStatus(str, CustomEnum):
     OPENED = "OPENED"
     REJECTED = "REJECTED"
     SENT = "SENT"
@@ -19,7 +19,7 @@ class EmailEventStatus(str, Enum):
         return self.value
 
 
-class SmsEventStatus(str, Enum):
+class SmsEventStatus(str, CustomEnum):
     SENT = "SENT"
     QUEUED = "QUEUED"
     FAILED = "FAILED"
@@ -36,11 +36,11 @@ class SmsEventStatus(str, Enum):
         return self.value
 
 
-class PushEventStatus(str, Enum):
+class PushEventStatus(str, CustomEnum):
     pass
 
 
-class WhatsAppEventStatus(str, Enum):
+class WhatsAppEventStatus(str, CustomEnum):
     SENT = "SENT"
     DELIVERED = "DELIVERED"
     READ = "READ"
