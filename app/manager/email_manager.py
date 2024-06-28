@@ -281,8 +281,9 @@ class EmailManager(BaseManager):
         subject = template_details.subject or Email.SUBJECT
         subject = CustomJinjaEnvironment.render_text(subject, data)
         if send_email_to:
-            data = dict()
-            await EmailHandler.publish(data, send_email_to, subject, template)
+            pass
+            # data = dict()
+            # await EmailHandler.publish(data, send_email_to, subject, template)
         return template, subject
 
     @classmethod

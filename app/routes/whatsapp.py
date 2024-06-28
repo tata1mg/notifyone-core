@@ -11,7 +11,7 @@ whatsapp_apis = Blueprint("WhatsappAPIs")
 )
 async def update_whatsapp_template(request: Request):
     payload = request.custom_json()
-    user_email = request.ctx.user
+    user_email = "temp@ns.com"
     whatsapp_template_id = payload.get("id")
     if not whatsapp_template_id:
         raise RequiredParamsException("template id is missing in payload")

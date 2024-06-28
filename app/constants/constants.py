@@ -8,6 +8,7 @@ class Action(Enum):
     ON = 1
     OFF = 0
 
+
 class TriggerLimit(Enum):
     INFINITE = -1
     SINGLE = 1
@@ -37,10 +38,12 @@ class Event:
     DEFAULT_LIMIT = 1000
     DEFAULT_OFFSET = 0
 
+
 class EventType(Enum):
     PROMOTIONAL = "promotional"
     TRANSACTIONAL = "transactional"
     OTHER = "other"
+
 
 class SyncDispatcher:
     ENDPOINT = "/notify"

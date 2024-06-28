@@ -44,13 +44,14 @@ async def handle_email_template_update(request: Request):
 )
 async def create_event(request: Request):
     data = request.custom_json()
+    data["user_email"] = "temp@ns.com"
     result = await Events.create_event(data)
     return send_response(result)
 
 @event_blueprint.route("/event/add_action", methods=["PUT"], name="update_event")
 async def update_event(request: Request):
     data = request.custom_json()
-    data["user_email"] = request.ctx.user
+    data["user_email"] = "temp@ns.com"
     result = await Events.add_new_action_to_event(data)
     return send_response(result)
 
@@ -72,6 +73,6 @@ async def get_events(request: Request):
     "/event/<event_id:int>", methods=["DELETE"], name="delete_event_with_id"
 )
 async def delete_event(request: Request, event_id: int):
-    user_email = request.ctx.user
+    user_email = "temp@ns.com"
     result = await Events.delete_event(event_id, user_email)
     return send_response(result)

@@ -1,4 +1,4 @@
-from .constants import SyncDispatcher
+from .constants import SyncDispatcher, EventType
 from .error_messages import ErrorMessages
 from .notification_channels import NotificationChannels
 from .event_priority import EventPriority

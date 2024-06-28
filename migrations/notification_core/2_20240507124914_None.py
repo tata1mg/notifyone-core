@@ -6,7 +6,9 @@ async def upgrade(db: BaseDBAsyncClient) -> str:
         CREATE TABLE IF NOT EXISTS "apps" (
     "id" BIGSERIAL NOT NULL PRIMARY KEY,
     "name" VARCHAR(100) NOT NULL UNIQUE,
-    "info" JSONB NOT NULL,
+    "callback_url" VARCHAR(1000) NOT NULL,
+    "callback_events" JSONB,
+    "metadata" JSONB,
     "created" TIMESTAMP NOT NULL  DEFAULT CURRENT_TIMESTAMP,
     "updated" TIMESTAMP NOT NULL  DEFAULT CURRENT_TIMESTAMP
 );
