@@ -1,4 +1,4 @@
-class DashboardHome:
+class DashboardHomeScreen:
 
     @classmethod
     async def get_homepage_data(cls):
@@ -43,7 +43,7 @@ class DashboardHome:
                 "metrics": {
                     "total_notifications": 1000,
                     "success_rate": 92,
-                    "latency": "<text> 99ms"
+                    "latency": "99ms"
                 }
             },
             "real_time_status": {
