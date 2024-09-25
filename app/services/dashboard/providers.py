@@ -13,7 +13,7 @@ class DashboardProvidersScreen:
                     "name": "Plivo SMS Provider",
                     "unique_identifier": "PLIVO_13123",
                     "channel": "Email",
-                    "status": "active/disabled",
+                    "status": "active",
                     "last_updated": "Jan 11, 2024 @ 11:00 AM"
                 },
                 {
@@ -21,7 +21,7 @@ class DashboardProvidersScreen:
                     "name": "Sms Country SMS Provider",
                     "unique_identifier": "PLIVO_13123",
                     "channel": "Email",
-                    "status": "active/disabled",
+                    "status": "disabled",
                     "last_updated": "Jan 11, 2024 @ 11:00 AM"
                 }
             ]

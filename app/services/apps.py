@@ -12,6 +12,27 @@ class AppService:
         return await AppsRepository.filter_cols(columns=["name"], flat=True)
 
     @classmethod
+    async def get_all_apps(cls):
+        apps = await AppsRepository.filter_cols(columns=["id", "name", "callback_url", "metadata", "updated"])
+        apps_data = list()
+        for app in apps:
+            apps_data.append(
+                {
+                    "id": app[0],
+                    "app_name": app[1],
+                    "callback_url": app[2],
+                    "email_sender_address": app[3]["sender_details"]["email"]["address"],
+                    "email_sender_name": app[3]["sender_details"]["email"]["name"],
+                    "email_sender_reply_to": app[3]["sender_details"]["email"]["reply_to"],
+                    "updated": app[4].strftime("%m/%d/%Y, %H:%M:%S")
+                }
+            )
+        return {
+            "title": "List of Tenants",
+            "tenants": apps_data
+        }
+
+    @classmethod
     async def create_app(cls, request_payload):
         # The info must contain email sender details (name, address and reply_to)
         app_name = request_payload.get("name")
