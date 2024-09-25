@@ -1,4 +1,5 @@
 from crypt import methods
+from os.path import defpath
 
 from attr import dataclass
 from sanic import Blueprint
@@ -33,4 +34,11 @@ async def create_app(request: Request):
 @apps_blueprint.route("/apps", methods=["GET"], name="get_apps")
 async def get_apps(request: Request):
     data = await AppService.get_all_apps()
+    return send_response(data)
+
+
+@apps_blueprint.route("/apps", methods=["PUT"], name="update_app")
+async def update_app(request: Request):
+    request_payload = request.custom_json()
+    data = await AppService.update_app(request_payload)
     return send_response(data)

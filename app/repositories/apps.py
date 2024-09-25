@@ -43,9 +43,8 @@ class AppsRepository:
             return await cls._convert_app_to_dict(apps_from_db[0])
         return dict()
 
-
     @classmethod
-    async def create_app(cls, name, callback_url, callback_events, metadata):
+    async def create_app(cls, name, callback_url, callback_events, metadata) -> AppsModel:
         values = {
             "name": name,
             "callback_url": callback_url,
@@ -54,6 +53,21 @@ class AppsRepository:
         }
         row = await ORMWrapper.create(AppsDBModel, values)
         return AppsModel(await cls._convert_app_to_dict(row))
+
+    @classmethod
+    async def update_app(cls, id, callback_url, callback_events, metadata) -> AppsModel:
+        where_clause = {"id": id}
+        apps = await ORMWrapper.get_by_filters(AppsDBModel, where_clause, limit=1)
+        if not apps:
+            raise NotFoundException("App does not exist")
+        app = apps[0]
+        values = {
+            "callback_url": callback_url,
+            "callback_events": callback_events,
+            "metadata": metadata
+        }
+        row = await ORMWrapper.update_with_filters(app, AppsDBModel, values)
+        return AppsModel(await cls._convert_app_to_dict(app))
 
     @classmethod
     async def filter_cols(
