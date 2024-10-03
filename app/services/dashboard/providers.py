@@ -1,4 +1,5 @@
-from app.constants import NotificationChannels, EmailProviders, SmsProviders, PushProviders, WhatsappProviders
+from app.constants import NotificationChannels, Providers
+
 
 class DashboardProvidersScreen:
 
@@ -36,22 +37,22 @@ class DashboardProvidersScreen:
                 NotificationChannels.EMAIL.value : {
                     "name": NotificationChannels.EMAIL.value.title(),
                     "code": NotificationChannels.EMAIL.value,
-                    "providers": [provider.value for provider in EmailProviders]
+                    "providers": Providers.get_channel_providers(NotificationChannels.EMAIL)
                 },
                 NotificationChannels.SMS.value: {
                     "name": NotificationChannels.SMS.value.title(),
                     "code": NotificationChannels.SMS.value,
-                    "providers": [provider.value for provider in SmsProviders]
+                    "providers": Providers.get_channel_providers(NotificationChannels.SMS)
                 },
                 NotificationChannels.PUSH.value: {
                     "name": NotificationChannels.PUSH.value.title(),
                     "code": NotificationChannels.PUSH.value,
-                    "providers": [provider.value for provider in PushProviders]
+                    "providers": Providers.get_channel_providers(NotificationChannels.PUSH)
                 },
                 NotificationChannels.WHATSAPP.value: {
                     "name": NotificationChannels.WHATSAPP.value.title(),
                     "code": NotificationChannels.WHATSAPP.value,
-                    "providers": [provider.value for provider in WhatsappProviders]
+                    "providers": Providers.get_channel_providers(NotificationChannels.WHATSAPP)
                 }
             }
         }
