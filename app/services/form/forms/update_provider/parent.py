@@ -15,7 +15,7 @@ from app.services.form.fields.field_rule import Required
 from app.repositories.apps import AppsRepository
 
 
-class AddProviderForm(GenericForm):
+class UpdateProviderForm(GenericForm):
 
     @classmethod
     async def __get_components_recursively(cls, configuration) -> dict:

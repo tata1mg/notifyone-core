@@ -77,6 +77,10 @@ def current_utc_timestamp():
     return datetime.datetime.utcnow()
 
 
+def epoch_to_str_date(epoch):
+    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(epoch))
+
+
 def current_epoch():
     return int(time.time()*1000)
 

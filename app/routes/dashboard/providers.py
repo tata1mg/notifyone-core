@@ -15,5 +15,8 @@ async def list_channels_and_respective_providers(request: Request):
 
 @providers_blueprint.route("/configured", methods=["GET"], name="dashboard_providers_configured")
 async def list_channels_and_respective_providers(request: Request):
-    data = await DashboardProvidersScreen.get_configured_providers()
+    request_params = request.request_params()
+    limit = request_params.get("limit") or 10
+    offset = request_params.get("offset") or 0
+    data = await DashboardProvidersScreen.get_configured_providers(limit, offset)
     return send_response(data)

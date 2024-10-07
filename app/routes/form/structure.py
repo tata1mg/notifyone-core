@@ -35,3 +35,13 @@ async def get_add_provider_form(_req, channel, provider):
     if provider_enum.value["code"] not in Providers.get_channel_providers(channel_enum):
         raise BadRequestException("Invalid channel provider combination")
     return json(body=await AddProviderForm.get_asdict_with_params(channel=channel_enum, provider=provider_enum))
+
+
+@form_bp.get("/update-provider/<channel>/<provider>")
+async def get_update_provider_form(_req, channel, provider):
+    channel_enum = NotificationChannels.get_enum(channel)
+    provider_enum = Providers.get_enum_from_code(provider)
+    if not (channel_enum and provider_enum):
+        raise BadRequestException("Invalid channel or provider code")
+    if provider_enum.value["code"] not in Providers.get_channel_providers(channel_enum):
+        raise BadRequestException("Invalid channel provider combination")

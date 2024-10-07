@@ -1,31 +1,33 @@
 from app.constants import NotificationChannels, Providers
 
+from app.repositories.providers import ProvidersRepository
+from app.utilities.utils import epoch_to_str_date
+
 
 class DashboardProvidersScreen:
 
     @classmethod
-    async def get_configured_providers(cls):
-        return {
-            "title": "Page Heading",
-            "sub_title": "Any other message",
-            "providers": [
+    async def get_configured_providers(cls, limit, offset):
+        final_list = list()
+        providers = await ProvidersRepository.get_configured_providers(limit=limit, offset=offset)
+        for provider in providers:
+            final_list.append(
                 {
-                    "provider": "PLIVO",
-                    "name": "Plivo SMS Provider",
-                    "unique_identifier": "PLIVO_13123",
-                    "channel": "Email",
-                    "status": "active",
-                    "last_updated": "Jan 11, 2024 @ 11:00 AM"
-                },
-                {
-                    "provider": "SMS_COUNTRY",
-                    "name": "Sms Country SMS Provider",
-                    "unique_identifier": "PLIVO_13123",
-                    "channel": "Email",
-                    "status": "disabled",
-                    "last_updated": "Jan 11, 2024 @ 11:00 AM"
+                    "provider": provider.provider,
+                    "unique_identifier": provider.unique_identifier,
+                    "channel": provider.channel,
+                    "status": provider.status,
+                    "last_updated": epoch_to_str_date(provider.updated)
                 }
-            ]
+            )
+        total_count = await ProvidersRepository.total_count()
+        return {
+            "title": "Configured Providers",
+            "sub_title": "List of all active/disabled providers configured in the system",
+            "limit": limit,
+            "offset": offset,
+            "total": total_count,
+            "providers": final_list
         }
 
     @classmethod

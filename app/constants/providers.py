@@ -3,6 +3,11 @@ from commonutils.utils import CustomEnum
 from app.constants import NotificationChannels
 
 
+class ProvidersStatus(CustomEnum):
+    ACTIVE = "active"
+    DISABLED = "disabled"
+
+
 class Providers(CustomEnum):
 
     AWS_SES = {
