@@ -132,5 +132,11 @@
   },
   "TEST_ENVIRONMENT": false,
   "TEST_ALLOWED_EMAILS": [],
-  "TEST_ALLOWED_MOBILES": []
+  "TEST_ALLOWED_MOBILES": [],
+  "PROVIDERS": {
+    "ENCRYPTION": {
+      "KEY": "",
+      "AES_IV": ""
+    }
+  }
 }
