@@ -135,8 +135,8 @@
   "TEST_ALLOWED_MOBILES": [],
   "PROVIDERS": {
     "ENCRYPTION": {
-      "KEY": "",
-      "AES_IV": ""
+      "KEY": "####@@@@!!!!****",
+      "AES_IV": "****@@@@!!!!####"
     }
   }
 }
