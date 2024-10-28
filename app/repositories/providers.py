@@ -1,5 +1,12 @@
+from certifi import where
+from lazy_object_proxy.utils import await_
 from pydantic import conint
+from setuptools.errors import ExecError
+from tortoise.exceptions import IntegrityError
+from torpedo.exceptions import NotFoundException, BadRequestException
 from tortoise_wrapper.wrappers import ORMWrapper
+
+from app.constants import NotificationChannels, Providers, ProvidersStatus
 from app.models.notification_core_db import ProvidersDBModel
 from app.models.notification_core import ProviderModel
 
@@ -11,11 +18,11 @@ class ProvidersRepository:
     @classmethod
     async def _convert_provider_to_dict(cls, provider_from_db: ProvidersDBModel) -> dict:
         channel = provider_from_db.channel.value
-        status = provider_from_db.status.value
+        status = provider_from_db.status
         provider = await provider_from_db.to_dict()
         provider["created"] = int(provider["created"].timestamp())
         provider["updated"] = int(provider["updated"].timestamp())
-        # provider["configuration"] = await cls.decrypt_configuration(provider["configuration"])
+        provider["configuration"] = await cls.decrypt_configuration(provider["configuration"])
         provider["channel"] = channel
         provider["status"] = status
         return provider
@@ -27,6 +34,15 @@ class ProvidersRepository:
                 configuration[key] = Crypto.decrypt(val)
             elif isinstance(val, dict):
                 configuration[key] = cls.decrypt_configuration(val)
+        return configuration
+
+    @classmethod
+    async def encrypt_configuration(cls, configuration: dict) -> dict:
+        for key, val in configuration.items():
+            if isinstance(val, str) or isinstance(val, int):
+                configuration[key] = Crypto.encrypt(val)
+            elif isinstance(val, dict):
+                configuration[key] = cls.encrypt_configuration(val)
         return configuration
 
     @classmethod
@@ -42,5 +58,49 @@ class ProvidersRepository:
         return providers
 
     @classmethod
+    async def get_provider_by_unique_id(cls, unique_identifier: str) -> ProviderModel:
+        select_filter = {
+            "unique_identifier": unique_identifier
+        }
+        rows = await ORMWrapper.get_by_filters(ProvidersDBModel, select_filter)
+        if rows:
+            return ProviderModel(await cls._convert_provider_to_dict(rows[0]))
+        raise NotFoundException("Provider not found")
+
+    @classmethod
     async def total_count(cls):
         return await ORMWrapper.get_by_filters_count(ProvidersDBModel, filters={})
+
+
+    @classmethod
+    async def add_new_provider(
+            cls,
+            channel: NotificationChannels,
+            provider: Providers,
+            unique_identifier: str,
+            configuration: dict
+    ) -> ProviderModel:
+        values = {
+            "channel": channel.value,
+            "provider": provider.value["code"],
+            "unique_identifier": unique_identifier,
+            "configuration": await cls.encrypt_configuration(configuration)
+        }
+        try:
+            await ORMWrapper.create(ProvidersDBModel, values)
+        except IntegrityError:
+            raise BadRequestException("unique_identifier not available. Choose a different unique_identifier")
+        return await cls.get_provider_by_unique_id(unique_identifier)
+
+    @classmethod
+    async def update_provider(cls, unique_identifier, disable=False, configuration=None) -> ProviderModel:
+        values = {
+            "status": ProvidersStatus.DISABLED.value if disable else ProvidersStatus.DISABLED.value
+        }
+        if configuration:
+            values["configuration"] = await cls.encrypt_configuration(configuration)
+        where_clause = {
+            "unique_identifier": unique_identifier
+        }
+        await ORMWrapper.update_with_filters(None, ProvidersDBModel, values, where_clause=where_clause)
+        return await cls.get_provider_by_unique_id(unique_identifier)
