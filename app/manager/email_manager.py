@@ -176,7 +176,7 @@ class EmailManager(BaseManager):
         )
         await cls.update_template_db_files(template_ids_affected)
         await EmailHandler.handle_email_template_update(
-            latest_template_version=current_epoch_in_millis
+            latest_template_version=current_epoch_in_millis()
         )
         return {"message": "email template updated successfully"}
 
