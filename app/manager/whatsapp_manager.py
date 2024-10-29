@@ -30,7 +30,8 @@ class WhatsappManager(BaseManager):
             await cls.filter_whatsapp_templates(whatsapp_template)
             for whatsapp_template in whatsapp_templates
         ]
-        result = {"whatsapp": filtered_whatsapp_templates}
+
+        result = {"whatsapp": filtered_whatsapp_templates[0]} if len(filtered_whatsapp_templates) == 1 else {"whatsapp": filtered_whatsapp_templates}
 
         if not event_id and query_params and (not query_params.get('app_name') or not query_params.get('event_name')):
             result['start'] = query_params.get('start', Event.DEFAULT_OFFSET)
