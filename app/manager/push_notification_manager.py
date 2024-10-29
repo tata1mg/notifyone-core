@@ -38,7 +38,10 @@ class PushManager(BaseManager):
             for push_notification in push_templates
         ]
 
-        result = {"push": filtered_notifications[0]} if len(filtered_notifications) == 1 else {"push": filtered_notifications}
+        if event_id:
+            filtered_notifications = filtered_notifications[0]
+
+        result = {"push": filtered_notifications}
 
         if not event_id and query_params and (not query_params.get('app_name') or not query_params.get('event_name')):
             result['start'] = query_params.get('start', Event.DEFAULT_OFFSET)

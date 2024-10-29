@@ -44,8 +44,10 @@ class EmailManager(BaseManager):
             for email_template in email_templates
         ]
 
-        # result = {"email": filtered_email_templates}
-        result = {"email": filtered_email_templates[0]} if len(filtered_email_templates) == 1 else {"email": filtered_email_templates}
+        if event_id:
+            filtered_email_templates = filtered_email_templates[0]
+
+        result = {"email": filtered_email_templates}
 
         if not event_id and query_params and (not query_params.get('app_name') or not query_params.get('event_name')):
             result['start'] = query_params.get('start', Event.DEFAULT_OFFSET)
