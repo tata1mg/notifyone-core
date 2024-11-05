@@ -1,3 +1,4 @@
+import ast
 from typing import Any, Awaitable, Dict, Tuple
 import asyncio
 import datetime
@@ -206,3 +207,12 @@ async def async_gather_dict(tasks: Dict[str, Awaitable[str]], **kwargs: Dict[str
             *(mark(key, coro) for key, coro in tasks.items()), **kwargs
         )
     }
+
+
+def is_valid_python_expression(expression: str) -> bool:
+    try:
+        # Try to parse the expression
+        ast.parse(expression, mode='eval')
+        return True
+    except (SyntaxError, ValueError):
+        return False

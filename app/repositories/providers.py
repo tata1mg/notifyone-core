@@ -1,7 +1,5 @@
-from certifi import where
-from lazy_object_proxy.utils import await_
-from pydantic import conint
-from setuptools.errors import ExecError
+import copy
+
 from tortoise.exceptions import IntegrityError
 from torpedo.exceptions import NotFoundException, BadRequestException
 from tortoise_wrapper.wrappers import ORMWrapper
@@ -33,16 +31,20 @@ class ProvidersRepository:
             if isinstance(val, str) or isinstance(val, int):
                 configuration[key] = Crypto.decrypt(val)
             elif isinstance(val, dict):
-                configuration[key] = cls.decrypt_configuration(val)
+                configuration[key] = await cls.decrypt_configuration(val)
         return configuration
 
     @classmethod
     async def encrypt_configuration(cls, configuration: dict) -> dict:
         for key, val in configuration.items():
-            if isinstance(val, str) or isinstance(val, int):
+            if isinstance(val, str):
                 configuration[key] = Crypto.encrypt(val)
+            elif isinstance(val, int):
+                configuration[key] = Crypto.encrypt(str(val))
             elif isinstance(val, dict):
-                configuration[key] = cls.encrypt_configuration(val)
+                val_copy = copy.deepcopy(val)
+                enc_data = await cls.encrypt_configuration(val_copy)
+                configuration[key] = enc_data
         return configuration
 
     @classmethod
@@ -66,6 +68,25 @@ class ProvidersRepository:
         if rows:
             return ProviderModel(await cls._convert_provider_to_dict(rows[0]))
         raise NotFoundException("Provider not found")
+
+    @classmethod
+    async def get_providers_for_channel(
+            cls, channel: NotificationChannels, include_disabled=False
+    ) -> list[ProviderModel]:
+        if include_disabled:
+            select_filter = {
+                "channel": channel.value
+            }
+        else:
+            select_filter = {
+                "channel": channel.value,
+                "status": ProvidersStatus.ACTIVE.value
+            }
+        rows = await ORMWrapper.get_by_filters(ProvidersDBModel, select_filter)
+        providers_list = list()
+        for row in rows:
+            providers_list.append(ProviderModel(await cls._convert_provider_to_dict(row)))
+        return providers_list
 
     @classmethod
     async def total_count(cls):

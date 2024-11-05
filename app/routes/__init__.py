@@ -10,6 +10,7 @@ from app.routes.apps import apps_blueprint
 from app.routes.form.structure import form_bp
 from app.routes.dashboard.home_page import homepage_blueprint
 from app.routes.dashboard.providers import providers_blueprint
+from app.routes.dashboard.settings import settings_blueprint
 
 
 blueprint_group = Blueprint.group(
@@ -23,5 +24,6 @@ blueprint_group = Blueprint.group(
     apps_blueprint,
     form_bp,
     homepage_blueprint,
-    providers_blueprint
+    providers_blueprint,
+    settings_blueprint
 )

@@ -1,6 +1,4 @@
-from cloudinary.utils import unique
-from git import RepositoryDirtyError
-from tortoise_wrapper.exceptions import BadRequestException
+from torpedo.exceptions import BadRequestException
 
 from app.constants import NotificationChannels, Providers
 
@@ -51,7 +49,7 @@ class DashboardProvidersScreen:
                 "provider": provider_model.provider,
                 "unique_identifier": provider_model.unique_identifier,
                 "channel": provider_model.channel,
-                "status": provider_model.status,
+                "status": provider_model.status.value,
                 "last_updated": epoch_to_str_date(provider_model.updated)
             }
         }
@@ -78,11 +76,17 @@ class DashboardProvidersScreen:
         cls._verify_input_configuration(configuration, provider_config_sample)
 
         # Update details
-        updated_data = await ProvidersRepository.update_provider(unique_identifier, disable=disable, configuration=configuration)
+        updated_provider = await ProvidersRepository.update_provider(unique_identifier, disable=disable, configuration=configuration)
 
         return {
             "message": "Provider updated successfully",
-            "provider": updated_data
+            "provider": {
+                "provider": updated_provider.provider,
+                "unique_identifier": updated_provider.unique_identifier,
+                "channel": updated_provider.channel,
+                "status": updated_provider.status.value,
+                "last_updated": epoch_to_str_date(updated_provider.updated)
+            }
         }
 
     @classmethod
@@ -95,7 +99,7 @@ class DashboardProvidersScreen:
                     "provider": provider.provider,
                     "unique_identifier": provider.unique_identifier,
                     "channel": provider.channel,
-                    "status": provider.status,
+                    "status": provider.status.value,
                     "last_updated": epoch_to_str_date(provider.updated)
                 }
             )

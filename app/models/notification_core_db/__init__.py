@@ -8,7 +8,9 @@ __all__ = [
     "GenericDataStoreDBModel",
     "WhatsappContentDBModel",
     "AppsDBModel",
-    "ProvidersDBModel"
+    "ProvidersDBModel",
+    "ProvidersDefaultPriorityDBModel",
+    "ProvidersDynamicPriorityDBModel"
 ]
 
 from .event import EventDBModel
@@ -21,3 +23,5 @@ from .generic_data_store import GenericDataStoreDBModel
 from .whatsapp_content import WhatsappContentDBModel
 from .apps import AppsDBModel
 from .providers import ProvidersDBModel
+from .providers_default_priority import ProvidersDefaultPriorityDBModel
+from .providers_dynamic_priority import ProvidersDynamicPriorityDBModel
