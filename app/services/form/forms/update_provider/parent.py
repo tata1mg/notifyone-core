@@ -1,8 +1,13 @@
 from cloudinary.cache.responsive_breakpoints_cache import instance
+from pycparser.c_ast import Switch
+from torpedo.exceptions import NotFoundException, BadRequestException
 
-from app.constants import NotificationChannels, Providers
+from app.constants import NotificationChannels, Providers, ProvidersStatus
+from app.models.notification_core import ProviderModel
+from app.repositories.providers import ProvidersRepository
 from app.services.form.fields import (
     Collection,
+    SwtichField,
     Option,
     SelectField,
     TextInput,
@@ -18,66 +23,84 @@ from app.repositories.apps import AppsRepository
 class UpdateProviderForm(GenericForm):
 
     @classmethod
-    async def __get_components_recursively(cls, configuration) -> dict:
+    async def __get_components_recursively(cls, configuration, saved_configuration) -> dict:
         components = dict()
         for key, val in configuration.items():
             if isinstance(val, str):
                 components[key] = TextInput(
                     name=key,
-                    label=key
+                    label=str(key).replace("_", " "),
+                    initialValue=saved_configuration[key]
                 )
             elif instance(val, int):
                 components[key] = NumberInput(
                     name=key,
-                    label=key
+                    label=str(key).replace("_", " "),
+                    initialValue=saved_configuration[key]
                 )
             elif instance(val, dict):
                 components[key] = Collection(
                     name=key,
-                    label=key,
+                    label=str(key).replace("_", " "),
                     order=list(val.keys()),
-                    components=await cls.__get_components_recursively(val),
+                    components=await cls.__get_components_recursively(val, saved_configuration[key]),
                 )
         return components
 
     @classmethod
-    async def _get_components(cls, channel_enum: NotificationChannels, provider_enum: Providers):
-        configuration = provider_enum.value["configuration"]
+    async def _get_components(cls, provider_model: ProviderModel):
+        configuration = Providers.get_enum_from_code(provider_model.provider).value["configuration"]
         return {
             "channel": TextInput(
                 name="channel",
-                label="channel",
-                initialValue=channel_enum.value,
+                label="Channel",
+                initialValue=provider_model.channel,
                 editable=False,
-                disabled=False
+                disabled=True
             ),
             "provider": TextInput(
                 name="provider",
-                label="provider",
-                initialValue=provider_enum.value["code"],
+                label="Provider",
+                initialValue=provider_model.provider,
                 editable=False,
-                disabled=False
+                disabled=True
+            ),
+            "unique_identifier": TextInput(
+                name="provider",
+                label="Provider",
+                initialValue=provider_model.unique_identifier,
+                editable=False,
+                disabled=True
+            ),
+            "enabled": SwtichField(
+                name="enabled",
+                label="Enable/Disable This Provider",
+                initialValue=True if provider_model.status.value == ProvidersStatus.ACTIVE.value else False,
+                span=12,
             ),
             "configuration": Collection(
                 name="configuration",
                 label="Provider Configuration",
                 order=list(configuration.keys()),
-                components=await cls.__get_components_recursively(configuration),
+                components=await cls.__get_components_recursively(configuration, provider_model.configuration),
             )
         }
 
     @classmethod
-    async def get_with_params(cls, **kwargs):
-        channel_enum: NotificationChannels = kwargs.get("channel")
-        provider_enum: Providers = kwargs.get("provider")
-
-        components = await cls._get_components(channel_enum, provider_enum)
+    async def get_instance(cls, unique_identifier: str):
+        try:
+            provider_model = await ProvidersRepository.get_provider_by_unique_id(unique_identifier)
+        except NotFoundException:
+            raise BadRequestException("No data found for unique id - {}".format(unique_identifier))
+        components = await cls._get_components(provider_model)
         return Collection(
-            name="add_provider",
-            label="Add Provider",
+            name="update_provider",
+            label="Update Provider",
             order=[
                 "channel",
                 "provider",
+                "unique_identifier",
+                "enabled",
                 "configuration"
             ],
             components=components,

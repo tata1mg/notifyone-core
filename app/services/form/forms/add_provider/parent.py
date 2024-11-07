@@ -24,17 +24,17 @@ class AddProviderForm(GenericForm):
             if isinstance(val, str):
                 components[key] = TextInput(
                     name=key,
-                    label=key
+                    label=str(key).replace("_", " ")
                 )
-            elif instance(val, int):
+            elif isinstance(val, int):
                 components[key] = NumberInput(
                     name=key,
-                    label=key
+                    label=str(key).replace("_", " ")
                 )
-            elif instance(val, dict):
+            elif isinstance(val, dict):
                 components[key] = Collection(
                     name=key,
-                    label=key,
+                    label=str(key).replace("_", " "),
                     order=list(val.keys()),
                     components=await cls.__get_components_recursively(val),
                 )
@@ -46,17 +46,22 @@ class AddProviderForm(GenericForm):
         return {
             "channel": TextInput(
                 name="channel",
-                label="channel",
+                label="Channel",
                 initialValue=channel_enum.value,
                 editable=False,
-                disabled=False
+                disabled=True
             ),
             "provider": TextInput(
                 name="provider",
-                label="provider",
+                label="Provider",
                 initialValue=provider_enum.value["code"],
                 editable=False,
-                disabled=False
+                disabled=True
+            ),
+            "unique_identifier": TextInput(
+                name="unique_identifier",
+                label="Unique Identifier",
+                placeholder="A unique code for this provider configuration"
             ),
             "configuration": Collection(
                 name="configuration",
@@ -78,6 +83,7 @@ class AddProviderForm(GenericForm):
             order=[
                 "channel",
                 "provider",
+                "unique_identifier",
                 "configuration"
             ],
             components=components,

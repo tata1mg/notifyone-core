@@ -59,7 +59,7 @@ class DashboardProvidersScreen:
         # Input validation
         unique_identifier = data.get("unique_identifier")
         configuration = data.get("configuration") or dict()
-        disable = True if data.get("disable") is True else False
+        disable = True if data.get("enabled") is False else False
         if not unique_identifier:
             raise BadRequestException("unique_identifier missing")
         if not configuration:
@@ -116,15 +116,13 @@ class DashboardProvidersScreen:
 
     @classmethod
     async def get_channels_and_providers(cls):
-        channel_providers = list()
+        channel_providers = dict()
         for channel in NotificationChannels.get_all_values():
-            channel_providers.append(
-                {
-                    "name": channel.title(),
-                    "code": channel,
-                    "providers": Providers.get_channel_providers_details(NotificationChannels.get_enum(channel))
-                }
-            )
+            channel_providers[channel] = {
+                "name": channel.title(),
+                "code": channel,
+                "providers": Providers.get_channel_providers_details(NotificationChannels.get_enum(channel))
+            }
         return {
             "message": "List for channels along with their respective providers",
             "channels": NotificationChannels.get_all_values(),
