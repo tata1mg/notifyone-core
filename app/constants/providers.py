@@ -116,6 +116,19 @@ class Providers(CustomEnum):
         return channel_providers
 
     @classmethod
+    def get_channel_providers_details(cls, channel: NotificationChannels) -> list:
+        channel_providers_details = list()
+        for provider_configuration in cls.get_all_values():
+            if channel.value in provider_configuration["channels"]:
+                channel_providers_details.append(
+                    {
+                        "name": provider_configuration["name"],
+                        "code": provider_configuration["code"]
+                    }
+                )
+        return channel_providers_details
+
+    @classmethod
     def get_enum_from_code(cls, code: str):
         for custom_enum in cls:
             if code == custom_enum.value["code"]:
