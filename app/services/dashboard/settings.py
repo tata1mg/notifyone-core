@@ -1,6 +1,3 @@
-from contextlib import suppress
-
-from botocore.configprovider import ConfiguredEndpointProvider
 from torpedo.exceptions import BadRequestException, NotFoundException
 
 from app.constants import NotificationChannels, Providers

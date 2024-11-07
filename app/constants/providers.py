@@ -13,7 +13,7 @@ class Providers(CustomEnum):
     AWS_SES = {
         "name": "AWS SES",
         "code": "AWS_SES",
-        "logo": "",
+        "logo": "https://raw.githubusercontent.com/tata1mg/notifyone-core/refs/heads/notifyone/issues/14/media/logo/aws-ses.svg",
         "channels": [
             NotificationChannels.EMAIL.value
         ],
@@ -25,7 +25,7 @@ class Providers(CustomEnum):
     SPARK_POST = {
         "name": "Spark Post",
         "code": "SPARK_POST",
-        "logo": "",
+        "logo": "https://raw.githubusercontent.com/tata1mg/notifyone-core/refs/heads/notifyone/issues/14/media/logo/sparkpost.png",
         "channels": [
             NotificationChannels.EMAIL.value
         ],
@@ -39,7 +39,7 @@ class Providers(CustomEnum):
     AWS_SNS = {
         "code": "AWS_SNS",
         "name": "AWS SNS",
-        "logo": "",
+        "logo": "https://raw.githubusercontent.com/tata1mg/notifyone-core/refs/heads/notifyone/issues/14/media/logo/aws-sns.svg",
         "channels": [
             NotificationChannels.SMS.value
         ],
@@ -58,7 +58,7 @@ class Providers(CustomEnum):
     PLIVO = {
         "name": "Plivo",
         "code": "PLIVO",
-        "logo": "",
+        "logo": "https://raw.githubusercontent.com/tata1mg/notifyone-core/refs/heads/notifyone/issues/14/media/logo/plivo.svg",
         "channels": [
             NotificationChannels.SMS.value
         ],
@@ -73,7 +73,7 @@ class Providers(CustomEnum):
     SMS_COUNTRY = {
         "name": "Sms Country",
         "code": "SMS_COUNTRY",
-        "logo": "",
+        "logo": "https://raw.githubusercontent.com/tata1mg/notifyone-core/refs/heads/notifyone/issues/14/media/logo/sms-country.png",
         "channels": [
             NotificationChannels.SMS.value
         ],
@@ -88,7 +88,7 @@ class Providers(CustomEnum):
     FCM = {
         "name": "Google Firebase",
         "code": "FCM",
-        "logo": "",
+        "logo": "https://raw.githubusercontent.com/tata1mg/notifyone-core/refs/heads/notifyone/issues/14/media/logo/fcm.svg",
         "channels": [
             NotificationChannels.PUSH.value
         ],
@@ -100,7 +100,7 @@ class Providers(CustomEnum):
     INTERAKT = {
         "name": "Interakt For Whatsapp",
         "code": "INTERAKT",
-        "logo": "",
+        "logo": "https://raw.githubusercontent.com/tata1mg/notifyone-core/refs/heads/notifyone/issues/14/media/logo/interakt.png",
         "channels": [
             NotificationChannels.WHATSAPP.value
         ],
