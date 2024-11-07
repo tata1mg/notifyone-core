@@ -1,6 +1,9 @@
+from contextlib import suppress
+
+from botocore.configprovider import ConfiguredEndpointProvider
 from torpedo.exceptions import BadRequestException, NotFoundException
 
-from app.constants import NotificationChannels
+from app.constants import NotificationChannels, Providers
 from app.repositories.providers_default_priority import ProvidersDefaultPriorityRepository
 from app.repositories.providers import ProvidersRepository
 from app.repositories.providers_dynamic_priority import ProvidersDynamicPriorityRepository
@@ -44,20 +47,32 @@ class DashboardSettingsScreen:
     async def get_default_priority_all(cls):
         response_data = {
             "title": "Channel Providers Priority",
-            "channels": {
-
-            }
+            "channels": []
         }
         for channel in NotificationChannels.get_all_values():
+            priority_data = None
+            channel_providers_map = dict()
             try:
                 priority_data = await ProvidersDefaultPriorityRepository.get_channel_priority(NotificationChannels.get_enum(channel))
             except NotFoundException:
-                priority_data = None
-            response_data["channels"][channel] = {
-                "name": str(channel).title(),
-                "code": channel,
-                "providers_priority": priority_data.priority if priority_data else []
-            }
+                pass
+            if priority_data:
+                channel_providers = await ProvidersRepository.get_providers_for_channel(
+                    NotificationChannels.get_enum(channel), include_disabled=True
+                )
+                for provider in channel_providers:
+                    channel_providers_map[provider.unique_identifier] = {
+                        "name": Providers.get_enum_from_code(provider.provider).value["name"],
+                        "code": provider.provider,
+                        "logo": Providers.get_enum_from_code(provider.provider).value["logo"]
+                    }
+            response_data["channels"].append(
+                {
+                    "name": str(channel).title(),
+                    "code": channel,
+                    "providers_priority": [channel_providers_map[provider_identifier] for provider_identifier in priority_data.priority] if priority_data else []
+                }
+            )
         return response_data
 
     @classmethod
@@ -95,9 +110,7 @@ class DashboardSettingsScreen:
     async def get_dynamic_priority_all(cls):
         response_data = {
             "title": "Channel Providers Priority",
-            "channels": {
-
-            }
+            "channels": []
         }
         for channel in NotificationChannels.get_all_values():
             try:
@@ -106,9 +119,11 @@ class DashboardSettingsScreen:
                 )
             except NotFoundException:
                 priority_data = None
-            response_data["channels"][channel] = {
-                "name": str(channel).title(),
-                "code": channel,
-                "dynamic_priority": priority_data.priority_logic if priority_data else ""
-            }
+            response_data["channels"].append(
+                {
+                    "name": str(channel).title(),
+                    "code": channel,
+                    "dynamic_priority": priority_data.priority_logic if priority_data else ""
+                }
+            )
         return response_data

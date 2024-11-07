@@ -13,6 +13,7 @@ class Providers(CustomEnum):
     AWS_SES = {
         "name": "AWS SES",
         "code": "AWS_SES",
+        "logo": "",
         "channels": [
             NotificationChannels.EMAIL.value
         ],
@@ -24,6 +25,7 @@ class Providers(CustomEnum):
     SPARK_POST = {
         "name": "Spark Post",
         "code": "SPARK_POST",
+        "logo": "",
         "channels": [
             NotificationChannels.EMAIL.value
         ],
@@ -37,6 +39,7 @@ class Providers(CustomEnum):
     AWS_SNS = {
         "code": "AWS_SNS",
         "name": "AWS SNS",
+        "logo": "",
         "channels": [
             NotificationChannels.SMS.value
         ],
@@ -55,6 +58,7 @@ class Providers(CustomEnum):
     PLIVO = {
         "name": "Plivo",
         "code": "PLIVO",
+        "logo": "",
         "channels": [
             NotificationChannels.SMS.value
         ],
@@ -69,6 +73,7 @@ class Providers(CustomEnum):
     SMS_COUNTRY = {
         "name": "Sms Country",
         "code": "SMS_COUNTRY",
+        "logo": "",
         "channels": [
             NotificationChannels.SMS.value
         ],
@@ -83,6 +88,7 @@ class Providers(CustomEnum):
     FCM = {
         "name": "Google Firebase",
         "code": "FCM",
+        "logo": "",
         "channels": [
             NotificationChannels.PUSH.value
         ],
@@ -94,6 +100,7 @@ class Providers(CustomEnum):
     INTERAKT = {
         "name": "Interakt For Whatsapp",
         "code": "INTERAKT",
+        "logo": "",
         "channels": [
             NotificationChannels.WHATSAPP.value
         ],
