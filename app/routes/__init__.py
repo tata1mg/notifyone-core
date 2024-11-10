@@ -11,6 +11,7 @@ from app.routes.form.structure import form_bp
 from app.routes.dashboard.home_page import homepage_blueprint
 from app.routes.dashboard.providers import providers_blueprint
 from app.routes.dashboard.settings import settings_blueprint
+from app.routes.dashboard.activity_feed import activity_feed_blueprint
 
 
 blueprint_group = Blueprint.group(
@@ -25,5 +26,6 @@ blueprint_group = Blueprint.group(
     form_bp,
     homepage_blueprint,
     providers_blueprint,
-    settings_blueprint
+    settings_blueprint,
+    activity_feed_blueprint
 )
