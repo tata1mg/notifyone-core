@@ -2,6 +2,7 @@ from torpedo.exceptions import BadRequestException
 
 from app.constants.callbacks import EmailEventStatus, SmsEventStatus, WhatsAppEventStatus, PushEventStatus
 from app.repositories.apps import AppsRepository
+from app.utilities import check_format
 from app.utilities.validators import validate_enum_values
 
 
@@ -38,6 +39,9 @@ class AppService:
         app_name = request_payload.get("name")
         if not app_name:
             raise BadRequestException("App name is mandatory param")
+
+        # Check app name format
+        check_format(app_name)
 
         # Get Webhook URL
         callback_url = request_payload.get("callback_url") or None
