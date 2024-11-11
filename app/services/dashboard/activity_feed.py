@@ -17,6 +17,14 @@ class DashboardActivityFeedScreen:
         email = data.get("email") or None
         limit = data.get("limit") or 10
         offset = data.get("offset") or 0
+        try:
+            limit = int(limit)
+        except ValueError:
+            raise BadRequestException("Invalid value for limit")
+        try:
+            offset = int(offset)
+        except ValueError:
+            raise BadRequestException("Invalid value for offset")
 
         if channel and not NotificationChannels.get_enum(channel):
             raise BadRequestException("Invalid channel")
