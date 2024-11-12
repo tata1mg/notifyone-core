@@ -47,12 +47,12 @@ class DashboardSettingsScreen:
             "channels": []
         }
         for channel in NotificationChannels.get_all_values():
-            priority_data = None
             channel_providers_map = dict()
             try:
                 priority_data = await ProvidersDefaultPriorityRepository.get_channel_priority(NotificationChannels.get_enum(channel))
             except NotFoundException:
-                pass
+                providers = await ProvidersRepository.get_providers_for_channel(NotificationChannels.get_enum(channel))
+                priority_data = [provider.unique_identifier for provider in providers]
             if priority_data:
                 channel_providers = await ProvidersRepository.get_providers_for_channel(
                     NotificationChannels.get_enum(channel), include_disabled=True
