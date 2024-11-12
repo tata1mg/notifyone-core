@@ -116,7 +116,7 @@ class ProvidersRepository:
     @classmethod
     async def update_provider(cls, unique_identifier, disable=False, configuration=None) -> ProviderModel:
         values = {
-            "status": ProvidersStatus.DISABLED.value if disable else ProvidersStatus.DISABLED.value
+            "status": ProvidersStatus.DISABLED.value if disable else ProvidersStatus.ACTIVE.value
         }
         if configuration:
             values["configuration"] = await cls.encrypt_configuration(configuration)
