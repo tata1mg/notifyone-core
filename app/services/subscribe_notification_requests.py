@@ -28,3 +28,16 @@ class SubscribeNotificationRequest:
     async def setup_subscription(cls):
         for subs_instance in cls._subscriber_instances:
             asyncio.create_task(subs_instance.subscribe_forever(max_no_of_messages=5))
+
+    @classmethod
+    async def get_messages_in_priority_queues(cls):
+        messages = dict()
+        for priority in notification_request_config['SUBSCRIBE_TO'].keys():
+            instance_identifier = "{}-{}".format(priority, 1)
+            messages_count = None
+            for subs in cls._subscriber_instances:
+                if subs.instance_identifier == instance_identifier:
+                    messages_count = int(await subs.get_messages_count())
+                    break
+            messages[priority] = messages_count
+        return messages

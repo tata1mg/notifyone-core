@@ -1,4 +1,6 @@
 from tortoise_wrapper.wrappers import ORMWrapper
+
+from app.constants import DatabaseTables
 from app.models.notification_core_db import NotificationRequestLogDBModel
 
 
@@ -63,6 +65,12 @@ class NotificationRequestLogRepository:
         if order_by:
             olob["order_by"] = order_by
         return await ORMWrapper.get_by_filters(NotificationRequestLogDBModel, filters=select_filters, **olob)
+
+    @classmethod
+    async def get_channel_status_analytics(cls, interval_hours=24):
+        query = "select channel, status, count(*) as count from {} where created > now() - interval '{} hours' group by 1,2".format(DatabaseTables.NOTIFICATION_REQUEST_LOG.value, interval_hours)
+        res = await ORMWrapper.raw_sql(query)
+        return res
 
     @classmethod
     async def get_notification_request_log_count(cls, **select_filters) -> int:
