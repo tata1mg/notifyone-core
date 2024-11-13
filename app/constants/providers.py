@@ -130,7 +130,8 @@ class Providers(CustomEnum):
                 channel_providers_details.append(
                     {
                         "name": provider_configuration["name"],
-                        "code": provider_configuration["code"]
+                        "code": provider_configuration["code"],
+                        "logo": provider_configuration["logo"]
                     }
                 )
         return channel_providers_details
