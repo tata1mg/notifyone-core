@@ -50,25 +50,30 @@ class DashboardSettingsScreen:
             channel_providers_map = dict()
             try:
                 priority_data = await ProvidersDefaultPriorityRepository.get_channel_priority(NotificationChannels.get_enum(channel))
-                existing_priority = priority_data.priority
             except NotFoundException:
-                providers = await ProvidersRepository.get_providers_for_channel(NotificationChannels.get_enum(channel))
-                existing_priority = [provider.unique_identifier for provider in providers]
-            if existing_priority:
-                channel_providers = await ProvidersRepository.get_providers_for_channel(
-                    NotificationChannels.get_enum(channel), include_disabled=True
-                )
-                for provider in channel_providers:
-                    channel_providers_map[provider.unique_identifier] = {
-                        "name": Providers.get_enum_from_code(provider.provider).value["name"],
-                        "code": provider.provider,
-                        "logo": Providers.get_enum_from_code(provider.provider).value["logo"]
-                    }
+                priority_data = None
+
+            active_providers = await ProvidersRepository.get_providers_for_channel(NotificationChannels.get_enum(channel))
+
+            existing_priority_list = priority_data.priority if priority_data else []
+            active_priority_list = [ap.unique_identifier for ap in active_providers]
+            existing_active_priority_list = list(set(existing_priority_list).intersection(active_priority_list))
+            remaining_active_priority_list = list(set(active_priority_list).difference(existing_active_priority_list))
+
+            final_priority_list = existing_active_priority_list + remaining_active_priority_list
+
+            for provider in active_providers:
+                channel_providers_map[provider.unique_identifier] = {
+                    "name": Providers.get_enum_from_code(provider.provider).value["name"],
+                    "code": provider.provider,
+                    "unique_identifier": provider.unique_identifier,
+                    "logo": Providers.get_enum_from_code(provider.provider).value["logo"]
+                }
             response_data["channels"].append(
                 {
                     "name": str(channel).title(),
                     "code": channel,
-                    "providers_priority": [channel_providers_map[provider_identifier] for provider_identifier in existing_priority]
+                    "providers_priority": [channel_providers_map[provider_identifier] for provider_identifier in final_priority_list]
                 }
             )
         return response_data
