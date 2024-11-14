@@ -117,11 +117,11 @@ class DashboardHomeScreen:
             success_notifications = 0
             not_success_notifications = 0
             for row in data:
-                total_notifications += row.count
-                if row.status in NotificationRequestLogStatus.trigger_successful_statuses():
-                    success_notifications += row.count
+                total_notifications += row["count"]
+                if row["status"] in NotificationRequestLogStatus.trigger_successful_statuses():
+                    success_notifications += row["count"]
                 else:
-                    not_success_notifications += row.count
+                    not_success_notifications += row["count"]
             success_rate = int((success_notifications/total_notifications)*100) if total_notifications > 0 else 0
             return {
                 "total_notifications": total_notifications,
@@ -134,12 +134,12 @@ class DashboardHomeScreen:
             success_notifications = 0
             not_success_notifications = 0
             for row in data:
-                total_notifications += row.count
-                if row.channel == channel_enum.value:
-                    if row.status in NotificationRequestLogStatus.trigger_successful_statuses():
-                        success_notifications += row.count
+                total_notifications += row["count"]
+                if row["channel"] == channel_enum.value:
+                    if row["status"] in NotificationRequestLogStatus.trigger_successful_statuses():
+                        success_notifications += row["count"]
                     else:
-                        not_success_notifications += row.count
+                        not_success_notifications += row["count"]
             success_rate = int((success_notifications/total_notifications)*100) if total_notifications > 0 else 0
             return {
                 "sent": total_notifications,
