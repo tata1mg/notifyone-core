@@ -57,10 +57,13 @@ class DashboardSettingsScreen:
 
             existing_priority_list = priority_data.priority if priority_data else []
             active_priority_list = [ap.unique_identifier for ap in active_providers]
-            existing_active_priority_list = list(set(existing_priority_list).intersection(active_priority_list))
-            remaining_active_priority_list = list(set(active_priority_list).difference(existing_active_priority_list))
-
-            final_priority_list = existing_active_priority_list + remaining_active_priority_list
+            final_priority_list = []
+            for priority in existing_priority_list:
+                if priority in active_priority_list:
+                    final_priority_list.append(priority)
+            for priority in active_priority_list:
+                if priority not in final_priority_list:
+                    final_priority_list.append(priority)
 
             for provider in active_providers:
                 channel_providers_map[provider.unique_identifier] = {
