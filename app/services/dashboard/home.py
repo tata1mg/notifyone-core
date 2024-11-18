@@ -134,8 +134,8 @@ class DashboardHomeScreen:
             success_notifications = 0
             not_success_notifications = 0
             for row in data:
-                total_notifications += row["count"]
                 if row["channel"] == channel_enum.value:
+                    total_notifications += row["count"]
                     if row["status"] in NotificationRequestLogStatus.trigger_successful_statuses():
                         success_notifications += row["count"]
                     else:
