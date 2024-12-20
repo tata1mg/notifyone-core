@@ -10,7 +10,6 @@ from app.models.sqs_message import SQSMessage
 from app.service_clients.publisher import Publisher, PublishResult
 from app.utilities.utils import json_dumps
 
-
 logger = logging.getLogger()
 
 
@@ -125,6 +124,14 @@ class SQSWrapper(Publisher):
             except Exception as e:
                 logger.exception('Error in subscribing from SQS queue {} - {}'.format(self.queue_name, str(e)))
                 await asyncio.sleep(1)
+
+    async def get_messages_count(self) -> int:
+        await self.init()
+        queue_url = await self.sqs_manager.get_queue_url(self.queue_name)
+        resp = await self.sqs_manager.get_queue_attributes(
+            queue_url, attribute_names=["ApproximateNumberOfMessages"]
+        )
+        return resp["Attributes"]["ApproximateNumberOfMessages"]
 
     @staticmethod
     def compress_payload(payload):

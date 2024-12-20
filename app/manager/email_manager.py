@@ -44,6 +44,9 @@ class EmailManager(BaseManager):
             for email_template in email_templates
         ]
 
+        if event_id:
+            filtered_email_templates = filtered_email_templates[0]
+
         result = {"email": filtered_email_templates}
 
         if not event_id and query_params and (not query_params.get('app_name') or not query_params.get('event_name')):
@@ -173,7 +176,7 @@ class EmailManager(BaseManager):
         )
         await cls.update_template_db_files(template_ids_affected)
         await EmailHandler.handle_email_template_update(
-            latest_template_version=current_epoch_in_millis
+            latest_template_version=current_epoch_in_millis()
         )
         return {"message": "email template updated successfully"}
 

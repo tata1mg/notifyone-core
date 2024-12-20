@@ -37,6 +37,10 @@ class PushManager(BaseManager):
             await cls._filter_push_notification(push_notification)
             for push_notification in push_templates
         ]
+
+        if event_id:
+            filtered_notifications = filtered_notifications[0]
+
         result = {"push": filtered_notifications}
 
         if not event_id and query_params and (not query_params.get('app_name') or not query_params.get('event_name')):

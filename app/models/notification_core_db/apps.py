@@ -10,7 +10,7 @@ class AppsDBModel(BaseModel):
 
     id = fields.BigIntField(pk=True)
     name = fields.CharField(max_length=100, unique=True)
-    callback_url = fields.CharField(max_length=1000)
+    callback_url = fields.CharField(max_length=1000, null=True)
     callback_events = fields.JSONField(null=True)
     metadata = fields.JSONField(null=True)
     created = NaiveDatetimeField(auto_now=True)

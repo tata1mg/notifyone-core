@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional
 from tortoise_wrapper.wrappers import ORMWrapper
 
 from app.caches import NotificationCoreCache
+from app.exceptions import NotFoundException
 from app.models.notification_core_db import AppsDBModel
 from app.models.notification_core import AppsModel
 
@@ -26,6 +27,14 @@ class AppsRepository:
         return None
 
     @classmethod
+    async def get_app_by_id(cls, app_id: int) -> AppsModel:
+        filters = {"id": app_id}
+        apps_from_db = await ORMWrapper.get_by_filters(AppsDBModel, filters, limit=1)
+        if apps_from_db:
+            return AppsModel(await cls._convert_app_to_dict(apps_from_db[0]))
+        raise NotFoundException("App does not exist")
+
+    @classmethod
     @redis_cache_decorator_custom(NotificationCoreCache, expire_time=300)
     async def get_app_from_db(cls, app_name: str) -> dict:
         filters = {"name": app_name}
@@ -35,7 +44,7 @@ class AppsRepository:
         return dict()
 
     @classmethod
-    async def create_app(cls, name, callback_url, callback_events, metadata):
+    async def create_app(cls, name, callback_url, callback_events, metadata) -> AppsModel:
         values = {
             "name": name,
             "callback_url": callback_url,
@@ -44,6 +53,21 @@ class AppsRepository:
         }
         row = await ORMWrapper.create(AppsDBModel, values)
         return AppsModel(await cls._convert_app_to_dict(row))
+
+    @classmethod
+    async def update_app(cls, id, callback_url, callback_events, metadata) -> AppsModel:
+        where_clause = {"id": id}
+        apps = await ORMWrapper.get_by_filters(AppsDBModel, where_clause, limit=1)
+        if not apps:
+            raise NotFoundException("App does not exist")
+        app = apps[0]
+        values = {
+            "callback_url": callback_url,
+            "callback_events": callback_events,
+            "metadata": metadata
+        }
+        row = await ORMWrapper.update_with_filters(app, AppsDBModel, values)
+        return AppsModel(await cls._convert_app_to_dict(app))
 
     @classmethod
     async def filter_cols(

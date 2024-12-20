@@ -10,3 +10,6 @@ class DatabaseTables(CustomEnum):
     GENERIC_DATA_STORE = 'generic_data_store'
     WHATSAPP_CONTENT = 'whatsapp_content'
     NOTIFICATION_REQUEST_ATTEMPT = 'notification_request_attempt'
+    PROVIDERS = "providers"
+    PROVIDERS_DEFAULT_PRIORITY = "providers_default_priority"
+    PROVIDERS_DYNAMIC_PRIORITY = "providers_dynamic_priority"

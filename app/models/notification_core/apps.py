@@ -3,6 +3,8 @@ class AppsModel:
     def __init__(self, apps_dict: dict):
         self.id = apps_dict['id']
         self.name = apps_dict['name']
+        self.callback_url = apps_dict["callback_url"]
+        self.callback_events = apps_dict["callback_events"]
         metadata = apps_dict['metadata'] or dict()
         email_sender_config = metadata.get("sender_details", dict()).get("email") or dict()
         self.email = EmailConfigurableDetails(email_sender_config)

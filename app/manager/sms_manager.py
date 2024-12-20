@@ -34,6 +34,10 @@ class SmsManager(BaseManager):
             await cls._filter_sms_templates(sms_template)
             for sms_template in sms_templates
         ]
+
+        if event_id:
+            filtered_sms_templates = filtered_sms_templates[0]
+
         result = {"sms": filtered_sms_templates}
 
         if not event_id and query_params and (not query_params.get('app_name') or not query_params.get('event_name')):
