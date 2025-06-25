@@ -165,6 +165,23 @@ padding: 0 12px 5px;
 
 .div-header {
   /*max-height: 92px;*/
+  background-color:transparent;
+}
+
+.div-header-one {
+  Margin: 0 auto;
+  width: 600px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  background-color: transparent;
+}
+
+.div-header-two{
+  border-collapse: collapse;
+  display:table;
+  width: 100%;
+  background-color:transparent;
 }
 
 .download-img {
@@ -199,6 +216,47 @@ padding: 0 12px 5px;
 .link-logo {
   margin-top: 8px;
   margin-bottom: 8px;
+}
+
+.link-logo-labs-new {
+  outline: none
+}
+.div-inner-four{
+  padding-right: 0px;
+  padding-left: 0px;
+}
+.div-inner-three{
+  border-top: 0px solid transparent;
+  border-left: 0px solid transparent;
+  border-bottom: 0px solid transparent;
+  border-right: 0px solid transparent;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-right: 0px;
+  padding-left: 0px;
+}
+.div-inner-two{
+  width: 100% !important;
+}
+.div-inner-one-one{
+  display: table-cell;
+  vertical-align: top;
+  width: 387px;
+}
+.div-inner-one-two{
+  display: table-cell;
+  vertical-align: top;
+  width: 68px;
+}
+.div-inner-one-three{
+  display: table-cell;
+  vertical-align: top;
+  width: 696px;
+}
+.div-inner-one-four{
+  display: table-cell;
+  vertical-align: top;
+  width: 76px;
 }
 
 .div-main a img {
@@ -646,6 +704,15 @@ padding: 0 12px 5px;
   margin-left: 16px;
 }
 
+.email-logo-labs-new{
+  text-decoration: none;
+  -ms-interpolation-mode: bicubic;
+  height: auto;
+  border: none;
+  width: 387px;
+  display: block;
+}
+
 .txt-help {
   margin-right: 4px;
   margin-left: 5px;
@@ -942,6 +1009,30 @@ table[class="medicine-list-item"]{
 
 .new-footer > table > tbody > tr > td{
   width: 33%;
+}
+
+.block-grid {
+  margin: 0 auto;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  background-color: transparent;
+}
+.img-container {
+  padding-right: 0px;
+  padding-left: 0px;
+  text-align: center;
+}
+img.center {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: none;
+  -ms-interpolation-mode: bicubic;
+}
+.custom-col {
+  display: table-cell;
+  vertical-align: top;
 }
 
 /* _______________________________________________________________

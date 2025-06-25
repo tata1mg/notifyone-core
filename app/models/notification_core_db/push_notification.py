@@ -16,5 +16,6 @@ class PushNotificationDBModel(BaseModel):
     device_type = fields.CharField(max_length=50)
     device_version = fields.CharField(max_length=50)
     updated_by = fields.CharField(max_length=100)
+    type = fields.CharField(max_length=50, default="BANNER")
     created = NaiveDatetimeField(auto_now=True)
     updated = NaiveDatetimeField(auto_now=True)

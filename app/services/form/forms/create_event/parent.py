@@ -49,6 +49,11 @@ class CreateEventForm(GenericForm):
                 label="Callback Enabled",
                 span=12,
             ),
+            "dynamic_channels": SwtichField(
+                name="dynamic_channels",
+                label="Dynamic Channels",
+                span=12,
+            ),
             "priority": SelectField(
                 name="priority",
                 label="Priority",
@@ -63,8 +68,8 @@ class CreateEventForm(GenericForm):
         }
 
     @classmethod
-    async def get(cls):
-        components = await cls._get_components()
+    async def get(self):
+        components = await self._get_components()
         return Collection(
             name="create_event",
             label="Create Event",
@@ -73,6 +78,7 @@ class CreateEventForm(GenericForm):
                 "event_name",
                 "event_type",
                 "callback_enabled",
+                "dynamic_channels",
                 "priority",
                 "email",
                 "sms",

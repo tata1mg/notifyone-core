@@ -14,6 +14,7 @@ from app.utilities.utils import (
     current_utc_timestamp,
    get_event_unique_identifier,
     get_email_content_path,
+    async_gather_dict,
 )
 from app.services.email import EmailHandler
 from app.utilities.drivers.jinja import CustomJinjaEnvironment
@@ -23,6 +24,7 @@ from app.constants.error_messages import ErrorMessages
 from app.models.notification_core.email_content import EmailContentModel
 from app.manager.base_manager import BaseManager
 from app.constants.constants import Event
+from app.repositories.event import EventRepository
 
 logger = logging.getLogger()
 
@@ -156,6 +158,7 @@ class EmailManager(BaseManager):
         if kwargs["payload"].get("name"):
             to_update.update({"name": kwargs["payload"].get("name")})
 
+        event_id = kwargs["payload"].get("event_id")
         template_ids_affected = await CacheHelper.get_preview_cache(
             user_id=updated_by, template_id=id
         )
@@ -163,18 +166,19 @@ class EmailManager(BaseManager):
             raise NotFoundException(
                 "Run Preview Again"
             )
-        await cls.update_trigger_limit(
+        
+        await cls.update_template_db_files(template_ids_affected)
+        await cls.update_trigger_limit_or_actions(
             NotificationChannels.EMAIL.value, updated_by, **kwargs
         )
         to_update["updated"] = current_utc_timestamp()
         await EmailContentRepository.update_email_content(
             template_id=id, to_update=to_update
         )
-        event_id = kwargs["payload"].get("event_id")
-        await GenericDataStoreManager.update_or_insert_data_store_entry(
-            event_id, data, updated_by
-        )
-        await cls.update_template_db_files(template_ids_affected)
+        if not kwargs.get('update_event'):
+            await GenericDataStoreManager.update_or_insert_data_store_entry(
+                event_id, data, updated_by
+            )
         await EmailHandler.handle_email_template_update(
             latest_template_version=current_epoch_in_millis()
         )
@@ -328,6 +332,99 @@ class EmailManager(BaseManager):
             "updated_by": user_email,
         }
         return response
+    
+    @classmethod
+    def get_paginated_events(cls, all_events, start, size):
+        all_events = sorted(all_events)
+        events = list()
+        for id in range(start, start + size):
+            if id <= (len(all_events) - 1):
+                events.append(all_events[id])
+        return events        
+     
+    @classmethod
+    async def preview_email_subtemplate(cls, template_id, description, content, user_email, start, size):
+        if template_id is None:
+            raise BadRequestException("template id is missing in the payload")
+
+        if content is None:
+            raise BadRequestException("content is missing in the payload template")
+
+        template_details = await EmailContentRepository.get_email_content_from_template_id(id=template_id)
+        if not template_details:
+            raise NotFoundException("template doesn't exist")    
+
+        all_non_event_template_details = await EmailHandler.get_all_email_content_map() 
+        result = []
+        all_non_event_template_details[int(template_id)] = content
+        all_events = await EmailHandler.get_all_dependent_events(template_id)
+        events = cls.get_paginated_events(all_events, start, size) 
+
+        if not events:
+            raise NotFoundException("no email template found")   
+        
+        tasks = {}
+        for template_id in events:
+            template_details = await EmailContentRepository.get_email_content_from_template_id(template_id)
+            tasks.update({template_id: cls.get_template_content(template_details, all_non_event_template_details, "preview")})
+        data = await async_gather_dict(tasks, return_exceptions=True)
+        result = [{"id": key, "subject": val[1], "content": val[0]} for key, val in data.items()]
+        final_result = {"previews": result, "start": start, "size": size, "total_count": len(all_events)}
+        return final_result 
+    
+    @classmethod
+    async def get_email_template_by_id(cls, template_id):
+        if not template_id:
+            raise RequiredParamsException("template id is missing in query params")
+
+        email_template = await EmailContentRepository.get_email_content_from_template_id(template_id)
+        if not email_template:
+            raise NotFoundException("no email template is found")
+
+        event_id = email_template.event_id
+        trigger_limit = None
+        if event_id:
+            event = await EventRepository.get_events_by_id(event_id)
+            trigger_limits = event.triggers_limit
+            trigger_limit = trigger_limits.get("email")
+
+        if email_template.content:
+            includes = await cls.get_includes_in_template(email_template.content, add_template_name=True)    
+        response = {
+            "id": email_template.id,
+            "includes": includes,
+            "subject": email_template.subject,
+            "content": email_template.content,
+            "name": email_template.name,
+            "description": email_template.description,
+            "event_id": email_template.event_id,
+            "trigger_limit": trigger_limit
+        }
+        return response 
+        
+    @classmethod
+    async def update_email_subtemplate(cls, id, content, description, user_email):
+        if not id:
+            raise RequiredParamsException(
+                ErrorMessages.REQUIRED_FIELD.value.format(
+                    NotificationChannels.EMAIL.value, Email.ID
+                )
+            )
+        if not content:
+            raise RequiredParamsException(
+                ErrorMessages.REQUIRED_FIELD.value.format(
+                    NotificationChannels.EMAIL.value, Email.CONTENT
+                )
+            )
+        description = description
+        to_update = {
+            "description": description,
+            "content": content,
+            "updated_by": user_email,
+            "updated": current_utc_timestamp()
+        }
+        await EmailContentRepository.update_email_content(id, to_update)
+        return {"message": "Successfully updated"}
 
 class CreateEmailEvent:
     """

@@ -15,6 +15,7 @@ class BaseConfig:
     type: FieldType = field(init=False)
     label: Optional[str] = "Label"
 
+    initialValue: Any = None
     fieldKey: Optional[str] = None
     elementName: FieldPath = None
     absolutePath: FieldPath = None
@@ -58,11 +59,16 @@ class BaseField(BaseConfig):
 
 BaseWrapper = BaseConfig
 
+@dataclass
+class CollapseConfig:
+    defaultActiveKey: Optional[Union[Number, List[Union[Number, str]], str]] = None
+
 
 @dataclass
 class CollapseContainerConfig:
     canCollapse: bool = True
     panelConfig: Dict = field(default_factory=dict)
+    collapseConfig: Optional[CollapseConfig] = None
 
 
 @dataclass

@@ -69,7 +69,7 @@ class WhatsappManager(BaseManager):
             raise BadRequestException("name is missing in the payload")
             
         to_update = {"name": kwargs["payload"].get("name"), "updated_by": agent_id}
-        await cls.update_trigger_limit(
+        await cls.update_trigger_limit_or_actions(
             NotificationChannels.WHATSAPP.value, agent_id, **kwargs
         )
         to_update["updated"] = current_utc_timestamp()

@@ -159,17 +159,24 @@ class PushManager(BaseManager):
         if "target" in kwargs["payload"]:
             to_update["target"] = cls.get_push_target(kwargs["payload"]["target"])
 
+        if kwargs["payload"].get("device_type"):
+            to_update.update({"device_type": kwargs["payload"].get("device_type")})
+
+        if kwargs["payload"].get("device_version"):
+            to_update.update({"device_version": kwargs["payload"].get("device_version")})      
+
         to_update["updated"] = current_utc_timestamp()
-        await cls.update_trigger_limit(
+        await cls.update_trigger_limit_or_actions(
             NotificationChannels.PUSH.value, agent_id, **kwargs
         )
         await PushNotificationRepository.update_push_notification(
             notification_id=push_id, to_update=to_update
         )
         event_id = kwargs["payload"].get("event_id")
-        await GenericDataStoreManager.update_or_insert_data_store_entry(
-                event_id, data, agent_id
-            )
+        if not kwargs.get('update_event'):
+            await GenericDataStoreManager.update_or_insert_data_store_entry(
+                    event_id, data, agent_id
+                )
 
     @staticmethod
     async def get_push_template_previews(event_id, body, title, data):
@@ -232,6 +239,7 @@ class CreatePushEvent:
             "body": push_body,
             "target": data.get("target", ""),
             "image": data.get("image", ""),
+            "type": data.get("type"),
             "device_type": data.get(
                 "device_type", "ALL"
             ),  # NOTE: by default device_type will be ALL

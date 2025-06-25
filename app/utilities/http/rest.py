@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from urllib import parse as urlparse
 
-from torpedo.base_http_request import BaseHttpRequest
+from app.service_clients.base_api_client import APIClient
 
 from app.service_clients.publisher import Publisher, PublishResult, OperatorDetails
 from app.constants import NotificationRequestLogStatus
@@ -16,7 +16,7 @@ class RestApiClientWrapper(Publisher):
 
     async def publish(self, payload: Dict[str, Any]) -> PublishResult:
         url = urlparse.urljoin(self._host, self._endpoint)
-        response = await BaseHttpRequest.request(
+        response = await APIClient.request(
             self._method,
             url,
             data=payload,
@@ -35,8 +35,8 @@ class RestApiClientWrapper(Publisher):
         else:
             publish_result = PublishResult(
                 is_success=False,
-                status=NotificationRequestLogStatus.SUCCESS,
-                message=response.data.get("error", {}).get("message")
+                status=NotificationRequestLogStatus.FAILED,
+                message=response.data.get("message")
                 or "Something went wrong",
             )
         return publish_result

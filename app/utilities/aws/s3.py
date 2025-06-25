@@ -37,7 +37,9 @@ class S3Client:
         """Upload a file to an S3 bucket"""
         # Upload the file
         try:
+            print("Uploading file %s to Bucket %s", key, bucket)
             client = await self.get_s3_client()
+            print("S3 Client: %s", client)
             response = await client.put_object(Body=content, Bucket=bucket, Key=key)
         except Exception as err:
             logger.error("Error uploading file %s to Bucket %s %s", key, bucket, err)

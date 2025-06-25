@@ -17,6 +17,7 @@ class TextInput(InputField):
 @dataclass
 class NumberInput(InputField):
     type: FieldType = FieldType.NUMBER
+    controls: bool = True
 
 
 @dataclass

@@ -1,6 +1,7 @@
 from torpedo import CONFIG
 from torpedo.constants import ListenerEventTypes
-
+from redis_wrapper import cache_registry
+from asyncio import BaseEventLoop
 from app.repositories.content_log import ContentLogRepository
 from app.services import SubscribeNotificationRequest, SubscribeStatusUpdate
 from app.services.email import EmailHandler
@@ -36,12 +37,39 @@ async def setup_repositories(app, loop):
         config=CONFIG.config.get("CONTENT_LOG", {}).get("S3")
     )
 
+async def initialize_redis_caches(app):
+    cache_config = CONFIG.config["REDIS_CACHE_HOSTS"]
+    cache_registry.from_config(cache_config)
+
+
+def exc_handler(self: BaseEventLoop, context: dict) -> None:
+    """
+    Custom exception handler to filter out specific messages.
+    :param self: The event loop instance
+    :param context: The context dictionary containing exception details
+    :return: None
+    """
+    message = context.get("message")
+    if message not in ["Unclosed connector", "Unclosed client session"]:
+        BaseEventLoop.default_exception_handler(self, context)
+
+
+async def setup_custom_exc_handler(app, loop):
+    """
+    Set up the custom exception handler for the event loop.
+    :param app: The current app instance
+    :param loop: The running event loop
+    :return: None
+    """
+    loop.set_exception_handler(exc_handler)
+
 
 listeners = [
+    (initialize_redis_caches, ListenerEventTypes.BEFORE_SERVER_START.value),
     (subscribe_for_notification_requests, ListenerEventTypes.AFTER_SERVER_START.value),
     (subscribe_for_status_updates, ListenerEventTypes.AFTER_SERVER_START.value),
     (setup_notification_channel_handlers, ListenerEventTypes.AFTER_SERVER_START.value),
     (initialize_jinja_environment, ListenerEventTypes.AFTER_SERVER_START.value),
     (setup_repositories, ListenerEventTypes.AFTER_SERVER_START.value),
-    (setup_options, ListenerEventTypes.BEFORE_SERVER_START.value),
+    (setup_custom_exc_handler, ListenerEventTypes.BEFORE_SERVER_START.value),
 ]

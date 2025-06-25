@@ -2,11 +2,19 @@ from torpedo import Request, send_response
 from sanic import Blueprint
 from app.manager.whatsapp_manager import WhatsappManager
 from app.exceptions import RequiredParamsException
+from app.routes.middleware.authentication import HttpRequestAuthentication
 
-whatsapp_apis = Blueprint("WhatsappAPIs")
+whatsapp_apis_with_auth = Blueprint("WhatsappAPIs")
+
+@whatsapp_apis_with_auth.on_request
+async def request_authenticator(request: Request):
+    """
+    Middleware to authenticate each incoming request of create event
+    """
+    await HttpRequestAuthentication.examine_request(request)
 
 
-@whatsapp_apis.route(
+@whatsapp_apis_with_auth.route(
     "/whatsapp/template", methods=["PUT"], name="update_whatsapp_template"
 )
 async def update_whatsapp_template(request: Request):

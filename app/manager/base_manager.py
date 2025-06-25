@@ -7,22 +7,31 @@ from app.utilities.utils import check_format
 
 class BaseManager:
     @classmethod
-    async def update_trigger_limit(cls, event_type: str, agent_id: str, **kwargs):
+    async def update_trigger_limit_or_actions(cls, event_type: str, agent_id: str, **kwargs):
         app_name = kwargs["payload"].get("app_name")
         event_name = kwargs["payload"].get("event_name")
         event_id = kwargs["payload"].get("event_id")
         data = await cls.common_validation_checks(app_name, event_name, event_id)
         event_limit = kwargs["payload"].get("triggers_limit")
 
+        event_action = kwargs["payload"].get("actions")
+        values = {
+            "updated_by": agent_id,
+        }
+
         if event_limit:
             triggers_limit = data.triggers_limit
             # as in some cases trigger_limit is instance of str.
             triggers_limit[event_type] = int(event_limit)
-            updated_trigger_limit = triggers_limit
-            values = {
-                "updated_by": agent_id,
-                "triggers_limit": json.dumps(updated_trigger_limit),
-            }
+            values["triggers_limit"] = triggers_limit
+
+        if 'actions' in kwargs["payload"] and event_action is not None:
+            actions = data.actions
+            # as in some cases actions is instance of str.
+            actions[event_type] = int(event_action)
+            values["actions"] = actions   
+
+        if event_limit or 'actions' in kwargs["payload"] and event_action is not None:     
             await EventRepository.update_event(app_name, event_name, values=values)
 
     @staticmethod

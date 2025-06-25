@@ -1,7 +1,11 @@
 from enum import Enum
+from commonutils.utils import CustomEnum
 
 
+URL_SHORTENER_START_PATTERN = "__URL_SHORTNER_START__"
+URL_SHORTENER_END_PATTERN = "__URL_SHORTNER_END__"
 MAX_DEVICES_FOR_PUSH = 10
+TRUNCATE_MAX_LEN = 5000
 
 
 class Action(Enum):
@@ -22,8 +26,11 @@ class Event:
         "priority",
         "event_type",
     ]
+    TRIGGER_LIMIT = 'trigger_limit'
     ADD_ACTION_REQUIRED_PARAMS = ["app_name", "event_name", "user_email"]
+    EVENT_UPDATE_REQUIRED_PARAMS = ['app_name', 'event_name', 'event_type', 'priority', 'callback_enabled', 'payload']
     EVENT_PRIORITY = "priority"
+    DYNAMIC_CHANNELS = "dynamic_channels"
     EVENT_TYPE = "event_type"
     NEW_EVENT_CREATED_MESSAGE = "New event created with event_name = {event_name},app_name = {app_name} by {user_email}."
     NEW_ACTION_ADDED_MESSAGE = "New action added in event_name = {event_name},app_name = {app_name} by {user_email}."
@@ -37,6 +44,7 @@ class Event:
     SOFT_DELETE_DEFAULT_VALUE = False
     DEFAULT_LIMIT = 1000
     DEFAULT_OFFSET = 0
+    ID = "id"
 
 
 class EventType(Enum):
@@ -45,6 +53,27 @@ class EventType(Enum):
     OTHER = "other"
 
 
+class EventPriority(CustomEnum):
+    CRITICAL = "critical"
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+
+    @classmethod
+    def _missing_(cls, _value):
+        return cls.LOW
+
+
 class SyncDispatcher:
-    ENDPOINT = "/notify"
+    ENDPOINT = "/v4/notify"
     METHOD = "POST"
+
+
+class Redis:
+    REDIS_NAMESPACE = 'notification_core_redis'
+    REDIS_EXPIRY_TIME_MED = 60 * 60
+    KEY_DELIMITER = '_'
+
+
+class RedisKeyPrefixes:
+    EVENT_BODY_LATEST_VERSION = 'event_body_latest_version'

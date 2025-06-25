@@ -12,3 +12,4 @@ class PushNotificationModel:
         self.updated_by = push_notification_dict['updated_by']
         self.created = push_notification_dict['created']
         self.updated = push_notification_dict['updated']
+        self.type = push_notification_dict['type']

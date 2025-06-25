@@ -11,6 +11,7 @@ class WhatsappContentDBModel(BaseModel):
     id = fields.BigIntField(pk=True)
     event_id = fields.BigIntField(unique=True)
     name = fields.TextField()
+    variable_mapping = fields.JSONField(default="{}")
     updated_by = fields.CharField(max_length=100)
     created = NaiveDatetimeField(auto_now=True)
     updated = NaiveDatetimeField(auto_now=True)

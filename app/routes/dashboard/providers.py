@@ -8,8 +8,10 @@ providers_blueprint = Blueprint("Providers", url_prefix="dashboard/providers")
 
 @providers_blueprint.route("", methods=["POST"], name="add_new_provider")
 async def add_new_provider(request: Request):
+    print(f"Received request: {request.custom_json()}")
     data = request.custom_json()
     resp = await DashboardProvidersScreen.add_new_provider(data)
+    print("Response from add_new_provider:", resp)
     return send_response(resp)
 
 

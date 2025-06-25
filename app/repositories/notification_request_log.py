@@ -7,12 +7,14 @@ from app.models.notification_core_db import NotificationRequestLogDBModel
 class NotificationRequestLogRepository:
 
     @classmethod
-    async def log_new_notification_request(cls, event_id, request_id, channel, sent_to, source_identifier):
+    async def log_new_notification_request(cls, status, event_id, request_id, channel, sent_to, message, source_identifier):
         log_data = {
+            'status': status,
             'event_id': event_id,
             'notification_request_id': request_id,
             'channel': channel,
             'sent_to': sent_to,
+            'message': message,
             'source_identifier': source_identifier
         }
         new_rows = await ORMWrapper.create(NotificationRequestLogDBModel, log_data)
@@ -20,29 +22,43 @@ class NotificationRequestLogRepository:
 
     @classmethod
     async def update_notification_request_log(cls, log_id, **kwargs):
-        where = {'id': log_id}
+        exclude = {}
+        filter = {'id': log_id}
+
+        if kwargs.get("source") == 'INTERNAL':
+            # if the coming source is INTERNAL, then don't update
+            # the row if the current source is WEBHOOKg
+            #
+            # This prevents SUCCESS status being overwritten by FAILED, QUEUED.. status
+            exclude = {'source': 'WEBHOOK'}
+
         if log_id == '-1':
             operator_event_id = kwargs.pop("operator_event_id", None)
             if not operator_event_id:
-                raise AssertionError("operator_event_id can not be None if `log_id` is `-1`")
-            return await cls._update_notification_request_log_by_operator_event_id(operator_event_id, **kwargs)
-        return await cls._update_notification_request_log(where, **kwargs)
+                raise AssertionError(
+                    "operator_event_id can not be None if `log_id` is `-1`"
+                )
+            return await cls._update_notification_request_log_by_operator_event_id(
+                operator_event_id, exclude, **kwargs
+            )
+
+        return await cls._update_notification_request_log(filter, exclude, **kwargs)
 
     @classmethod
-    async def _update_notification_request_log_by_operator_event_id(cls, operator_event_id, **kwargs):
-        where = {'operator_event_id': operator_event_id}
-        return await cls._update_notification_request_log(where, **kwargs)
-
+    async def _update_notification_request_log_by_operator_event_id(cls, operator_event_id, exclude, **kwargs):
+        filter = {'operator_event_id': operator_event_id}
+        return await cls._update_notification_request_log(filter, exclude, **kwargs)
     @classmethod
-    async def _update_notification_request_log(cls, where, **kwargs):
+    async def _update_notification_request_log(cls, filter, exclude, **kwargs):
         if kwargs.get('message'):
             kwargs['message'] = cls.truncate_value(kwargs['message'], 5000)
         if kwargs.get('metadata'):
             kwargs['metadata'] = cls.truncate_value(kwargs['metadata'], 5000)
-        updated_rows = await ORMWrapper.update_with_filters(
-            None, NotificationRequestLogDBModel, kwargs, where_clause=where
+        return (
+            await NotificationRequestLogDBModel.filter(**filter)
+            .exclude(**exclude)
+            .update(**kwargs)
         )
-        return updated_rows
 
     @classmethod
     async def update_notification_request_with_where_clause(cls, where_clause, **update_values):

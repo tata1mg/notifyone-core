@@ -63,10 +63,11 @@ class Providers(CustomEnum):
             NotificationChannels.SMS.value
         ],
         "configuration": {
+            "PLIVO_SMS_URL": "",
             "PLIVO_AUTH_ID": "",
             "PLIVO_AUTH_TOKEN": "",
             "PLIVO_SENDER_ID": "",
-            "PLIVO_CALLBACK_URL": ""
+            "PLIVO_CALLBACK_URL": "",
         }
     }
 
@@ -81,7 +82,13 @@ class Providers(CustomEnum):
             "SMS_COUNTRY_USERNAME": "",
             "SMS_COUNTRY_PASSWORD": "",
             "SMS_COUNTRY_SENDER_ID": "",
-            "SMS_COUNTRY_URL": ""
+            "SMS_COUNTRY_OTP_USERNAME": "",
+            "SMS_COUNTRY_OTP_PASSWORD": "",
+            "SMS_COUNTRY_OTP_SENDER_ID": "",
+            "SMS_COUNTRY_DROPLET_USERNAME": "",
+            "SMS_COUNTRY_DROPLET_PASSWORD": "",
+            "SMS_COUNTRY_DROPLET_SENDER_ID": "",
+            "SMS_COUNTRY_URL": "",
         }
     }
 
@@ -93,7 +100,36 @@ class Providers(CustomEnum):
             NotificationChannels.PUSH.value
         ],
         "configuration": {
-            "AUTH_KEY": ""
+            "PROJECT_ID": "",
+            "TYPE": "",
+            "PRIVATE_KEY_ID": "",
+            "PRIVATE_KEY": "",
+            "CLIENT_EMAIL": "",
+            "CLIENT_ID": "",
+            "TOKEN_URI": "",
+            "AUTH_URI": "",
+            "AUTH_PROVIDER_X509_CERT_URL": "",
+            "CLIENT_X509_CERT_URL": "",
+            "UNIVERSE_DOMAIN": ""
+        }
+    }
+
+    APNS = {
+        "name": "Apple Push Notification Service",
+        "code": "APNS",
+        "logo": "https://raw.githubusercontent.com/tata1mg/notifyone-core/refs/heads/notifyone/issues/14/media/logo/apns.png",
+        "channels": [
+            NotificationChannels.PUSH.value
+        ],
+        "configuration": {
+            "HOST": "",
+            "ENDPOINT": "",
+            "BUNDLE_IDENTIFIER": "",
+            "REFRESH_TOKEN_DELAY": 1800,
+            "ALGORITHM": "",
+            "TEAM_ID": "",
+            "KEY_ID": "",
+            "PRIVATE_KEY": ""
         }
     }
 
@@ -105,8 +141,23 @@ class Providers(CustomEnum):
             NotificationChannels.WHATSAPP.value
         ],
         "configuration": {
-            "CAPACITY": 0,
-            "AUTHORIZATION_TOKEN": ""
+            "APP_AUTHORIZATIONS": {
+            "corporate-service": "CORPORATE",
+            "diagnostics": "DIAGNOSTICS",
+            "health_records": "DIAGNOSTICS",
+            "off": "PHARMACY",
+            "ppmc_api": "CORPORATE",
+            "validation_service": "PHARMACY",
+            "verification": "PHARMACY"
+            },
+            "AUTHORIZATION": {
+            "CORPORATE": "Basic VkN6SjkxZVQ3SkV6R2sxdmtMblZkb092M1dHUVR2RXZ2ekVUVlJBNHZsTTo=",
+            "DEFAULT": "Basic dm9VOWNseVNPeUpadUpmQ2VTMnVfdFhqdzB4V3JvWVNvUWozOVpIM2NGNDo=",
+            "DIAGNOSTICS": "Basic dm9VOWNseVNPeUpadUpmQ2VTMnVfdFhqdzB4V3JvWVNvUWozOVpIM2NGNDo=",
+            "PHARMACY": "Basic TTl1SFg2TlZxOWJjZDNndldsSGhfRVBWRVd0ZWNRbHVVS2ZOeV8temllZzo="
+            },
+            "HOST": "https://api.interakt.ai",
+            "PATH": "/v1/public/message/"
         }
     }
 

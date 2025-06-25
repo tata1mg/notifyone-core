@@ -170,3 +170,7 @@ class EventRepository:
             raise NotFoundException("no templates found")
         return all_templates
         
+    @classmethod
+    async def search_event(cls, event_like, order_by, limit, offset):
+        events = await EventDBModel.filter(event_name__contains=event_like).order_by(order_by).limit(limit).offset(offset)
+        return [await event.to_dict() for event in events]

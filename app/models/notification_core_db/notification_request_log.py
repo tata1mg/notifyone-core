@@ -12,26 +12,20 @@ class NotificationRequestLogDBModel(BaseModel):
 
     class Meta:
         table = DatabaseTables.NOTIFICATION_REQUEST_LOG.value
-        indexes = (("source_identifier", "event_id",),)
 
     id: int = fields.BigIntField(pk=True)
     event_id = fields.BigIntField()
-    notification_request_id = fields.CharField(max_length=100, index=True)
+    content_length = fields.BigIntField()
+    notification_request_id = fields.CharField(max_length=100)
     channel = fields.CharField(max_length=100)
-    sent_to = fields.CharField(max_length=1000, null=True, index=True)
-    source_identifier = fields.CharField(max_length=1000, null=True, index=True)
-    status = fields.CharEnumField(enum_type=NotificationRequestLogStatus, default=NotificationRequestLogStatus.NEW.value)
+    sent_to = fields.CharField(max_length=1000, null=True)
+    source_identifier = fields.CharField(max_length=1000, null=True)
+    status = fields.CharField(max_length=50, default=NotificationRequestLogStatus.NEW.value)
     operator = fields.CharField(max_length=50, null=True)
-    operator_event_id = fields.CharField(max_length=200, null=True, index=True)
-    message = fields.TextField(null=True)
-    metadata = fields.TextField(null=True)
-    created = NaiveDatetimeField(auto_now=True, index=True)
+    operator_event_id = fields.CharField(max_length=1000, null=True)
+    source = fields.CharField(max_length=50, default="UNKNOWN")
+    channel_status = fields.CharField(max_length=50, default="UNKNOWN")
+    message = fields.CharField(max_length=5000, null=True)
+    metadata = fields.CharField(max_length=5000, null=True)
+    created = NaiveDatetimeField(auto_now=True)
     updated = NaiveDatetimeField(auto_now=True)
-
-    async def to_dict(
-        self, filter_keys=None, get_related=True, related_fields=None
-    ):
-        status = self.status
-        dict_data = await super(NotificationRequestLogDBModel, self).to_dict()
-        dict_data['status'] = status.value
-        return dict_data

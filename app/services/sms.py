@@ -9,6 +9,7 @@ from app.constants import (
 from app.exceptions import NoSendAddressFoundException
 from app.models.notification_core import EventModel
 from app.service_clients.publisher import PublishResult
+from app.repositories.notification_request_log import NotificationRequestLogRepository
 from app.utilities import (
     get_transformed_message_by_text,
     dispatch_notification_request_common_payload,
@@ -16,6 +17,7 @@ from app.utilities import (
 )
 from .abstract_handler import AbstractHandler
 from .logging import NotificationRequestLog
+from app.utilities import current_utc_timestamp
 from app.repositories.sms_content import SmsContentRepository
 
 logger = logging.getLogger()
@@ -43,15 +45,23 @@ class SMSHandler(AbstractHandler):
                     ErrorMessages.NO_SEND_ADDRESS_FOUND.value
                 )
 
-            # Currently, we support only one mobile id in send_address
-            send_address = send_address[0]
-
             if not is_notification_allowed_for_mobile(send_address):
                 raise NoSendAddressFoundException(
                     ErrorMessages.SEND_ADDRESS_NOT_ALLOWED_ON_TEST_ENV.value
                 )
 
             notification_body = await cls.get_sms_body(event, request_body)
+
+            if notification_body:
+                update_data = {
+                    "updated": current_utc_timestamp(),
+                    "content_length": len(notification_body) or None
+                }
+
+                await NotificationRequestLogRepository.update_notification_request_with_where_clause(
+                    {"id": notification_request_log_row.id}, **update_data
+                )
+
             data = dispatch_notification_request_common_payload(
                 event.id,
                 event.event_name,
@@ -83,8 +93,8 @@ class SMSHandler(AbstractHandler):
             # update notification request log status
             await NotificationRequestLog.update_notification_request_processed_status(
                 notification_request_log_row.id,
-                message=message,
-                status=status.value,
+                message=result.message,
+                status=result.status.value,
                 content=notification_body,
                 channel=NotificationChannels.SMS,
                 request_id=request_body["request_id"],

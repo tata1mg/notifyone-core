@@ -24,6 +24,9 @@ _FieldType = Literal[
     "collection",
     "field_array",
     "dependent",
+    "CUSTOM_PREVIEW_EMAIL",
+    "CUSTOM_PREVIEW_SMS",
+    "CUSTOM_PREVIEW_PUSH"
 ]
 
 
@@ -49,3 +52,6 @@ class FieldType(Enum):
     COLLECTION: _FieldType = "collection"
     FIELD_ARRAY: _FieldType = "field_array"
     DEPENDENT: _FieldType = "dependent"
+    CUSTOM_PREVIEW_EMAIL: _FieldType = "CUSTOM_PREVIEW_EMAIL"
+    CUSTOM_PREVIEW_SMS: _FieldType = "CUSTOM_PREVIEW_SMS"
+    CUSTOM_PREVIEW_PUSH: _FieldType = "CUSTOM_PREVIEW_PUSH"
