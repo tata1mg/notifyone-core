@@ -45,7 +45,7 @@ class SMSHandler(AbstractHandler):
                     ErrorMessages.NO_SEND_ADDRESS_FOUND.value
                 )
 
-            if not is_notification_allowed_for_mobile(send_address):
+            if not is_notification_allowed_for_mobile(send_address[0]):
                 raise NoSendAddressFoundException(
                     ErrorMessages.SEND_ADDRESS_NOT_ALLOWED_ON_TEST_ENV.value
                 )
