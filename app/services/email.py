@@ -43,42 +43,35 @@ class EmailHandler(AbstractHandler):
         status = NotificationRequestLogStatus.INITIATED
         message = None
         email_body = None
-        print('Handling email request: {}'.format(request_body))
-        # 'request_id': '54530a6d-aef2-4dc3-9006-d80cb14d14ek', 'app_name': 'test_app', 'event_name': 'test_event', 'event_id': '2', 'source_identifier': 'REQ_1234', 'to': {'email': ['akash.bhat@1mg.com'], 'mobile': ['9915870128'], 'device': []}, 'channels': {'email': {'sender': {'name': 'Akash Bhat', 'address': 'akash.bhat@1mg.com'}}, 'whatsapp': {}}, 'body': {}}
-        reply_to = request_body.get('email', {}).get('reply_to') or request_body.get('reply_to', Email.REPLY_TO)
         try:
 
             send_address = NotificationChannels.get_sent_to_for_channel(NotificationChannels.EMAIL.value, request_body)
 
             if not send_address:
                 raise NoSendAddressFoundException(ErrorMessages.NO_SEND_ADDRESS_FOUND.value)
-            print("Send address found: {}".format(send_address))
             # Currently, we support only one email id in send_address
             send_address = send_address[0]
 
             if not is_notification_allowed_for_email(send_address):
-                print("Send address not allowed on test environment: {}".format(send_address))
                 raise NoSendAddressFoundException(ErrorMessages.SEND_ADDRESS_NOT_ALLOWED_ON_TEST_ENV.value)
 
+            app = await AppsRepository.get_app_by_name(event.app_name)
+            if not app:
+                raise AppNotConfigured(ErrorMessages.APP_NOT_CONFIGURED.value)
+
             email_subject, email_body = await cls.get_email_subject_and_body(event, request_body)
-            print("Email subject: {}".format(email_subject))
             data = dispatch_notification_request_common_payload(
                 event.id, event.event_name, event.app_name, NotificationChannels.EMAIL.value,
                 notification_request_log_row.id
             )
+            email_channel_data = request_body.get('channels', {}).get('email', {})
             attachments = request_body.get('attachments')
-            cc = request_body.get('email').get('cc')
+            cc = email_channel_data.get('channels', {}).get('cc')
             
-            if cc and not is_notification_allowed_for_email(",".join(cc)):
+            if cc and not is_notification_allowed_for_email(",".join(cc[0])):
                 raise NoSendAddressFoundException(ErrorMessages.SEND_ADDRESS_NOT_ALLOWED_ON_TEST_ENV.value)
 
-            bcc = request_body.get('email').get('bcc')
-            email_channel_data = {
-                "cc": cc,
-                "bcc": bcc,
-            }
-            print("Publishing email with data: {}".format(data))
-            result = await cls.publish(data, send_address, email_subject, email_body, reply_to, attachments, cc, bcc, event.priority)
+            result = await cls.publish(app, email_channel_data, data, send_address, email_subject, email_body, attachments, event.priority)
         except NoSendAddressFoundException as ne:
             status = NotificationRequestLogStatus.NOT_ELIGIBLE
             message = str(ne)
@@ -112,13 +105,13 @@ class EmailHandler(AbstractHandler):
         return result
 
     @classmethod
-    async def publish(cls, email_channel_data, data, recipient, subject, body, attachments=None, priority:EventPriority = EventPriority.LOW):
+    async def publish(cls, app, email_channel_data, data, recipient, subject, body, attachments=None, priority:EventPriority = EventPriority.LOW):
         cc = email_channel_data.get('cc')
         bcc = email_channel_data.get('bcc')
         sender = {
-            'reply_to': email_channel_data.get('reply_to'),
-            'name': email_channel_data.get('sender', {}).get('name'),
-            'address': email_channel_data.get('sender', {}).get('address')
+            'reply_to': email_channel_data.get('reply_to') or app.email.reply_to,
+            'name': email_channel_data.get('sender', {}).get('name') or app.email.sender.name,
+            'address': email_channel_data.get('sender', {}).get('address') or app.email.sender.address
         }
         data.update({
             'subject': subject,

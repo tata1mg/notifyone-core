@@ -30,9 +30,7 @@ class Providers(CustomEnum):
             NotificationChannels.EMAIL.value
         ],
         "configuration": {
-            "API_KEY": "",
-            "AWS_ACCESS_KEY_ID": "",
-            "AWS_ACCESS_KEY_SECRET": "",
+            "API_KEY": ""
         }
     }
 
