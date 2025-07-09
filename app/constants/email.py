@@ -1,5 +1,4 @@
 class Email:
-    REPLY_TO = 'no-reply@mail.1mg.com'
     INCLUDE_START = '$include_start-'
     INCLUDE_END = '-$include_end'
     SUBJECT = 'subject'

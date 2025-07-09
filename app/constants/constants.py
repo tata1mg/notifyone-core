@@ -65,7 +65,7 @@ class EventPriority(CustomEnum):
 
 
 class SyncDispatcher:
-    ENDPOINT = "/v4/notify"
+    ENDPOINT = "/notify"
     METHOD = "POST"
 
 
