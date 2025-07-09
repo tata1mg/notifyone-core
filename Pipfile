@@ -4,10 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-torpedo = {editable = true, ref = "3.10.1", git = "ssh://git@bitbucket.org/tata1mg/torpedo.git"}
-commonutils = {editable = true, ref = "1.8.3", git = "ssh://git@bitbucket.org/tata1mg/commonutils.git"}
-tortoise_wrapper = {editable = true, ref = "0.7.0", git = "ssh://git@bitbucket.org/tata1mg/tortoise_wrapper.git"}
-cache_wrapper = {editable = true, ref = "4.0.1", git = "ssh://git@bitbucket.org/tata1mg/cache_wrapper.git"}
+torpedo = {editable = true, ref = "1.0.0", git = "git+ssh://git@github.com/tata1mg/torpedo.git"}
+commonutils = {editable = true, ref = "1.0.0", git = "git+ssh://git@github.com/tata1mg/commonutils.git"}
+tortoise_wrapper = {editable = true, ref = "1.0.0", git = "git+ssh://git@github.com/tata1mg/tortoise_wrapper.git"}
+cache_wrapper = {editable = true, ref = "1.0.0", git = "git+ssh://git@github.com/tata1mg/cache_wrapper.git"}
 aerich = "0.7.2"
 premailer = "===3.10.0"
 pyjade = "===4.0.0"
