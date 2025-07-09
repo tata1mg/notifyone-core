@@ -6,6 +6,7 @@ class NotificationChannels(CustomEnum):
     SMS = 'sms'
     WHATSAPP = 'whatsapp'
     PUSH = 'push'
+    CALL = 'call'
 
     def __str__(self) -> str:
         return self.value
@@ -16,10 +17,8 @@ class NotificationChannels(CustomEnum):
         send_address = list()
         if channel in [cls.EMAIL.value]:
             send_address = request_body.get('to', {}).get('email') or list()
-            send_address = [send_address[0]] if send_address else list()
         elif channel in [cls.SMS.value, cls.WHATSAPP.value]:
             send_address = request_body.get('to', {}).get('mobile') or list()
-            send_address = [send_address[0]] if send_address else list()
         elif channel in [cls.PUSH.value]:
             send_address = request_body.get('to', {}).get('device') or list()
         return send_address

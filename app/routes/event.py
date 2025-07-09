@@ -7,16 +7,8 @@ from app.services import Events
 from app.services.email import EmailHandler
 from app.utilities import current_epoch
 from app.routes.api_models.event import CreateEventApiModel
-from app.routes.middleware.authentication import HttpRequestAuthentication
 
 event_blueprint = Blueprint("Events")
-event_with_auth = Blueprint("event_with_auth", version=4)
-internal_event_blueprint = InternalApiBlueprint("event_internal")
-
-@event_with_auth.on_request
-async def request_authenticator(request: Request):
-    # Middleware to authenticate each incoming request of create event
-    await HttpRequestAuthentication.examine_request(request)
 
 @event_blueprint.route("/events/custom", methods=["GET"], name="get_events_custom")
 async def get_events_custom(request: Request):
@@ -39,7 +31,7 @@ async def handle_email_template_update(request: Request):
     data = {"message": "success"}
     return send_response(data=data)
 
-@event_with_auth.route(CreateEventApiModel.uri(), methods=[CreateEventApiModel.http_method()], name=CreateEventApiModel.name())
+@event_blueprint.route(CreateEventApiModel.uri(), methods=[CreateEventApiModel.http_method()], name=CreateEventApiModel.name())
 @openapi.definition(
     summary=CreateEventApiModel.summary(),
     description=CreateEventApiModel.description(),
@@ -56,10 +48,10 @@ async def create_event(request: Request):
     result = await Events.create_event(data)
     return send_response(result)
 
-@event_with_auth.route("/event/add_action", methods=["PUT"], name="update_event")
+@event_blueprint.route("/event/add_action", methods=["PUT"], name="update_event")
 async def update_event(request: Request):
     data = request.custom_json()
-    data["user_email"] = request.ctx.user
+    data["user_email"] = "temp@ns.com"
     result = await Events.add_new_action_to_event(data)
     return send_response(result)
 
@@ -77,18 +69,18 @@ async def get_events(request: Request):
     result = await Events.get_events(request.args)
     return send_response(result)
 
-@event_with_auth.route(
+@event_blueprint.route(
     "/event/<event_id:int>", methods=["DELETE"], name="delete_event_with_id"
 )
 async def delete_event(request: Request, event_id: int):
-    user_email = request.ctx.user
+    user_email = "temp@ns.com"
     result = await Events.delete_event(event_id, user_email)
     return send_response(result)
 
-@event_with_auth.route("/event/<event_id:int>", methods=["PUT"], name="update_event")
+@event_blueprint.route("/event/<event_id:int>", methods=["PUT"], name="update_event")
 async def update_event(request: Request, event_id: int):
     data = request.custom_json()
-    data["user_email"] = request.ctx.user
+    data["user_email"] = "temp@ns.com"
     if event_id is None:
         raise BadRequestException("event id is missing in the url")
     result = await Events.update_event_data(event_id, data)
@@ -112,7 +104,7 @@ async def get_content_for_event(request: Request):
     return send_response(data=result)
 
 
-@internal_event_blueprint.route(
+@event_blueprint.route(
     "/v4/event/content",
     methods=["POST"],
     name="get_content_for_event",

@@ -2,18 +2,10 @@ from torpedo import Request,send_response
 from sanic import Blueprint
 from app.manager.push_notification_manager import PushManager
 from app.exceptions import RequiredParamsException
-from app.routes.middleware.authentication import HttpRequestAuthentication
 
-push_apis_with_auth = Blueprint("PushAPIs")
+push_apis = Blueprint("PushAPIs")
 
-@push_apis_with_auth.on_request
-async def request_authenticator(request: Request):
-    """
-    Middleware to authenticate each incoming request of create event
-    """
-    await HttpRequestAuthentication.examine_request(request)
-
-@push_apis_with_auth.route("/push/template", methods=["PUT"], name="update_push_template")
+@push_apis.route("/push/template", methods=["PUT"], name="update_push_template")
 async def update_push_template(request: Request):
     payload = request.custom_json()
     user_email = "temp@ns.com"
@@ -29,7 +21,7 @@ async def update_push_template(request: Request):
     message = {"message": "push notification has been updated sucessfully"}
     return send_response(message)
 
-@push_apis_with_auth.route(
+@push_apis.route(
     "/push/template/preview", methods=["POST"], name="preview_push_template"
 )
 async def get_push_template_previews(request: Request):
