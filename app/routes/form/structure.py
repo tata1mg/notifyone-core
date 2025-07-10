@@ -43,7 +43,7 @@ async def get_add_provider_form(_req, channel, provider):
 async def get_update_provider_form(_req, unique_identifier):
     if not unique_identifier:
         raise BadRequestException("Missing unique_identifier")
-    return json(body=await UpdateProviderForm().get_instance_asdict(unique_identifier))
+    return json(body=await UpdateProviderForm.get_instance_asdict(unique_identifier))
 
 @form_bp.get("/update-event/<event_id:int>")
 async def get_update_event_form(_req, event_id: int):
