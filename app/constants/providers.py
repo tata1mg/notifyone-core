@@ -149,10 +149,10 @@ class Providers(CustomEnum):
             "verification": "PHARMACY"
             },
             "AUTHORIZATION": {
-            "CORPORATE": "Basic VkN6SjkxZVQ3SkV6R2sxdmtMblZkb092M1dHUVR2RXZ2ekVUVlJBNHZsTTo=",
-            "DEFAULT": "Basic dm9VOWNseVNPeUpadUpmQ2VTMnVfdFhqdzB4V3JvWVNvUWozOVpIM2NGNDo=",
-            "DIAGNOSTICS": "Basic dm9VOWNseVNPeUpadUpmQ2VTMnVfdFhqdzB4V3JvWVNvUWozOVpIM2NGNDo=",
-            "PHARMACY": "Basic TTl1SFg2TlZxOWJjZDNndldsSGhfRVBWRVd0ZWNRbHVVS2ZOeV8temllZzo="
+            "CORPORATE": "",
+            "DEFAULT": "",
+            "DIAGNOSTICS": "",
+            "PHARMACY": ""
             },
             "HOST": "https://api.interakt.ai",
             "PATH": "/v1/public/message/"

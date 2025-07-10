@@ -6,7 +6,6 @@ class NotificationChannels(CustomEnum):
     SMS = 'sms'
     WHATSAPP = 'whatsapp'
     PUSH = 'push'
-    CALL = 'call'
 
     def __str__(self) -> str:
         return self.value
