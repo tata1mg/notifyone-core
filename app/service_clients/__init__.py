@@ -1,4 +1,3 @@
-__all__ = ["AuthClient","LambdaClient"]
+__all__ = ["LambdaClient"]
 
-from .auth import AuthClient
 from .aws_lambda import LambdaClient
