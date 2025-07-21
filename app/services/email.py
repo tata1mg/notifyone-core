@@ -49,17 +49,20 @@ class EmailHandler(AbstractHandler):
 
             if not send_address:
                 raise NoSendAddressFoundException(ErrorMessages.NO_SEND_ADDRESS_FOUND.value)
-            # Currently, we support only one email id in send_address
-            send_address = send_address[0]
-
-            if not is_notification_allowed_for_email(send_address):
-                raise NoSendAddressFoundException(ErrorMessages.SEND_ADDRESS_NOT_ALLOWED_ON_TEST_ENV.value)
+            allowed_addresses = []
+            
+            for email in send_address:
+                if is_notification_allowed_for_email(email):
+                    allowed_addresses.append(email)
+            
+            send_address = allowed_addresses
 
             app = await AppsRepository.get_app_by_name(event.app_name)
             if not app:
                 raise AppNotConfigured(ErrorMessages.APP_NOT_CONFIGURED.value)
 
             email_subject, email_body = await cls.get_email_subject_and_body(event, request_body)
+
             data = dispatch_notification_request_common_payload(
                 event.id, event.event_name, event.app_name, NotificationChannels.EMAIL.value,
                 notification_request_log_row.id
@@ -105,7 +108,7 @@ class EmailHandler(AbstractHandler):
         return result
 
     @classmethod
-    async def publish(cls, app, email_channel_data, data, recipient, subject, body, attachments=None, priority:EventPriority = EventPriority.LOW):
+    async def publish(cls, app: AppsModel, email_channel_data, data, recipient, subject, body, attachments=None, priority:EventPriority = EventPriority.LOW):
         cc = email_channel_data.get('cc')
         bcc = email_channel_data.get('bcc')
         sender = {
@@ -126,7 +129,6 @@ class EmailHandler(AbstractHandler):
     
     @classmethod
     async def get_email_subject_and_body(cls, event: EventModel, request_body: dict):
-        print("Getting email subject and body for event: {}".format(event.event_name))
         email_body, raw_subject = await cls.get_email_details(event, request_body['body'])
         email_channel_data = request_body["channels"]["email"]
         subject = email_channel_data.get('subject') or raw_subject or ''
@@ -137,6 +139,7 @@ class EmailHandler(AbstractHandler):
     async def get_email_details(cls, event: EventModel, data: dict):
         email_content = await EmailContentRepository.get_email_content_from_event_id(event.id)
         # Future Scope : Handle support for Multiple templates
+
         if email_content:
             email_body, subject = await cls.get_email_details_from_db(data, email_content)
         else:
