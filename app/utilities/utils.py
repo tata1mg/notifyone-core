@@ -90,7 +90,6 @@ def current_epoch():
 
 def is_notification_allowed_for_email(email: str) -> bool:
     test_allowed_emails = CONFIG.config.get('TEST_ALLOWED_EMAILS') or list()
-    print(f"Test allowed emails: {test_allowed_emails}")
     if not is_testing_environment():
         return True
 
