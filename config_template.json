@@ -93,8 +93,7 @@
     "S3": {
       "AWS_REGION": "eu-west-2",
       "BUCKET_NAME": "1mg-staging-nscontentlogs",
-      "MAX_POOL_CONNECTIONS": 10,
-      "AWS_ENDPOINT_URL": "http://localhost:4566"
+      "MAX_POOL_CONNECTIONS": 10
     }
   },
   "NOTIFICATION_REQUEST": {
@@ -131,28 +130,13 @@
   "SENTRY": {
     "DSN": ""
   },
-  "TEST_ENVIRONMENT": true,
-  "TEST_ALLOWED_EMAILS": ["akash.bhat@1mg.com"],
+  "TEST_ENVIRONMENT": false,
+  "TEST_ALLOWED_EMAILS": [],
   "TEST_ALLOWED_MOBILES": [],
   "PROVIDERS": {
     "ENCRYPTION": {
       "KEY": "####@@@@!!!!****",
       "AES_IV": "****@@@@!!!!####"
     }
-  },
-  "AUTH": {
-    "HOST": "https://staginternalapi.1mg.com/auth",
-    "TIMEOUT": 10
-  },
-  "URL_SHORTENER": {
-    "SHORTABLE_URL_MIN_LENGTH": 30
-  },
-  "LAMBDA": {
-    "HOST": "",
-    "URL_SHORTENER_URI": "/dev/url-shortener-1mg-dev-store"
-  },
-  "LARA": {
-    "HOST": "https://staginternalapi.1mg.com/lara_service",
-    "TIMEOUT": 10
   }
 }
