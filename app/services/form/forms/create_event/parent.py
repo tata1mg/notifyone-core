@@ -1,4 +1,4 @@
-from app.constants import EventPriority, EventType
+from app.constants.event import EventPriority, EventType
 from app.services.apps import AppService
 from app.services.form.fields import (
     Collection,

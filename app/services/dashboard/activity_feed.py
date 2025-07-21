@@ -1,4 +1,3 @@
-from pydantic.main import validate_model
 from torpedo.exceptions import BadRequestException
 
 from app.constants import NotificationChannels, NotificationRequestLogStatus

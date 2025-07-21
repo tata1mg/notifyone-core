@@ -46,24 +46,6 @@ class Event:
     DEFAULT_OFFSET = 0
     ID = "id"
 
-
-class EventType(Enum):
-    PROMOTIONAL = "promotional"
-    TRANSACTIONAL = "transactional"
-    OTHER = "other"
-
-
-class EventPriority(CustomEnum):
-    CRITICAL = "critical"
-    HIGH = "high"
-    MEDIUM = "medium"
-    LOW = "low"
-
-    @classmethod
-    def _missing_(cls, _value):
-        return cls.LOW
-
-
 class SyncDispatcher:
     ENDPOINT = "/notify"
     METHOD = "POST"

@@ -10,7 +10,8 @@ from app.constants import ErrorMessages
 from app.models.notification_core import EventModel
 from app.repositories.event import EventRepository
 from app.constants import NotificationChannels
-from app.constants.constants import Event, EventType, Action
+from app.constants.constants import Event, Action
+from app.constants.event import EventType
 from app.constants.email import Email
 from app.constants.event_priority import EventPriority
 from app.exceptions import InvalidParamsException, ResourceConflictException

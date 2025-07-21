@@ -12,11 +12,9 @@ from app.exceptions import ResourceNotFoundException, NoSendAddressFoundExceptio
 from app.models.notification_core import EventModel
 from app.repositories.push_notification import PushNotificationRepository
 from app.service_clients.publisher import PublishResult
-from app.service_clients import AuthClient
 from app.utilities import (
     render_text,
     dispatch_notification_request_common_payload,
-    is_notification_allowed_for_email,
 )
 from .abstract_handler import AbstractHandler
 from .logging import NotificationRequestLog
@@ -128,27 +126,6 @@ class PushHandler(AbstractHandler):
         devices = request_body.get("to", {}).get("devices")
         if devices:
             return devices
-
-        send_address = NotificationChannels.get_sent_to_for_channel(
-            NotificationChannels.PUSH.value, request_body
-        )
-        if not send_address:
-            raise NoSendAddressFoundException(ErrorMessages.NO_SEND_ADDRESS_FOUND.value)
-
-        if not is_notification_allowed_for_email(send_address):
-            raise NoSendAddressFoundException(
-                ErrorMessages.SEND_ADDRESS_NOT_ALLOWED_ON_TEST_ENV.value
-            )
-
-        # The devices list received from auth is sorted on created data.
-        devices = await AuthClient.get_devices_by_email_id(send_address)
-        if devices and not devices["devices"]:
-            raise ResourceNotFoundException(
-                ErrorMessages.NO_REGISTERED_DEVICE_FOUND.value
-            )
-
-        # Consider max 5 devices created recently.
-        return devices["devices"][-MAX_DEVICES_FOR_PUSH::]
 
     @classmethod
     async def get_push_content(cls, event: EventModel, _body: dict):
