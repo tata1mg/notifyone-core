@@ -45,5 +45,12 @@ RUN /root/.local/bin/pipenv sync --system
 # Copy code folder
 COPY . .
 
+# Create a non-root user and change ownership of the application directory
+RUN useradd -m appuser && \
+    chown -R appuser:appuser /home/ubuntu/apps/$SERVICE_NAME
+
+# Switch to non-root user
+USER appuser
+
 #Start the service
 CMD ["python3", "-m", "app.service"]
