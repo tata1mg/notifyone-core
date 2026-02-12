@@ -5,3 +5,4 @@ class WhatsappContentModel:
         self.event_id = whatsapp_content_dict['event_id']
         self.name = whatsapp_content_dict['name']
         self.updated_by = whatsapp_content_dict['updated_by']
+        self.variable_mapping = whatsapp_content_dict['variable_mapping']

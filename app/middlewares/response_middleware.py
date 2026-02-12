@@ -22,3 +22,4 @@ async def add_cors_headers(request, response):
     if request.method != "OPTIONS":
         methods = [method for method in request.route.methods]
         _add_cors_headers(response, methods)
+        

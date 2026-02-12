@@ -1,13 +1,14 @@
-.strip.footer
-  div.txt-support.link-email
-    a.txt-help(href="{{base_url or Hkp_url}}/contactUs") Need Help?
-      span Click to contact us for queries
-  .social-links
-    a.social-link(href='https://www.facebook.com/1mgOfficial', target='_blank', title='Like us on Facebook',rel='nofollow',data-value='Facebook')
-      img(src='https://s3.ap-south-1.amazonaws.com/1mg-auto-resize-image/pharmacy-production-rxs/366901c5-10c3-4653-baa5-2935a2e5e318.png')
-    a.social-link(href='https://twitter.com/1mgofficial',target='_blank',title='Follow us on Twitter', rel='nofollow', data-value='Twitter')
-      img(src='https://s3.ap-south-1.amazonaws.com/1mg-auto-resize-image/pharmacy-production-rxs/6b839a9c-e65f-40de-9de7-4f0e77f6d04d.png')
-    a.social-link(href='https://plus.google.com/+Healthkartplus', target='_blank', title='Follow us on Google+', rel='nofollow', data-value='Google')
-      img(src='https://s3.ap-south-1.amazonaws.com/1mg-auto-resize-image/pharmacy-production-rxs/b44f224a-d39a-4894-8c1c-91482edc756a.png' width="40")
-    a.social-link(href='https://www.linkedin.com/company/5230742', target='_blank', title='Visit us on LinkedIn', rel='nofollow', data-value='LinkedIn')
-      img(src='https://s3.ap-south-1.amazonaws.com/1mg-auto-resize-image/pharmacy-production-rxs/099b0ec7-e30a-4d7f-a7e6-d8a8e2a27b20.png')
+div.block-grid.no-stack(style="Margin: 0 auto; width: 100%; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: transparent;")
+    a.link-labs-banner(href='https://www.1mg.com/support/chat')
+        .lab-img
+            img(src="https://onemg.gumlet.io/assets/db640b78-353f-4588-baf5-c345ef032d7f.png?format=auto")
+    div(style="border-collapse: collapse; display: table; width: 100%; background-color: transparent;")
+      each val in [8, 7, 6, 5, 4, 3, 2, 1]
+        - var width = [9.5, 6, 7.33, 7.33, 46.5, 7.17, 7.5, 8.67][val - 1]
+        div(class="col num4" style="display: table-cell; vertical-align: top; width: #{width}%;")
+          div(style="width: 100% !important;")
+            div(style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top: 0px; padding-bottom: 0px; padding-right: 0px; padding-left: 0px;")
+              div.img-container.center.autowidth(style="padding-right: 0px; padding-left: 0px; text-align: center;")
+                a(href="#{["https://www.instagram.com/1mgofficialpage/?hl=en", "https://www.facebook.com/1mgOfficial/", "https://www.youtube.com/@1mgofficial", "https://twitter.com/1mgOfficial", "#", "https://api.whatsapp.com/send/?phone=%2B9667758942", "https://apps.apple.com/in/app/tata-1mg-healthcare-app/id554578419", "https://play.google.com/store/apps/details?id=com.aranoah.healthkart.plus"][val - 1]}", style="outline:none", tabindex="-1", target="_blank")
+                  img.center.autowidth(src="https://onemg.gumlet.io/marketing/#{['decd6fa2-1025-432b-888d-4e7267b80147.png', '63c3f3ee-d6b8-4073-a6a3-33c42918b529.png', '5bd5bb8d-b946-47b3-ac9a-7604094d3ee2.png', '1d3b14e7-087f-45a3-a4cc-acbe40322c0e.png', '77097879-0a38-4ff4-a038-c3248d45c723.png', '5bb58e89-7749-40a5-ac97-80920b96b531.png', 'f6d19c6b-46d0-4134-8d31-f56adebdb175.png', 'b7371e4d-01eb-4ba6-a62a-005f7c4f774f.png'][val - 1]}", style="text-decoration: none; -ms-interpolation-mode: bicubic; height:auto; border: none; width: 100%; display: block;", width="200")
+                  div.overlay(style="top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.5);")

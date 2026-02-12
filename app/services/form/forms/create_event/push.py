@@ -1,4 +1,4 @@
-from app.constants.push import DeviceType, PushTarget
+from app.constants.push import DeviceType, NotificationType, PushTarget
 from app.services.form.fields import (
     Collection,
     CollapseContainerConfig,
@@ -38,6 +38,12 @@ class PushForm:
                 rules=[Required],
                 tooltip="maximum number of times a particular event can be triggered for a particular order (set -1 for infinite times)",  # noqa
             ),
+            "type": SelectField(
+                name="type",
+                label="Type",
+                span=12,
+                options=Option.from_enum(NotificationType),
+            ),
             "title": TextInput(name="title", label="Title", rules=[Required]),
             "body": TextInput(name="body", label="Body", rules=[Required]),
             "target": SelectField(
@@ -60,6 +66,7 @@ class PushForm:
                 "device_type",
                 "trigger_limit",
                 "title",
+                "type"
                 "body",
                 "target",
                 "image",

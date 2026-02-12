@@ -2,7 +2,7 @@ from datetime import datetime
 from tortoise_wrapper.wrappers import ORMWrapper
 
 from app.models.notification_core_db import NotificationRequestAttemptDBModel
-
+from app.utilities.utils import truncate
 
 class NotificationRequestAttemptRepository:
     @classmethod
@@ -18,17 +18,21 @@ class NotificationRequestAttemptRepository:
         attempt_number,
         sent_at,
         metadata,
+        source,
         updated,
+        channel_status,
     ):
         log_data = {
             "channel": channel,
             "operator": operator,
             "operator_event_id": operator_event_id,
             "status": status,
-            "message": message,
+            "message": truncate(message),
             "sent_at": datetime.strptime(sent_at, "%B %d, %Y %H:%M:%S"),
-            "metadata": metadata,
+            "metadata": truncate(metadata),
             "updated": updated,
+            "source": source,
+            "channel_status": channel_status,
         }
         # `-1` represents log_id is unkown in this update
         # Trying to identify the row using operator_event_id

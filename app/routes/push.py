@@ -5,7 +5,6 @@ from app.exceptions import RequiredParamsException
 
 push_apis = Blueprint("PushAPIs")
 
-
 @push_apis.route("/push/template", methods=["PUT"], name="update_push_template")
 async def update_push_template(request: Request):
     payload = request.custom_json()

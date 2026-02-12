@@ -1,12 +1,22 @@
 import logging
 from typing import Optional
+import json
 from app.constants import sms
 from app.repositories.event import EventRepository
 from app.manager.email_manager import EmailManager
 from app.manager.sms_manager import SmsManager
 from app.manager.push_notification_manager import PushManager
 from app.manager.whatsapp_manager import WhatsappManager
-from app.constants.constants import Event
+from app.manager.generic_data_manager import GenericDataStoreManager
+from app.constants.constants import Event, Redis, RedisKeyPrefixes
+from app.caches import NotificationCoreCache
+from app.utilities.utils import current_epoch_in_millis
+from app.repositories.email_content import EmailContentRepository
+from app.repositories.sms_content import SmsContentRepository
+from app.repositories.push_notification import PushNotificationRepository
+from app.repositories.whatsapp_content import WhatsappContentRepository
+from app.repositories.generic_data_store import GenericDataRepository
+from app.utilities.utils import async_gather_dict
 
 logger = logging.getLogger()
 
@@ -117,3 +127,49 @@ class EventManager:
                 push_templates.append({**template, **push_template})
 
         return email_templates, sms_templates, push_templates, whatsapp_templates
+    
+    @classmethod
+    async def save_event_body(cls, event_id: str, event_body: dict):
+        """
+        This function is used for saving meta-data for showing preview while editing of templates from UI
+        :param event_id:
+        :param event_body:
+        :return:
+        """
+        cache_key = cls._get_event_body_cache_key(event_id)
+        value = await cls.get_cached_data(cache_key)
+        if not value:
+            latest_data_version = str(current_epoch_in_millis())
+            await GenericDataStoreManager.update_or_insert_data_store_entry(event_id, event_body)
+            await NotificationCoreCache.set_key(cache_key, latest_data_version, expire=Redis.REDIS_EXPIRY_TIME_MED)    
+    
+    @classmethod
+    def _get_event_body_cache_key(cls, event_id: str):
+        return Redis.KEY_DELIMITER.join([Redis.REDIS_NAMESPACE, RedisKeyPrefixes.EVENT_BODY_LATEST_VERSION, event_id])
+
+    @classmethod
+    async def get_cached_data(cls, key: str):
+        data = await NotificationCoreCache.get_key(key)
+        return json.loads(data) if data else None
+
+
+class EventMetaData:
+    def __init__(self, event_id) -> None:
+        self._event_id = event_id
+    async def get_meta_data(self):
+        tasks = {
+            "email": EmailContentRepository.get_email_content_from_event_id(self._event_id),
+            "sms": SmsContentRepository.get_sms_content_from_event_id(self._event_id),
+            "push": PushNotificationRepository.get_push_notification(self._event_id),
+            "whatsapp": WhatsappContentRepository.get_whatsapp_content_from_event_id(self._event_id),
+            "generic_data": GenericDataRepository.get_data_store_entry(self._event_id, category="event_body")
+        }
+        result = await async_gather_dict(tasks, return_exceptions=True)
+        return {
+            'event': {'id': self._event_id},
+            'email': {'id': result.get("email").id if result.get("email") else None},
+            'sms': {'id': result.get("sms").id if result.get("sms") else None},
+            'push': {'id': result.get("push").id if result.get("push") else None},
+            'whatsapp': {'id': result.get("whatsapp").id if result.get("whatsapp") else None},
+            'payload': result.get("generic_data").data if result.get("generic_data") else None
+        }

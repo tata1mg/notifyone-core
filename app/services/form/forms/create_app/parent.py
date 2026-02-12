@@ -98,8 +98,8 @@ class CreateAppForm(GenericForm):
         }
 
     @classmethod
-    async def get(cls):
-        components = await cls._get_components()
+    async def get(self):
+        components = await self._get_components()
         return Collection(
             name="create_app",
             label="Create App",

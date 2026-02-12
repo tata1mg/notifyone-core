@@ -14,7 +14,9 @@ from torpedo import CONFIG
 from app.exceptions import RequiredParamsException
 from app.constants.constants import Event
 from .drivers import CustomJinjaEnvironment
+from app.constants.constants import URL_SHORTENER_END_PATTERN, URL_SHORTENER_START_PATTERN, TRUNCATE_MAX_LEN, Event
 from app.constants.constants import Action, TriggerLimit
+from app.models.notification_core import EventModel
 from app.constants import NotificationChannels
 
 def generate_uuid():
@@ -120,6 +122,10 @@ def validate_required_params(payload: dict, required_params: list):
         raise RequiredParamsException(
             'Following params: {} missing in payload'.format(",".join(missing_parms)))
 
+def truncate(value, max_chars=TRUNCATE_MAX_LEN):
+    if len(value) > max_chars:
+        value = value[0 : max_chars - 5] + "....."
+    return value
 
 def get_event_unique_identifier(event_name: str, app_name: str) -> str:
     """
@@ -216,3 +222,17 @@ def is_valid_python_expression(expression: str) -> bool:
         return True
     except (SyntaxError, ValueError):
         return False
+    
+def flatten_list(lis):
+    flattened = []
+    for item in lis:
+        if isinstance(item, (list, tuple)):
+            flattened.extend(flatten_list(item))    
+        else:
+            flattened.append(item)
+    return flattened
+def get_max(lis):
+    """
+    Get the max of nested lists
+    """
+    return max(flatten_list(lis))

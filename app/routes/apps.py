@@ -42,3 +42,14 @@ async def update_app(request: Request):
     request_payload = request.custom_json()
     data = await AppService.update_app(request_payload)
     return send_response(data)
+
+@apps_blueprint.route("/apps/<app_id>", methods=["DELETE"], name="delete_app")
+async def delete_app(request: Request, app_id: int):
+    data = await AppService.delete_app(app_id)
+    return send_response(data)
+
+@apps_blueprint.route("/apps/<app_id>", methods=["GET"], name="get_app_by_id")
+async def get_app_by_id(request: Request, app_id: int):
+    data = await AppService.get_app_by_id(app_id)
+    return send_response(data)
+

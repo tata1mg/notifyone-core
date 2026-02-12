@@ -5,7 +5,6 @@ from app.exceptions import RequiredParamsException
 
 whatsapp_apis = Blueprint("WhatsappAPIs")
 
-
 @whatsapp_apis.route(
     "/whatsapp/template", methods=["PUT"], name="update_whatsapp_template"
 )

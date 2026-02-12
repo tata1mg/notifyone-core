@@ -4,6 +4,7 @@ class Email:
     SUBJECT = 'subject'
     DESCRIPTION = 'description'
     CONTENT = 'content'
+    ID = 'id'
     NAME = 'name'
     CONTENT_COLUMNS=['id', 'event_id', 'name', 'description', 'subject', 'content','updated_by']
     REDIS_EXPIRY_TIME_LONG = 24 * 60 * 60

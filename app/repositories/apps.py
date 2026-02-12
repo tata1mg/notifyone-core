@@ -82,3 +82,15 @@ class AppsRepository:
             columns = []
 
         return await AppsDBModel.filter(**filters).values_list(*columns, flat=flat)
+    
+    @classmethod
+    async def delete_app(cls, app_id: int) -> AppsDBModel:
+        where_clause = {"id": app_id}
+        apps = await ORMWrapper.get_by_filters(AppsDBModel, where_clause, limit=1)
+        if not apps:
+            raise NotFoundException("App does not exist")
+        app = apps[0]
+        if app:
+            #delete the app with the given id
+            await ORMWrapper.delete_with_filters(app, AppsDBModel)
+        return app

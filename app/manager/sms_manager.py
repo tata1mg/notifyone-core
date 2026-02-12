@@ -77,23 +77,29 @@ class SmsManager(BaseManager):
 
     @classmethod
     async def update_sms_template(cls, sms_id, data, agent_id, **kwargs):
-        if kwargs["payload"].get("content") is None:
-            raise BadRequestException("content is missing in the paylaod")
+        payload = kwargs.get("payload", {})
+        content = payload.get("content")
+        event_id = payload.get("event_id")
+        
+        if content is None:
+            raise BadRequestException("content is missing in the payload")
+
         to_update = {
-            "content": kwargs["payload"].get("content"),
+            "content": content,
             "updated_by": agent_id,
         }
-        await cls.update_trigger_limit(
+
+        await cls.update_trigger_limit_or_actions(
             NotificationChannels.SMS.value, agent_id, **kwargs
         )
         to_update["updated"] = current_utc_timestamp()
         await SmsContentRepository.update_sms_template(
             sms_id=sms_id, to_update=to_update
         )
-        event_id = kwargs["payload"].get("event_id")
-        await GenericDataStoreManager.update_or_insert_data_store_entry(
-                event_id, data, agent_id
-            )
+        if not kwargs.get('update_event'):
+            await GenericDataStoreManager.update_or_insert_data_store_entry(
+                    event_id, data, agent_id
+                )
 
     @staticmethod
     async def get_sms_template_previews(content, event_name, user_email, data):

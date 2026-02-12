@@ -49,25 +49,32 @@ class EmailHandler(AbstractHandler):
 
             if not send_address:
                 raise NoSendAddressFoundException(ErrorMessages.NO_SEND_ADDRESS_FOUND.value)
-
-            # Currently, we support only one email id in send_address
-            send_address = send_address[0]
-
-            if not is_notification_allowed_for_email(send_address):
-                raise NoSendAddressFoundException(ErrorMessages.SEND_ADDRESS_NOT_ALLOWED_ON_TEST_ENV.value)
+            allowed_addresses = []
+            
+            for email in send_address:
+                if is_notification_allowed_for_email(email):
+                    allowed_addresses.append(email)
+            
+            send_address = allowed_addresses
 
             app = await AppsRepository.get_app_by_name(event.app_name)
             if not app:
                 raise AppNotConfigured(ErrorMessages.APP_NOT_CONFIGURED.value)
 
             email_subject, email_body = await cls.get_email_subject_and_body(event, request_body)
+
             data = dispatch_notification_request_common_payload(
                 event.id, event.event_name, event.app_name, NotificationChannels.EMAIL.value,
                 notification_request_log_row.id
             )
-            email_channel_data = request_body["channels"]["email"]
-            attachments = request_body['attachments']
-            result = await cls.publish(app, email_channel_data, data, send_address, email_subject, email_body, attachments=attachments, priority=event.priority)
+            email_channel_data = request_body.get('channels', {}).get('email', {})
+            attachments = request_body.get('attachments')
+            cc = email_channel_data.get('channels', {}).get('cc')
+            
+            if cc and not is_notification_allowed_for_email(",".join(cc[0])):
+                raise NoSendAddressFoundException(ErrorMessages.SEND_ADDRESS_NOT_ALLOWED_ON_TEST_ENV.value)
+
+            result = await cls.publish(app, email_channel_data, data, send_address, email_subject, email_body, attachments, event.priority)
         except NoSendAddressFoundException as ne:
             status = NotificationRequestLogStatus.NOT_ELIGIBLE
             message = str(ne)
@@ -92,8 +99,8 @@ class EmailHandler(AbstractHandler):
             # update notification request log status
             await NotificationRequestLog.update_notification_request_processed_status(
                 notification_request_log_row.id, 
-                message=message,
-                status=status.value,
+                message=result.message,
+                status=result.status.value,
                 content=email_body,
                 channel=NotificationChannels.EMAIL,
                 request_id=request_body['request_id'],
@@ -132,6 +139,7 @@ class EmailHandler(AbstractHandler):
     async def get_email_details(cls, event: EventModel, data: dict):
         email_content = await EmailContentRepository.get_email_content_from_event_id(event.id)
         # Future Scope : Handle support for Multiple templates
+
         if email_content:
             email_body, subject = await cls.get_email_details_from_db(data, email_content)
         else:

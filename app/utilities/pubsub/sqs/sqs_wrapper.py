@@ -60,7 +60,7 @@ class SQSWrapper(Publisher):
             )
             if response:
                 publish_result = PublishResult(
-                    is_success=True, status=NotificationRequestLogStatus.SUCCESS,
+                    is_success=True, status=NotificationRequestLogStatus.INITIATED,
                     message="Message successfully published to SQS"
                 )
             else:

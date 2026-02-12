@@ -12,6 +12,7 @@ class EventModel:
         self.event_type = event_dict['event_type']
         self.meta_info = event_dict['meta_info']
         self.is_deleted = event_dict.get('is_deleted', False)
+        self.callback_enabled = event_dict.get('callback_enabled', False)
         self.updated_by = event_dict['updated_by']
         self.created = event_dict['created']
         self.updated = event_dict['updated']
@@ -52,6 +53,23 @@ class EventModel:
         if channel in self.triggers_limit and self.triggers_limit[channel] != -1:
             return True
         return False
+    
+    @property
+    def dynamic_channel_allowed(self):
+        return self.meta_info.get("dynamic_channels", False)
+
+    def get_allowed_channels(self, allowed_channels):
+        """
+        if the event supports dynamic channels,
+        then return the allowed channels from the request body
+        else return all the active channels
+        """
+        all_channels = self.get_active_channels()
+        if self.dynamic_channel_allowed:
+            if allowed_channels:
+                return list(set(allowed_channels).intersection(all_channels))
+        return all_channels
+
 
     @classmethod
     def attributes_available_to_fetch(cls):

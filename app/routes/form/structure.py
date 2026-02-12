@@ -1,4 +1,3 @@
-from lazy_object_proxy.utils import await_
 from sanic import Blueprint
 from sanic.response import json
 from sanic_openapi.openapi2.doc import response
@@ -6,8 +5,10 @@ from tortoise_wrapper.exceptions import BadRequestException
 
 from app.constants import NotificationChannels, Providers
 from app.services.form.forms import CreateAppForm, CreateEventForm, UpdateAppForm
+from app.manager.event_manager import EventMetaData
 from app.services.form.forms.add_provider.parent import AddProviderForm
 from app.services.form.forms.update_provider.parent import UpdateProviderForm
+from app.services.form.forms.update_event.parent import UpdateEventForm
 
 form_bp = Blueprint("form", url_prefix="form-structure/")
 
@@ -43,3 +44,9 @@ async def get_update_provider_form(_req, unique_identifier):
     if not unique_identifier:
         raise BadRequestException("Missing unique_identifier")
     return json(body=await UpdateProviderForm.get_instance_asdict(unique_identifier))
+
+@form_bp.get("/update-event/<event_id:int>")
+async def get_update_event_form(_req, event_id: int):
+    form_structure = await UpdateEventForm(event_id).get_asdict_new()
+    meta_data = await EventMetaData(event_id).get_meta_data()
+    return json(body={"form_structure": form_structure, "meta_data": meta_data})

@@ -132,3 +132,30 @@ class AppService:
             "name": app.name,
             "message": "App updated successfully"
         }
+    
+    @classmethod
+    async def delete_app(cls, app_id: int):
+        if app_id is None:
+            raise BadRequestException("App ID is mandatory param")
+
+        app = await AppsRepository.delete_app(
+            app_id
+        )
+        return {
+            "id": app.id,
+            "name": app.name,
+            "message": "App updated successfully"
+        }
+    
+    @classmethod
+    async def get_app_by_id(cls, app_id: int):
+        if app_id is None:
+            raise BadRequestException("App ID is mandatory param")
+
+        app = await AppsRepository.get_app_by_id(app_id)
+        if not app:
+            raise BadRequestException("App does not exist")
+        
+        return app
+
+        

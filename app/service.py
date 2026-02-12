@@ -1,16 +1,13 @@
 from torpedo import Host, CONFIG
+
 from redis_wrapper import RegisterRedis
-
-
 from app.listeners import listeners
 from app.middlewares import custom_response_middlewares
 from app.routes import blueprint_group
 
 if __name__ == "__main__":
 
-    # Setup redis wrapper
     RegisterRedis.register_redis_cache(CONFIG.config["REDIS_CACHE_HOSTS"])
-
     # Register listeners
     Host._listeners = listeners
 

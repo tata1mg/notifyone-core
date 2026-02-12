@@ -5,7 +5,6 @@ from app.exceptions import RequiredParamsException
 
 sms_apis = Blueprint("SmsAPIs")
 
-
 @sms_apis.route("/sms/template", methods=["PUT"], name="update_sms_template")
 async def update_sms_template(request: Request):
     payload = request.custom_json()

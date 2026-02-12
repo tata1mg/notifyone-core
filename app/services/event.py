@@ -1,6 +1,7 @@
 import json
 import logging
 from typing import Dict, Optional
+from tortoise.transactions import atomic
 from torpedo.exceptions import BadRequestException, NotFoundException
 from app.manager.email_manager import EmailManager
 from app.utilities.utils import validate_required_params, \
@@ -9,7 +10,8 @@ from app.constants import ErrorMessages
 from app.models.notification_core import EventModel
 from app.repositories.event import EventRepository
 from app.constants import NotificationChannels
-from app.constants.constants import Event, EventType, Action
+from app.constants.constants import Event, Action
+from app.constants.event import EventType
 from app.constants.email import Email
 from app.constants.event_priority import EventPriority
 from app.exceptions import InvalidParamsException, ResourceConflictException
@@ -18,6 +20,11 @@ from app.manager.push_notification_manager import PushManager, CreatePushEvent
 from app.manager.email_manager import CreateEmailEvent
 from app.manager.event_manager import EventManager
 from app.manager.whatsapp_manager import WhatsappManager,CreateWhatsappEvent
+from app.services.notification_request import NotificationRequest
+from app.services.email import EmailHandler
+from app.services.sms import SMSHandler
+from app.services.push import PushHandler
+from app.services.whatsapp import WhatsappHandler
 logger = logging.getLogger()
 
 class Events:
@@ -46,7 +53,7 @@ class Events:
         return actions
     
     @classmethod
-    async def get_event_data(cls, data: dict, event_actions: Optional[Dict] = None, event_id: Optional[int] = None,
+    async def get_event_data(cls, data: dict, event_actions: Optional[Dict] = None, triggers_limit:Optional[Dict]= None, event_id: Optional[int] = None,
                              creating_event: Optional[bool] = False):
         """
         This function  is used to get event data
@@ -57,6 +64,7 @@ class Events:
         event_data = {}
         if creating_event:
             event_actions = get_default_actions()
+            triggers_limit = get_default_trigger_limits()
 
         app_name = data.get(Event.APP_NAME)
         event_name = data.get(Event.EVENT_NAME)
@@ -64,27 +72,36 @@ class Events:
 
         if actions.get(NotificationChannels.EMAIL.value) and isinstance(
                 actions.get(NotificationChannels.EMAIL.value), dict):
+            email = actions.get(NotificationChannels.EMAIL.value)
             event_data[NotificationChannels.EMAIL.value] = await CreateEmailEvent.get_data_for_event(
                 actions.get(NotificationChannels.EMAIL.value), app_name, event_name, user_email, event_id)
             event_actions[NotificationChannels.EMAIL.value] = Action.ON.value
+            triggers_limit[NotificationChannels.EMAIL.value] = int(email.get(Event.TRIGGER_LIMIT))
 
         if actions.get(NotificationChannels.SMS.value) and isinstance(
                 actions.get(NotificationChannels.SMS.value), dict):
+            sms = actions.get(NotificationChannels.SMS.value)
             event_data[NotificationChannels.SMS.value] = await CreateSmsEvent.get_data_for_event(
                 actions.get(NotificationChannels.SMS.value), user_email, event_id)
             event_actions[NotificationChannels.SMS.value] = Action.ON.value
+            triggers_limit[NotificationChannels.SMS.value] = int(sms.get(Event.TRIGGER_LIMIT))
 
         if actions.get(NotificationChannels.PUSH.value) and isinstance(
                 actions.get(NotificationChannels.PUSH.value), dict):
+            push = actions.get(NotificationChannels.PUSH.value)
             event_data[NotificationChannels.PUSH.value] = await CreatePushEvent.get_data_for_event(
                 actions.get(NotificationChannels.PUSH.value), user_email, event_id)
             event_actions[NotificationChannels.PUSH.value] = Action.ON.value
+            triggers_limit[NotificationChannels.PUSH.value] = int(push.get(Event.TRIGGER_LIMIT))
 
         if actions.get(NotificationChannels.WHATSAPP.value) and isinstance(
                 actions.get(NotificationChannels.WHATSAPP.value), dict):
+            whatsapp = actions.get(NotificationChannels.WHATSAPP.value)
             event_data[NotificationChannels.WHATSAPP.value] = await CreateWhatsappEvent.get_data_for_event(
                 actions.get(NotificationChannels.WHATSAPP.value), user_email, event_id)
             event_actions[NotificationChannels.WHATSAPP.value] = Action.ON.value
+            triggers_limit[NotificationChannels.WHATSAPP.value] = int(whatsapp.get(Event.TRIGGER_LIMIT))
+
             # not checking other event type (i.e, call)
         # in action because already they are restricted in getting action from payload.
         if not event_data:
@@ -153,7 +170,12 @@ class Events:
             'subject': event_data.get('email', {}).get(Email.SUBJECT, ''),
             'triggers_limit': json.dumps(trigger_limit),
             'event_type': data.get('event_type'),
-            'meta_info': json.dumps({Event.EVENT_PRIORITY: data.get(Event.EVENT_PRIORITY)}),
+            'meta_info': json.dumps(
+                {
+                    Event.EVENT_PRIORITY: data.get(Event.EVENT_PRIORITY),
+                    Event.DYNAMIC_CHANNELS: data.get(Event.DYNAMIC_CHANNELS, False),
+                }
+            ),
             'updated_by': data.get('user_email'),
             'is_deleted': Event.SOFT_DELETE_DEFAULT_VALUE
         }
@@ -191,8 +213,13 @@ class Events:
             event_name=data['event_name'], app_name=data['app_name'])
         event_id = event_detail.get('id')
         event_actions = event_detail.get('actions')
-        event_data, event_actions = await cls.get_event_data(data=data, event_actions=event_actions, event_id=event_id)
-        values = {'updated_by': data.get('user_email'), 'actions': json.dumps(event_actions)}
+        triggers_limit=event_detail.get('triggers_limit')
+        event_data, event_actions, triggers_limit = await cls.get_event_data(data=data, event_actions=event_actions, triggers_limit=triggers_limit, event_id=event_id)
+        values = {
+            'updated_by': data.get('user_email'),
+            'actions': json.dumps(event_actions),
+            'triggers_limit': json.dumps(triggers_limit),
+        }
         await EventRepository.update_event(app_name=data['app_name'],
                                            event_name=data['event_name'],
                                            values=values)
@@ -291,3 +318,138 @@ class Events:
             return {"message": "event has been deleted sucessfully"} 
         else:
             raise NotFoundException('event is not found') 
+    
+    @classmethod
+    def _validate_payload_data(cls, data):
+        required_keys = Event.EVENT_UPDATE_REQUIRED_PARAMS
+        for key in required_keys:
+            if key not in data or data.get(key) is None:
+                raise BadRequestException(f"Key '{key}' is missing in the payload")
+
+    @classmethod
+    @atomic()
+    async def update_event_data(cls, event_id, data):
+        app_name = data.get('app_name')
+        event_name = data.get('event_name')
+        event_type = data.get('event_type')
+        priority = data.get('priority')
+        callback_enabled = data.get('callback_enabled')
+        generic_data = data.get('payload')
+        updated_by = data.get('user_email')
+        email = data.get('email')
+        sms = data.get('sms')
+        push = data.get('push')
+        whatsapp = data.get('whatsapp')
+        dynamic_channels = data.get('dynamic_channels')
+        cls._validate_payload_data(data)
+        general_data = {
+            "app_name": app_name,
+            "event_name": event_name,
+            "event_id": event_id
+        }
+        if email and email.get('id'):
+            email.update(general_data)
+            email['triggers_limit'] = email.get('trigger_limit')
+            email['actions'] = int(email.get('enabled'))
+            await EmailManager.update_email_template(email.get('id'), updated_by, generic_data, update_event=True, payload=data.get('email'))
+
+        if sms and sms.get('id'):
+            sms.update(general_data)
+            sms['triggers_limit'] = sms.get('trigger_limit')
+            sms['actions'] = int(sms.get('enabled'))
+            await SmsManager.update_sms_template(sms.get('id'), generic_data, updated_by, update_event=True, payload=data.get('sms'))
+
+        if push and push.get('id'):
+            push.update(general_data)
+            push['triggers_limit'] = push.get('trigger_limit')
+            push['actions'] = int(push.get('enabled'))
+            await PushManager.update_push_notification(push.get('id'), generic_data, updated_by, update_event=True, payload=data.get('push'))
+
+        if whatsapp and whatsapp.get('id'):
+            whatsapp.update(general_data)
+            whatsapp['triggers_limit'] = whatsapp.get('trigger_limit')
+            whatsapp['actions'] = int(whatsapp.get('enabled'))
+            await WhatsappManager.update_whatsapp_table(whatsapp.get('id'), updated_by, payload=data.get('whatsapp'))            
+
+        create_data = {
+            'app_name': app_name,
+            'event_name': event_name,
+            'priority': priority,
+            'event_type': event_type,
+            'callback_enabled': callback_enabled,
+            'user_email': updated_by,
+            'email': email if email and not email.get('id') else None,
+            'sms': sms if sms and not sms.get('id') else None,
+            'push': push if push and not push.get('id') else None,
+            'whatsapp': whatsapp if whatsapp and not whatsapp.get('id') else None,
+
+        }
+        if create_data.get('email') or create_data.get('sms') or create_data.get('push') or create_data.get('whatsapp'):
+            await cls.add_new_action_to_event(create_data)
+
+        await EventRepository.update_event_with_id(
+                event_id,
+                {
+                    "callback_enabled": callback_enabled, 
+                    "event_type": event_type, 
+                    "meta_info": json.dumps({
+                        "priority": priority,
+                        "dynamic_channels": dynamic_channels
+                    }),
+                },
+            )        
+
+        return {"message": "event has been updated sucessfully"}
+    
+    @classmethod          
+    async def get_event_names(cls, request_args):
+        event_like = request_args.get('event_like')
+        if not event_like:
+            raise BadRequestException('request should contain at least a letter of event name to search for events')
+        limit = int(request_args.get('per_page', 10))
+        page_no = int(request_args.get('page_no', 0))
+        result = []
+        data = await EventRepository.search_event(event_like, Event.ID, limit, page_no*limit)
+        for event in data:
+            event_data = {
+                'event_id': event.get('id'),
+                'event_name': event.get('event_name'),
+                'app_name': event.get('app_name')
+            }
+            result.append(event_data)
+        return {"events": result, "per_page": limit, "page_no": page_no}  
+
+    @classmethod
+    async def get_content_for_event(cls, event_name, application_name, body):
+        event_details = await EventRepository.get_event_details(app_name = application_name, event_name=event_name)
+        actions = event_details.get('actions', {})
+        result = {}
+        NotificationRequest._transform_template_data(body)
+        for key, value in actions.items():
+            if value:
+                if key == NotificationChannels.EMAIL.value:
+                    email_subject, email_body = await EmailHandler.get_email_subject_and_body(EventModel(event_details), body)
+                    result.update({
+                        'email': {
+                            'body': email_body,
+                            'subject': email_subject
+                        }
+                    })
+                elif key == NotificationChannels.SMS.value:
+                    sms_data = await SMSHandler.get_sms_body(EventModel(event_details), body)
+                    result.update({
+                        'sms': {
+                            'body': sms_data
+                        },
+                    })
+                elif key == NotificationChannels.PUSH.value:
+                    push_data = await PushHandler.get_push_content(EventModel(event_details), body)
+                    result.update({
+                        'push': push_data
+                    })
+                elif key == NotificationChannels.WHATSAPP.value:
+                    whatsapp_data = await WhatsappHandler.get_whatsapp_content(EventModel(event_details), body)
+                    result.update({
+                        'whatsapp': whatsapp_data
+                    })
+        return result

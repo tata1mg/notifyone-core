@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import Callable, List
 from torpedo import CONFIG
 from app.constants import (
     NotificationChannels,
@@ -14,7 +15,6 @@ from app.service_clients.publisher import PublishResult
 from app.utilities import (
     render_text,
     dispatch_notification_request_common_payload,
-    is_notification_allowed_for_email,
 )
 from .abstract_handler import AbstractHandler
 from .logging import NotificationRequestLog
@@ -49,25 +49,36 @@ class PushHandler(AbstractHandler):
                     ErrorMessages.PUSH_EVENT_NOT_FOUND_IN_DB.value
                 )
 
-            send_address = NotificationChannels.get_sent_to_for_channel(
-                NotificationChannels.PUSH.value, request_body
-            )
-            if not send_address:
-                raise NoSendAddressFoundException(
-                    ErrorMessages.NO_SEND_ADDRESS_FOUND.value
-                )
+            devices = await cls.get_devices(request_body)
 
-            devices = list()
-            for device in send_address:
-                d = {"register_id": device}
-                devices.append(d)
+            registered_devices = list()
+            for device in devices:
+                d = {
+                    "user_id": device.get("user_id"),
+                    "device_id": device.get("device_id"),
+                    "device_os": device.get("device_os"),
+                    "device_os_type": device.get("device_os_type"),
+                    "register_id": device.get("register_id"),
+                    "voip_token": device.get("voip_token"),
+                    "device_token": device.get("device_token"),
+                    "live_notification_token": (
+                        device.get("metadata")
+                        if isinstance(device.get("metadata"), dict)
+                        else {}
+                    ).get("live_notification_token", {}),
+                    "app_id": device.get("app_id"),
+                    "application_name": device.get("application_name"),
+                }
+                registered_devices.append(d)
 
             push_data = {
                 "title": await render_text(push_detail.title, request_body["body"]),
                 "body": await render_text(push_detail.body, request_body["body"]),
                 "target": await render_text(push_detail.target, request_body["body"]),
                 "image": await render_text(push_detail.image, request_body["body"]),
-                "registered_devices": devices,
+                "details": request_body["push"],
+                "type": push_detail.type,
+                "registered_devices": registered_devices,
             }
             data = dispatch_notification_request_common_payload(
                 event.id,
@@ -95,8 +106,8 @@ class PushHandler(AbstractHandler):
             # update notification request log status
             await NotificationRequestLog.update_notification_request_processed_status(
                 notification_request_log_row.id,
-                message=message,
-                status=status.value,
+                message=result.message,
+                status=result.status.value,
                 content=json.dumps(push_data),
                 channel=NotificationChannels.PUSH,
                 request_id=request_body["request_id"],
@@ -104,3 +115,27 @@ class PushHandler(AbstractHandler):
         if unhandled_exception:
             raise Exception("Unhandled exception in sending push")
         return result
+    
+    @classmethod
+    async def get_devices(cls, request_body):
+        """
+        Get devices from the given list of recipients,
+        if not available then fetch from identity service using the email address
+        """
+
+        devices = request_body.get("to", {}).get("devices")
+        if devices:
+            return devices
+
+    @classmethod
+    async def get_push_content(cls, event: EventModel, _body: dict):
+        push_detail = await PushNotificationRepository.get_push_notification(event.id)
+        push_data = {
+                "title": await render_text(push_detail.title, _body["body"]),
+                "body": await render_text(push_detail.body, _body["body"]),
+                "target": await render_text(push_detail.target, _body["body"]),
+                "image": await render_text(push_detail.image, _body["body"]),
+                "type": push_detail.type
+            }
+        return push_data
+

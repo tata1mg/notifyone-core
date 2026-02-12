@@ -1,4 +1,4 @@
-from commonutils.utils import CustomEnum
+from enum import Enum
 
 
 class PushTarget:
@@ -87,11 +87,16 @@ class PushTarget:
     }
 
 
-class DeviceType(CustomEnum):
+class DeviceType(Enum):
     ALL = "ALL"
-    iOS = "IOS"
+    iOS = "IPHONE OS"
     ANDROID = "ANDROID"
 
+class NotificationType(Enum):
+    BANNER = "BANNER"
+    CALL = "CALL"
+    LIVE_ACTIVITY = "LIVE_ACTIVITY"
+    BACKGROUND = "BACKGROUND"
 
 class Push:
     TITLE = "title"
