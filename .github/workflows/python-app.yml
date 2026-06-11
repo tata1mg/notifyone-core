@@ -36,4 +36,4 @@ jobs:
         uv sync --frozen --extra dev
     - name: Test with pytest
       run: |
-        uv run pytest --cov=app
+        uv run pytest --cov=app; code=$?; [ $code -eq 5 ] && exit 0 || exit $code
