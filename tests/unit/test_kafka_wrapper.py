@@ -3,6 +3,7 @@ Unit tests for core KafkaWrapper.
 Stubs out commonutils/torpedo so this runs without the full pipenv install.
 """
 import asyncio
+import functools
 import dataclasses
 import enum
 import importlib.util
@@ -15,6 +16,29 @@ import base64
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+
+
+def run_async(coro_func):
+    """Run an async test on a private event loop, leaving the ambient loop untouched.
+
+    Keeps these tests independent of pytest-sanic / pytest-asyncio loop management
+    so they cannot interfere with the session-scoped fixtures of other tests.
+    """
+    @functools.wraps(coro_func)
+    def wrapper(*args, **kwargs):
+        try:
+            prev_loop = asyncio.get_event_loop()
+        except RuntimeError:
+            prev_loop = None
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            return loop.run_until_complete(coro_func(*args, **kwargs))
+        finally:
+            loop.close()
+            asyncio.set_event_loop(prev_loop)
+    return wrapper
+
 
 
 # ---------------------------------------------------------------------------
@@ -141,7 +165,7 @@ def _make_mock_consumer(msgs):
 # Tests
 # ---------------------------------------------------------------------------
 
-@pytest.mark.asyncio
+@run_async
 async def test_publish_success(kafka_config):
     """publish() returns PublishResult(is_success=True) on success."""
     with patch.object(_kafka_wrapper_mod, "AIOKafkaProducer") as MockProducer:
@@ -156,7 +180,7 @@ async def test_publish_success(kafka_config):
     mock_producer.send_and_wait.assert_called_once()
 
 
-@pytest.mark.asyncio
+@run_async
 async def test_publish_failure(kafka_config):
     """publish() returns is_success=False when producer raises an exception."""
     with patch.object(_kafka_wrapper_mod, "AIOKafkaProducer") as MockProducer:
@@ -171,7 +195,7 @@ async def test_publish_failure(kafka_config):
     assert "kafka error" in result.message
 
 
-@pytest.mark.asyncio
+@run_async
 async def test_subscribe_forever_calls_event_handler_with_decoded_body(kafka_config):
     """subscribe_forever calls event_handler with decoded body string."""
     body = json.dumps({"hello": "world"})
@@ -198,7 +222,7 @@ async def test_subscribe_forever_calls_event_handler_with_decoded_body(kafka_con
     assert received_identifier == "test-1"
 
 
-@pytest.mark.asyncio
+@run_async
 async def test_subscribe_forever_successful_handler_causes_commit(kafka_config):
     """Successful handler invocation causes consumer.commit() to be called."""
     body = json.dumps({"x": 1})
@@ -218,7 +242,7 @@ async def test_subscribe_forever_successful_handler_causes_commit(kafka_config):
     mock_consumer.commit.assert_called_once()
 
 
-@pytest.mark.asyncio
+@run_async
 async def test_failing_handler_does_not_commit_below_threshold(kafka_config):
     """A handler returning False on the first attempt does NOT commit (below max retries)
     and consumer.seek() is called so the message is re-fetched in the current session."""
@@ -248,7 +272,7 @@ async def test_failing_handler_does_not_commit_below_threshold(kafka_config):
     MockTP.assert_called_once_with("test-topic", 0)  # topic, partition
 
 
-@pytest.mark.asyncio
+@run_async
 async def test_dead_letter_after_max_retries(kafka_config):
     """After MAX_RETRY_ATTEMPTS handler failures, message is committed (skipped) as dead.
     The handler must be called exactly MAX_RETRY_ATTEMPTS (3) times before dead-lettering."""
@@ -282,7 +306,7 @@ async def test_dead_letter_after_max_retries(kafka_config):
     mock_consumer.commit.assert_called_once()
 
 
-@pytest.mark.asyncio
+@run_async
 async def test_subscribe_forever_decompresses_compressed_message(kafka_config):
     """Compressed message header causes decompression before handler call."""
     original_body = json.dumps({"compressed": True})
