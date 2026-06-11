@@ -131,6 +131,7 @@ def _make_mock_consumer(msgs):
     mock_consumer.start = AsyncMock()
     mock_consumer.stop = AsyncMock()
     mock_consumer.commit = AsyncMock()
+    mock_consumer.seek = MagicMock()  # synchronous per aiokafka==0.10.0 API
     mock_consumer.__aiter__ = lambda self: _AsyncIter(msgs)
     return mock_consumer
 
@@ -218,19 +219,21 @@ async def test_subscribe_forever_successful_handler_causes_commit(kafka_config):
 
 @pytest.mark.asyncio
 async def test_failing_handler_does_not_commit_below_threshold(kafka_config):
-    """A handler returning False on the first attempt does NOT commit (below max retries)."""
+    """A handler returning False on the first attempt does NOT commit (below max retries)
+    and consumer.seek() is called so the message is re-fetched in the current session."""
     cfg = {
         "QUEUE_BACKEND": "kafka",
         "KAFKA": {"BOOTSTRAP_SERVERS": "localhost:9092", "MAX_RETRY_ATTEMPTS": 3},
     }
     body = json.dumps({"x": 1})
     # Only one message delivered, handler fails once (count 1 < threshold 3)
-    msg = _make_mock_msg(body.encode("utf-8"))
+    msg = _make_mock_msg(body.encode("utf-8"), partition=0, offset=42, topic="test-topic")
     mock_consumer = _make_mock_consumer([msg])
     handler = AsyncMock(return_value=False)
 
     with patch.object(_kafka_wrapper_mod, "AIOKafkaProducer"), \
-         patch.object(_kafka_wrapper_mod, "AIOKafkaConsumer") as MockConsumer:
+         patch.object(_kafka_wrapper_mod, "AIOKafkaConsumer") as MockConsumer, \
+         patch.object(_kafka_wrapper_mod, "TopicPartition") as MockTP:
         MockConsumer.return_value = mock_consumer
 
         wrapper = KafkaWrapper(
@@ -239,21 +242,26 @@ async def test_failing_handler_does_not_commit_below_threshold(kafka_config):
         await wrapper.subscribe_forever()
 
     mock_consumer.commit.assert_not_called()
+    # seek() must be called to reschedule re-delivery within the same session
+    mock_consumer.seek.assert_called_once()
+    MockTP.assert_called_once_with("test-topic", 0)  # topic, partition
 
 
 @pytest.mark.asyncio
 async def test_dead_letter_after_max_retries(kafka_config):
-    """After MAX_RETRY_ATTEMPTS handler failures, message is committed (skipped) as dead."""
+    """After MAX_RETRY_ATTEMPTS handler failures, message is committed (skipped) as dead.
+    The handler must be called exactly MAX_RETRY_ATTEMPTS (3) times before dead-lettering."""
     cfg = {
         "QUEUE_BACKEND": "kafka",
         "KAFKA": {"BOOTSTRAP_SERVERS": "localhost:9092", "MAX_RETRY_ATTEMPTS": 3},
     }
     body = json.dumps({"x": 1})
-    # Same partition/offset = same message key, 3 deliveries to hit MAX_RETRY_ATTEMPTS
+    # Same partition/offset = same message key; inject 3 copies to simulate the seek()
+    # re-delivery that occurs after each failure below the threshold.
     msgs = [
-        _make_mock_msg(body.encode("utf-8"), partition=0, offset=42),
-        _make_mock_msg(body.encode("utf-8"), partition=0, offset=42),
-        _make_mock_msg(body.encode("utf-8"), partition=0, offset=42),
+        _make_mock_msg(body.encode("utf-8"), partition=0, offset=42, topic="test-topic"),
+        _make_mock_msg(body.encode("utf-8"), partition=0, offset=42, topic="test-topic"),
+        _make_mock_msg(body.encode("utf-8"), partition=0, offset=42, topic="test-topic"),
     ]
     mock_consumer = _make_mock_consumer(msgs)
     handler = AsyncMock(return_value=False)
@@ -267,6 +275,8 @@ async def test_dead_letter_after_max_retries(kafka_config):
         )
         await wrapper.subscribe_forever()
 
+    # Handler must be called exactly MAX_RETRY_ATTEMPTS times before dead-lettering
+    assert handler.call_count == 3
     # Exactly 1 commit after 3 failures (dead-letter skip)
     mock_consumer.commit.assert_called_once()
 

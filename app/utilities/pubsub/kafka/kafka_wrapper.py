@@ -4,7 +4,7 @@ import logging
 import zlib
 import base64
 
-from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
+from aiokafka import AIOKafkaProducer, AIOKafkaConsumer, TopicPartition
 
 from app.constants import NotificationRequestLogStatus
 from app.service_clients.publisher import Publisher, PublishResult
@@ -101,14 +101,15 @@ class KafkaWrapper(Publisher):
         try:
             async for msg in consumer:
                 msg_key = (msg.partition, msg.offset)
+                # Increment exactly once per delivery, before any handler call.
+                retry_count = self._retry_counts.get(msg_key, 0) + 1
+                self._retry_counts[msg_key] = retry_count
                 try:
                     body = msg.value.decode("utf-8")
                     # Check for compression header
                     headers_dict = {k: v for k, v in (msg.headers or [])}
                     if headers_dict.get("compressedMessage") == b"yes":
                         body = self._decompress_message(body)
-                    retry_count = self._retry_counts.get(msg_key, 0) + 1
-                    self._retry_counts[msg_key] = retry_count
                     is_success = await self.event_handler(
                         body,
                         self.instance_identifier,
@@ -128,10 +129,15 @@ class KafkaWrapper(Publisher):
                             )
                             await consumer.commit()
                             self._retry_counts.pop(msg_key, None)
-                        # else: loop continues, message will be re-delivered
+                        else:
+                            # Seek back so the message is re-fetched on the next
+                            # loop iteration; aiokafka.seek() is synchronous.
+                            consumer.seek(
+                                TopicPartition(msg.topic, msg.partition), msg.offset
+                            )
                 except Exception as e:
-                    retry_count = self._retry_counts.get(msg_key, 0) + 1
-                    self._retry_counts[msg_key] = retry_count
+                    # Read the already-incremented counter — do not increment again.
+                    retry_count = self._retry_counts[msg_key]
                     if retry_count >= self.max_retry_attempts:
                         logger.error(
                             "Dead-lettering message on topic %s partition %d offset %d after exception: %s",
@@ -142,6 +148,12 @@ class KafkaWrapper(Publisher):
                         )
                         await consumer.commit()
                         self._retry_counts.pop(msg_key, None)
+                    else:
+                        # Seek back so the message is re-fetched on the next
+                        # loop iteration; aiokafka.seek() is synchronous.
+                        consumer.seek(
+                            TopicPartition(msg.topic, msg.partition), msg.offset
+                        )
                     logger.exception(
                         "Error processing message from Kafka topic %s: %s",
                         self.queue_name,
