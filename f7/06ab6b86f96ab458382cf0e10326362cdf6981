@@ -1,0 +1,27 @@
+.gitignore
+  s_a0b4872f270ab7::t_c930b65df60922 68-69
+pyproject.toml
+  s_a0b4872f270ab7::t_ebc2c123853bc8 1-26
+Dockerfile
+  s_a0b4872f270ab7::t_104b3f06479dd6 28,37-38
+.github/workflows/python-app.yml
+  s_a0b4872f270ab7::t_ce6828c7472766 1-39
+README.md
+  s_a0b4872f270ab7::t_8da6bcdcc53db1 89-91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "f706ab6b86f96ab458382cf0e10326362cdf6981",
+  "prompts": {},
+  "sessions": {
+    "s_a0b4872f270ab7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f47c94d7-228e-4328-973e-84779edc5af6",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Prashant Mishra <prashantmishra@L9KXW927K6local-781.local>"
+    }
+  }
+}
