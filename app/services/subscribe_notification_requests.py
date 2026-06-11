@@ -2,7 +2,7 @@ import asyncio
 
 from torpedo import CONFIG
 
-from ..utilities.pubsub import SQSWrapper
+from ..utilities.pubsub import get_publisher
 
 from .notification_request import NotificationRequest
 
@@ -16,7 +16,7 @@ class SubscribeNotificationRequest:
     for priority, details in notification_request_config['SUBSCRIBE_TO'].items():
         for i in range(details['SUBSCRIBERS_COUNT']):
             _subscriber_instances.append(
-                SQSWrapper(
+                get_publisher(
                     details['QUEUE_NAME'], config=notification_request_config,
                     handler=NotificationRequest.handle_notification_request_async,
                     instance_identifier='{}-{}'.format(priority, i+1),
