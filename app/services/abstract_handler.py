@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from app.constants import SyncDispatcher, EventPriority
 from app.models.notification_core import EventModel
-from app.utilities.pubsub import SQSWrapper
+from app.utilities.pubsub import get_publisher
 from app.utilities.http import RestApiClientWrapper
 
 
@@ -29,7 +29,7 @@ class _PriorityBasedDispatcher:
     ):
         if not self.async_dispatcher:
             queue_name = async_config.pop("QUEUE_NAME")
-            self.async_dispatcher = SQSWrapper(queue_name, config=dispatcher_config)
+            self.async_dispatcher = get_publisher(queue_name, config=dispatcher_config)
         if not self.sync_dispatcher:
             host = sync_config.pop("HOST")
             self.sync_dispatcher = RestApiClientWrapper(

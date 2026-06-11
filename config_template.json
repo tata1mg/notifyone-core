@@ -35,6 +35,11 @@
     "TRANSACTION_SAMPLE_RATE": 0.1
   },
   "SUBSCRIBE_NOTIFICATION_STATUS_UPDATES": {
+    "QUEUE_BACKEND": "sqs",
+    "KAFKA": {
+      "BOOTSTRAP_SERVERS": "localhost:9092",
+      "MAX_RETRY_ATTEMPTS": 3
+    },
     "SQS": {
       "SQS_REGION": "eu-west-2",
       "SQS_ENDPOINT_URL": "http://localhost:4566",
@@ -49,6 +54,11 @@
     "SUBSCRIBE_DELAY_SECONDS": 5
   },
   "DISPATCH_NOTIFICATION_REQUEST": {
+    "QUEUE_BACKEND": "sqs",
+    "KAFKA": {
+      "BOOTSTRAP_SERVERS": "localhost:9092",
+      "MAX_RETRY_ATTEMPTS": 3
+    },
     "SQS": {
       "SQS_REGION": "eu-west-2",
       "SQS_ENDPOINT_URL": "http://localhost:4566",
@@ -97,6 +107,11 @@
     }
   },
   "NOTIFICATION_REQUEST": {
+    "QUEUE_BACKEND": "sqs",
+    "KAFKA": {
+      "BOOTSTRAP_SERVERS": "localhost:9092",
+      "MAX_RETRY_ATTEMPTS": 3
+    },
     "SQS": {
       "SQS_REGION": "eu-west-2",
       "SQS_ENDPOINT_URL": "http://localhost:4566",

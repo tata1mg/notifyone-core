@@ -2,7 +2,7 @@ import asyncio
 
 from torpedo import CONFIG
 
-from ..utilities.pubsub import SQSWrapper
+from ..utilities.pubsub import get_publisher
 
 from .status_updates import NotificationStatusUpdate
 
@@ -15,7 +15,7 @@ class SubscribeStatusUpdate:
 
     for i in range (subs_status_update_config['SUBSCRIBE_TO']['SUBSCRIBERS_COUNT']):
         _subscriber_instances.append(
-            SQSWrapper(
+            get_publisher(
                 subs_status_update_config['SUBSCRIBE_TO']['QUEUE_NAME'],
                 config=subs_status_update_config,
                 handler=NotificationStatusUpdate.handle_status_update, instance_identifier='NSU-{}'.format(i+1),
